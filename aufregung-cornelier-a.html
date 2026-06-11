@@ -825,9 +825,11 @@
                   <span class="lat-word" data-lat="clamor">clāmor</span>
                   <span class="lat-word" data-lat="est">est</span>.
                   <span class="lat-word" data-lat="servus">Servus</span>
-                  <span class="lat-word" data-lat="clamat">clāmat</span>:
-                  „<span class="lat-word" data-lat="issa">Issa</span>,
-                  <span class="lat-word" data-lat="issa">Issa</span>!"
+                  <span class="lat-word" data-lat="clamat">clāmat</span>: „<span
+                    class="lat-word"
+                    data-lat="issa"
+                    >Issa</span
+                  >, <span class="lat-word" data-lat="issa">Issa</span>!"
                 </div>
                 <div class="translation-input-wrap">
                   <textarea
@@ -864,8 +866,11 @@
                   <span class="lat-word" data-lat="servum">servum</span>
                   <span class="lat-word" data-lat="audit">audit</span>
                   <span class="lat-word" data-lat="et">et</span>
-                  <span class="lat-word" data-lat="rogat">rogat</span>:
-                  „<span class="lat-word" data-lat="quid">Quid</span>
+                  <span class="lat-word" data-lat="rogat">rogat</span>: „<span
+                    class="lat-word"
+                    data-lat="quid"
+                    >Quid</span
+                  >
                   <span class="lat-word" data-lat="est">est</span>?"
                 </div>
                 <div class="translation-input-wrap">
@@ -920,6 +925,7 @@
             "Aulus spielt. Cornelia singt und ist froh, denn heute kommt der Großvater.",
             "Aulus spielt. Cornelia singt und ist froh, denn heute kommt Großvater.",
             "Aulus spielt. Cornēlia singt und freut sich, denn heute kommt der Großvater.",
+            "Aulus spielt. Cornēlia singt und freut sich, heute kommt nämlich der Großvater.",
           ],
         },
         {
@@ -941,6 +947,7 @@
             "Plötzlich ist ein Geschrei. Der Sklave ruft: Issa, Issa!",
             "Plötzlich gibt es einen Lärm. Sklave ruft: Issa, Issa!",
             "Plötzlich gibt es ein Geschrei. Sklave ruft: Issa, Issa!",
+            "Plötzlich ertönt ein Lärm. Der Sklave ruft: Issa, Issa!",
           ],
         },
         {
@@ -1022,7 +1029,9 @@
         });
       }
 
-      window.addEventListener("scroll", repositionOpenPopovers, { passive: true });
+      window.addEventListener("scroll", repositionOpenPopovers, {
+        passive: true,
+      });
 
       function setupPopovers() {
         fields.forEach((f) => {
@@ -1234,29 +1243,132 @@
       const DISPLAY_MODE = "simple";
 
       const vocab = {
-        aulus:      { form: "Aulus",      wordType: "other", de: "Aulus (Eigenname)" },
-        ludit:      { form: "lūdere",     wordType: "verb",  inf: "lūdere",      sg1: "ludo",      sg3: "lūdit",     de: "er/sie/es spielt" },
-        cornelia:   { form: "Cornēlia",   wordType: "other", de: "Cornelia (Eigenname)" },
-        cantat:     { form: "cantāre",    wordType: "verb",  inf: "cantāre",     sg1: "canto",     sg3: "cantat",    de: "er/sie/es singt" },
-        et:         { form: "et",         wordType: "other", de: "und" },
-        gaudet:     { form: "gaudēre",    wordType: "verb",  inf: "gaudēre",     sg1: "gaudeo",    sg3: "gaudet",    de: "er/sie/es freut sich" },
-        nam:        { form: "nam",        wordType: "other", de: "denn, nämlich" },
-        hodie:      { form: "hodiē",      wordType: "other", de: "heute" },
-        avus:       { form: "avus",       wordType: "subst", genSg: "avi",       genus: "m", de: "Großvater" },
-        venit:      { form: "venīre",     wordType: "verb",  inf: "venīre",      sg1: "venio",     sg3: "venit",     de: "er/sie/es kommt" },
-        familia:    { form: "familia",    wordType: "subst", genSg: "familiae",  genus: "f", de: "Familie" },
-        avum:       { form: "avus",       wordType: "subst", genSg: "avi",       genus: "m", de: "Großvater (Akk.)" },
-        exspectat:  { form: "exspectāre", wordType: "verb",  inf: "exspectāre",  sg1: "exspecto",  sg3: "exspectat", de: "er/sie/es erwartet" },
-        subito:     { form: "subitō",     wordType: "other", de: "plötzlich" },
-        clamor:     { form: "clāmor",     wordType: "subst", genSg: "clāmōris", genus: "m", de: "Lärm, Geschrei, Ruf" },
-        est:        { form: "esse",       wordType: "verb",  inf: "esse",        sg1: "sum",       sg3: "est",       de: "er/sie/es ist; es gibt" },
-        servus:     { form: "servus",     wordType: "subst", genSg: "servi",     genus: "m", de: "Sklave" },
-        clamat:     { form: "clāmāre",    wordType: "verb",  inf: "clāmāre",     sg1: "clamo",     sg3: "clāmat",    de: "er/sie/es ruft" },
-        issa:       { form: "Issa",       wordType: "other", de: "Issa (Name der Hündin)" },
-        servum:     { form: "servus",     wordType: "subst", genSg: "servi",     genus: "m", de: "Sklave (Akk.)" },
-        audit:      { form: "audīre",     wordType: "verb",  inf: "audīre",      sg1: "audio",     sg3: "audit",     de: "er/sie/es hört" },
-        rogat:      { form: "rogāre",     wordType: "verb",  inf: "rogāre",      sg1: "rogo",      sg3: "rogat",     de: "er/sie/es fragt" },
-        quid:       { form: "quid",       wordType: "other", de: "was?" },
+        aulus: { form: "Aulus", wordType: "other", de: "Aulus (Eigenname)" },
+        ludit: {
+          form: "lūdere",
+          wordType: "verb",
+          inf: "lūdere",
+          sg1: "ludo",
+          sg3: "lūdit",
+          de: "er/sie/es spielt",
+        },
+        cornelia: {
+          form: "Cornēlia",
+          wordType: "other",
+          de: "Cornelia (Eigenname)",
+        },
+        cantat: {
+          form: "cantāre",
+          wordType: "verb",
+          inf: "cantāre",
+          sg1: "canto",
+          sg3: "cantat",
+          de: "er/sie/es singt",
+        },
+        et: { form: "et", wordType: "other", de: "und" },
+        gaudet: {
+          form: "gaudēre",
+          wordType: "verb",
+          inf: "gaudēre",
+          sg1: "gaudeo",
+          sg3: "gaudet",
+          de: "er/sie/es freut sich",
+        },
+        nam: { form: "nam", wordType: "other", de: "denn, nämlich" },
+        hodie: { form: "hodiē", wordType: "other", de: "heute" },
+        avus: {
+          form: "avus",
+          wordType: "subst",
+          genSg: "avi",
+          genus: "m",
+          de: "Großvater",
+        },
+        venit: {
+          form: "venīre",
+          wordType: "verb",
+          inf: "venīre",
+          sg1: "venio",
+          sg3: "venit",
+          de: "er/sie/es kommt",
+        },
+        familia: {
+          form: "familia",
+          wordType: "subst",
+          genSg: "familiae",
+          genus: "f",
+          de: "Familie",
+        },
+        avum: {
+          form: "avus",
+          wordType: "subst",
+          genSg: "avi",
+          genus: "m",
+          de: "Großvater (Akk.)",
+        },
+        exspectat: {
+          form: "exspectāre",
+          wordType: "verb",
+          inf: "exspectāre",
+          sg1: "exspecto",
+          sg3: "exspectat",
+          de: "er/sie/es erwartet",
+        },
+        subito: { form: "subitō", wordType: "other", de: "plötzlich" },
+        clamor: {
+          form: "clāmor",
+          wordType: "subst",
+          genSg: "clāmōris",
+          genus: "m",
+          de: "Lärm, Geschrei, Ruf",
+        },
+        est: {
+          form: "esse",
+          wordType: "verb",
+          inf: "esse",
+          sg1: "sum",
+          sg3: "est",
+          de: "er/sie/es ist; es gibt",
+        },
+        servus: {
+          form: "servus",
+          wordType: "subst",
+          genSg: "servi",
+          genus: "m",
+          de: "Sklave",
+        },
+        clamat: {
+          form: "clāmāre",
+          wordType: "verb",
+          inf: "clāmāre",
+          sg1: "clamo",
+          sg3: "clāmat",
+          de: "er/sie/es ruft",
+        },
+        issa: { form: "Issa", wordType: "other", de: "Issa (Name der Hündin)" },
+        servum: {
+          form: "servus",
+          wordType: "subst",
+          genSg: "servi",
+          genus: "m",
+          de: "Sklave (Akk.)",
+        },
+        audit: {
+          form: "audīre",
+          wordType: "verb",
+          inf: "audīre",
+          sg1: "audio",
+          sg3: "audit",
+          de: "er/sie/es hört",
+        },
+        rogat: {
+          form: "rogāre",
+          wordType: "verb",
+          inf: "rogāre",
+          sg1: "rogo",
+          sg3: "rogat",
+          de: "er/sie/es fragt",
+        },
+        quid: { form: "quid", wordType: "other", de: "was?" },
       };
 
       // per-row pinned sets — aus localStorage wiederherstellen
@@ -1329,7 +1441,9 @@
         if (rowPinned[rowId].has(key)) return;
         rowPinned[rowId].add(key);
         document
-          .querySelectorAll(`[data-row="${rowId}"] .lat-word[data-lat="${key}"]`)
+          .querySelectorAll(
+            `[data-row="${rowId}"] .lat-word[data-lat="${key}"]`,
+          )
           .forEach((s) => s.classList.add("pinned"));
         savePinned();
         renderGloss(rowId);
@@ -1338,7 +1452,9 @@
       Object.keys(rowPinned).forEach((rowId) => {
         rowPinned[rowId].forEach((key) => {
           document
-            .querySelectorAll(`[data-row="${rowId}"] .lat-word[data-lat="${key}"]`)
+            .querySelectorAll(
+              `[data-row="${rowId}"] .lat-word[data-lat="${key}"]`,
+            )
             .forEach((s) => s.classList.add("pinned"));
         });
         renderGloss(rowId);
@@ -1357,9 +1473,16 @@
           togglePin(span.dataset.lat, rowId);
         });
         let pressTimer = null;
-        span.addEventListener("touchstart", () => {
-          pressTimer = setTimeout(() => togglePin(span.dataset.lat, rowId), 500);
-        }, { passive: true });
+        span.addEventListener(
+          "touchstart",
+          () => {
+            pressTimer = setTimeout(
+              () => togglePin(span.dataset.lat, rowId),
+              500,
+            );
+          },
+          { passive: true },
+        );
         span.addEventListener("touchend", () => clearTimeout(pressTimer));
         span.addEventListener("touchmove", () => clearTimeout(pressTimer));
       });

@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reflexiv oder nicht 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scrollbar-gutter: stable; }
+
+      :root {
+        --bg:     #f8f8f6;
+        --white:  #ffffff;
+        --border: #e6e4df;
+        --text:   #111111;
+        --muted:  #898783;
+        --accent: #c6613f;
+        --green:  #4caf50;
+        --yellow-feedback: #f5a623;
+        --radius: 14px;
+
+        --blue:          #2563eb;
+        --blue-bg:       rgba(37,99,235,0.08);
+        --blue-sel:      rgba(37,99,235,0.06);
+
+        --yellow:        #b45309;
+        --yellow-bg:     rgba(234,179,8,0.12);
+        --yellow-sel:    rgba(234,179,8,0.08);
+        --yellow-border: #ca8a04;
+      }
+
+      body { font-family:"Noto Sans",sans-serif; background:var(--bg); min-height:100vh; padding:5rem 1.5rem 3rem; color:var(--text); }
+
+      header { position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:100; }
+      .sitename { font-size:19px;font-weight:700;color:#111111;font-family:"Lora",serif;letter-spacing:-0.4px;display:flex;align-items:center;gap:6px; }
+      .sitename a { color:inherit;text-decoration:none; }
+      .sitename .sep  { color:#cccccc;font-family:"Noto Sans",sans-serif;font-weight:400;font-size:17px; }
+      .sitename .sep2 { color:#cccccc;font-family:"Noto Sans",sans-serif;font-weight:400;font-size:17px; }
+      .sitename .sub  { font-size:12px;font-weight:600;color:#555555;font-family:"Noto Sans",sans-serif;letter-spacing:0; }
+      .sitename .sub2 { font-size:12px;font-weight:600;color:#555555;font-family:"Noto Sans",sans-serif;letter-spacing:0; }
+      .topbar { display:flex;align-items:center;gap:8px; }
+      .icon-btn { width:34px;height:34px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;position:relative;outline:none;flex-shrink:0; }
+      .icon-btn:hover { transform:scale(1.08); } .icon-btn:active { transform:scale(0.94); }
+      .icon-btn svg { width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+      .bell-btn svg { stroke:#898783; }
+      .bell-btn .dot { position:absolute;top:6px;right:6px;width:7px;height:7px;background:#cc3300;border-radius:50%;border:1.5px solid var(--white); }
+      @keyframes ring{0%,100%{transform:rotate(0)}15%{transform:rotate(14deg)}30%{transform:rotate(-12deg)}45%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}75%{transform:rotate(3deg)}}
+      .bell-btn:hover svg { animation:ring 0.55s ease;transform-origin:50% 3px; }
+      .user-btn svg { stroke:#898783; }
+      .user-wrap { position:relative; }
+      .dropdown { display:none;position:absolute;top:44px;right:0;background:var(--white);border:1px solid #e0e0e0;border-radius:10px;min-width:190px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.1); }
+      .dropdown.open { display:block;animation:dropIn 0.15s ease; }
+      @keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+      .dropdown-header { padding:13px 16px 9px;border-bottom:1px solid #e8e8e8;background:#f9f9f9; }
+      .dropdown-name { font-size:14px;font-weight:600;color:#111; } .dropdown-email { font-size:12px;color:#888;margin-top:2px; }
+      .dropdown-item { display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14px;color:#111;cursor:pointer;border:none;background:none;width:100%;font-family:"Noto Sans",sans-serif;transition:background 0.12s;text-align:left; }
+      .dropdown-item:hover { background:#f4f4f4; }
+      .dropdown-item svg { width:15px;height:15px;stroke:#555;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+      .dropdown-sep-line { height:1px;background:#e8e8e8; }
+      .dropdown-item.danger { color:#cc3300; } .dropdown-item.danger svg { stroke:#cc3300; }
+
+      .page-wrap { max-width:780px;margin:0 auto; }
+      .task-card { background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
+      .task-header { padding:20px 22px 16px;border-bottom:1px solid var(--border); }
+      .task-title { font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;font-family:"Lora",serif; }
+      .task-instruction { font-size:14px;color:var(--muted);line-height:1.6; }
+      .task-content { padding:22px 22px; }
+
+      .legend { display:flex;align-items:center;gap:8px;background:#f2f1ef;border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:13px;font-weight:600;color:var(--text);flex-wrap:wrap; }
+      .legend-btn { display:flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:20px;border:2px solid transparent;background:transparent;cursor:pointer;font-family:"Noto Sans",sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;transition:background 0.15s,border-color 0.15s,transform 0.12s;color:var(--text);outline:none; }
+      .legend-btn:hover { transform:scale(1.04); } .legend-btn:active { transform:scale(0.97); }
+      .legend-dot { width:22px;height:22px;border-radius:50%;flex-shrink:0;transition:box-shadow 0.15s; }
+
+      .legend-btn.active-blue   { background:var(--blue-bg);   border-color:var(--blue); }
+      .legend-btn.active-yellow { background:var(--yellow-bg); border-color:var(--yellow-border); }
+
+      .legend-btn[data-color="blue"]   .legend-dot { background:var(--blue);         box-shadow:0 0 0 3px rgba(37,99,235,0.2); }
+      .legend-btn[data-color="yellow"] .legend-dot { background:var(--yellow-border); box-shadow:0 0 0 3px rgba(234,179,8,0.2); }
+
+      .legend-btn.active-blue   .legend-dot { box-shadow:0 0 0 4px rgba(37,99,235,0.28); }
+      .legend-btn.active-yellow .legend-dot { box-shadow:0 0 0 4px rgba(234,179,8,0.32); }
+
+      .sentence-list { display:flex;flex-direction:column;gap:2px; }
+      .sentence-row { display:grid;grid-template-columns:24px 1fr;grid-template-rows:auto auto;column-gap:4px;row-gap:3px;padding:14px 16px;border:1px solid var(--border);border-radius:10px;background:var(--white); }
+      .sentence-number { grid-column:1;grid-row:1/3;font-size:13px;color:var(--muted);padding-top:2px; }
+      .sentence-latin  { grid-column:2;grid-row:1;font-size:15px;font-style:italic;color:var(--text);line-height:1.9; }
+      .sentence-translation { grid-column:2;grid-row:2;font-size:13px;font-style:italic;color:var(--muted);line-height:1.5; }
+
+      .word-token { display:inline;position:relative;cursor:pointer;border-radius:4px;padding:1px 2px;transition:background 0.1s;user-select:none;-webkit-user-select:none;border:2px solid transparent; }
+
+      body[data-active="blue"]   .word-token:not(.marked):hover { background:var(--blue-bg); }
+      body[data-active="yellow"] .word-token:not(.marked):hover { background:var(--yellow-bg); }
+
+      .word-token.marked-blue   { border-color:var(--blue);          color:var(--blue);   font-weight:600;background:var(--blue-sel); }
+      .word-token.marked-yellow { border-color:var(--yellow-border); color:var(--yellow); font-weight:600;background:var(--yellow-sel); }
+
+      .word-token.correct { border-color:var(--green)          !important; }
+      .word-token.wrong   { border-color:var(--yellow-feedback) !important; }
+
+      .word-badge { display:none;position:absolute;top:-8px;right:-8px;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;z-index:10;flex-shrink:0; }
+      .word-badge.show { display:flex; } .word-badge.ok { background:var(--green); } .word-badge.fail { background:var(--yellow-feedback); }
+      .word-badge svg { width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+      .word-popover { display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:12px;font-weight:600;font-style:normal;padding:6px 10px;border-radius:8px;white-space:nowrap;z-index:50;pointer-events:none;animation:fadeDown 0.15s ease; }
+      .word-popover::after { content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#111; }
+      .word-popover.show { display:block; }
+      @keyframes fadeDown{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+      .feedback { display:none;margin:0 22px 16px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;align-items:center;gap:8px; }
+      .feedback.show { display:flex; }
+      .feedback.ok   { background:#edf7ed;color:#2e7d32;border:1px solid #c8e6c9; }
+      .feedback.warn { background:#fff8ee;color:#92610a;border:1px solid #f5dfa0; }
+      .feedback svg  { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+
+      .task-footer { padding:16px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:16px; }
+      .attempts-wrap { display:flex;gap:5px;align-items:center; }
+      .attempt-dot { width:7px;height:7px;border-radius:50%;border:1.5px solid #d0cec9;background:transparent;transition:background 0.2s,border-color 0.2s; }
+      .attempt-dot.used { background:var(--muted);border-color:var(--muted); }
+      .check-btn { background:#111111;color:#ffffff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;font-family:"Noto Sans",sans-serif;cursor:pointer;transition:background 0.15s,transform 0.15s; }
+      .check-btn:hover   { background:#333;transform:translateY(-1px); }
+      .check-btn:active  { transform:scale(0.97); }
+      .check-btn.success { background:var(--green);pointer-events:none; }
+      .check-btn.partial { background:var(--yellow-feedback); }
+
+      @media(max-width:500px){body{padding:4.5rem 1rem 2rem}.task-content{padding:12px}.task-footer{padding:12px 16px}.feedback{margin:0 12px 12px}.sentence-row{padding:10px 12px}.legend{gap:6px}.legend-btn{font-size:10px;padding:4px 8px 4px 5px}.legend-dot{width:18px;height:18px}}
+    </style>
+  </head>
+  <body data-active="blue">
+
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion06.html" class="sub">Lektion 6</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Reflexiv oder nicht 1</span>
+      </div>
+      <div class="topbar">
+        <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+
+        <div class="task-header">
+          <div class="task-title">Reflexiv oder nicht 1</div>
+          <div class="task-instruction">Aulus und Cornelia treffen Marcus, Aulus' Freund, vor dem Circus Maximus.<br>Markiere jeweils das <strong>reflexive Possessivpronomen blau</strong> und das <strong>nicht reflexive Possessivpronomen gelb</strong>.</div>
+        </div>
+
+        <div class="task-content">
+
+          <div class="legend">
+            <button class="legend-btn active-blue" data-color="blue" onclick="setActiveColor('blue')">
+              <div class="legend-dot"></div>
+              reflexiv
+            </button>
+            <button class="legend-btn" data-color="yellow" onclick="setActiveColor('yellow')">
+              <div class="legend-dot"></div>
+              nicht reflexiv
+            </button>
+          </div>
+
+          <div class="sentence-list">
+
+            <!-- 1. Aulus amīcum suum, nōn amīcum Claudiae videt. -->
+            <div class="sentence-row">
+              <div class="sentence-number">1.</div>
+              <div class="sentence-latin">
+                <span style="cursor:default;">Aulus amīcum </span><span class="word-token" data-id="t1-suum" data-correct="blue"><strong>suum</strong><div class="word-badge" id="badge-t1-suum"></div><div class="word-popover" id="popover-t1-suum"></div></span><span style="cursor:default;">, nōn amīcum Claudiae videt.</span>
+              </div>
+              <div class="sentence-translation">Aulus sieht seinen Freund, nicht Claudias Freund.</div>
+            </div>
+
+            <!-- 2. Marcus agitātōrem factiōnis suae cōnspicit et clāmat: „Ecce, Aurēlium!" -->
+            <div class="sentence-row">
+              <div class="sentence-number">2.</div>
+              <div class="sentence-latin">
+                <span style="cursor:default;">Marcus agitātōrem factiōnis </span><span class="word-token" data-id="t2-suae" data-correct="blue"><strong>suae</strong><div class="word-badge" id="badge-t2-suae"></div><div class="word-popover" id="popover-t2-suae"></div></span><span style="cursor:default;"> cōnspicit et clāmat: „Ecce, Aurēlium!"</span>
+              </div>
+              <div class="sentence-translation">Marcus erblickt den Wagenlenker seiner Renngesellschaft und ruft: „Siehe da, Aurelius!"</div>
+            </div>
+
+            <!-- 3. Etiam equī ēius circum intrant. -->
+            <div class="sentence-row">
+              <div class="sentence-number">3.</div>
+              <div class="sentence-latin">
+                <span style="cursor:default;">Etiam equī </span><span class="word-token" data-id="t3-eius" data-correct="yellow"><strong>ēius</strong><div class="word-badge" id="badge-t3-eius"></div><div class="word-popover" id="popover-t3-eius"></div></span><span style="cursor:default;"> circum intrant.</span>
+              </div>
+              <div class="sentence-translation">Auch seine Pferde betreten den Circus.</div>
+            </div>
+
+            <!-- 4. Tum Aulus et Cornēlia Bassum agitātōrem et quadrīgās ēius cōnspiciunt. -->
+            <div class="sentence-row">
+              <div class="sentence-number">4.</div>
+              <div class="sentence-latin">
+                <span style="cursor:default;">Tum Aulus et Cornēlia Bassum agitātōrem et quadrīgās </span><span class="word-token" data-id="t4-eius" data-correct="yellow"><strong>ēius</strong><div class="word-badge" id="badge-t4-eius"></div><div class="word-popover" id="popover-t4-eius"></div></span><span style="cursor:default;"> cōnspiciunt.</span>
+              </div>
+              <div class="sentence-translation">Dann erblicken Aulus und Cornelia den Wagenlenker Bassus und sein Viergespann.</div>
+            </div>
+
+            <!-- 5. Clāmant: „Salvē, Basse!" Sed Bassus verba eōrum nōn audīt. -->
+            <div class="sentence-row">
+              <div class="sentence-number">5.</div>
+              <div class="sentence-latin">
+                <span style="cursor:default;">Clāmant: „Salvē, Basse!" Sed Bassus verba </span><span class="word-token" data-id="t5-eorum" data-correct="yellow"><strong>eōrum</strong><div class="word-badge" id="badge-t5-eorum"></div><div class="word-popover" id="popover-t5-eorum"></div></span><span style="cursor:default;"> nōn audīt.</span>
+              </div>
+              <div class="sentence-translation">Sie rufen: „Sei gegrüßt, Bassus!" Aber Bassus hört ihre Worte nicht.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      // blue = reflexiv, yellow = nicht reflexiv
+      const tokens = [
+        { id: "t1-suum",  correct: "blue",   hint: "reflexiv: bezieht sich auf das Subjekt (Aulus)" },
+        { id: "t2-suae",  correct: "blue",   hint: "reflexiv: bezieht sich auf das Subjekt (Marcus)" },
+        { id: "t3-eius",  correct: "yellow", hint: "nicht reflexiv: bezieht sich auf eine andere Person (Aurelius)" },
+        { id: "t4-eius",  correct: "yellow", hint: "nicht reflexiv: bezieht sich auf Bassus, nicht auf das Subjekt" },
+        { id: "t5-eorum", correct: "yellow", hint: "nicht reflexiv: Gen. Pl. von is/ea/id – keine Reflexivform" },
+      ];
+
+      const colorLabels = { blue: "reflexiv", yellow: "nicht reflexiv" };
+
+      const KEY  = "task_l06_reflexiv_oder_nicht_1";
+      const NEXT = "reflexiv-oder-nicht-2.html";
+      let attempts = 0, locked = false, activeColor = "blue";
+
+      const marked = {};
+      tokens.forEach(t => marked[t.id] = null);
+
+      function setActiveColor(color) {
+        if (locked) return;
+        activeColor = color;
+        document.body.dataset.active = color;
+        document.querySelectorAll(".legend-btn").forEach(btn => {
+          btn.className = "legend-btn" + (btn.dataset.color === color ? " active-" + color : "");
+        });
+      }
+
+      tokens.forEach(t => {
+        const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+        el.addEventListener("click", () => {
+          if (locked) return;
+          if (marked[t.id] === activeColor) {
+            marked[t.id] = null;
+            el.classList.remove("marked", "marked-blue", "marked-yellow");
+          } else {
+            marked[t.id] = activeColor;
+            el.classList.remove("marked-blue", "marked-yellow", "correct", "wrong");
+            el.classList.add("marked", "marked-" + activeColor);
+            document.getElementById("popover-" + t.id).classList.remove("show");
+          }
+        });
+      });
+
+      function applyBorders() {
+        tokens.forEach(t => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.classList.remove("correct", "wrong");
+          if (marked[t.id] !== null) el.classList.add(marked[t.id] === t.correct ? "correct" : "wrong");
+          else if (attempts >= 3) el.classList.add("wrong");
+        });
+      }
+
+      function showBadges(revealWrong) {
+        tokens.forEach(t => {
+          const badge   = document.getElementById("badge-" + t.id);
+          const correct = marked[t.id] !== null && marked[t.id] === t.correct;
+          const wrong   = (marked[t.id] !== null && marked[t.id] !== t.correct) || (marked[t.id] === null && revealWrong);
+          if (correct) {
+            badge.className = "word-badge show ok";
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          } else if (wrong) {
+            badge.className = "word-badge show fail";
+            badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          } else { badge.className = "word-badge"; badge.innerHTML = ""; }
+        });
+        if (revealWrong) setupPopovers();
+      }
+
+      function setupPopovers() {
+        tokens.forEach(t => {
+          const el      = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const popover = document.getElementById("popover-" + t.id);
+          const isWrong = (marked[t.id] !== null && marked[t.id] !== t.correct) || marked[t.id] === null;
+          if (!isWrong) return;
+          popover.textContent = t.hint;
+          el.style.cursor = "pointer";
+          el.addEventListener("click", () => {
+            document.querySelectorAll(".word-popover.show").forEach(p => { if (p !== popover) p.classList.remove("show"); });
+            popover.classList.toggle("show");
+          });
+        });
+      }
+
+      function showFeedback(type, text) {
+        const fb = document.getElementById("feedback");
+        fb.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML = type === "ok"
+          ? '<polyline points="20 6 9 17 4 12"/>'
+          : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      function checkAnswers() {
+        if (locked || attempts >= 3) return;
+        if (!tokens.some(t => marked[t.id] !== null)) { showFeedback("warn", "Markiere mindestens ein Wort."); return; }
+        attempts++;
+        document.getElementById("dot" + attempts).classList.add("used");
+        const correctlyMarked = tokens.filter(t => marked[t.id] === t.correct).length;
+        const wronglyMarked   = tokens.filter(t => marked[t.id] !== null && marked[t.id] !== t.correct).length;
+        const allCorrect      = correctlyMarked === tokens.length && wronglyMarked === 0;
+        if (allCorrect) {
+          applyBorders(); showBadges(false);
+          showFeedback("ok", "Ausgezeichnet! Alle Wörter korrekt bestimmt!");
+          winState(); return;
+        }
+        if (attempts < 3) { showFeedback("warn", "Das ist noch nicht ganz richtig. Versuche es nochmal!"); return; }
+        applyBorders(); showBadges(true); locked = true;
+        tokens.forEach(t => { document.querySelector(`.word-token[data-id="${t.id}"]`).style.pointerEvents = "auto"; });
+        showFeedback("warn", "Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.");
+        saveState(false);
+        const btn = document.getElementById("checkBtn");
+        btn.classList.add("partial");
+        btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        btn.style.pointerEvents = "auto";
+        btn.onclick = () => window.location.href = NEXT;
+      }
+
+      function winState() {
+        locked = true;
+        tokens.forEach(t => { document.querySelector(`.word-token[data-id="${t.id}"]`).style.pointerEvents = "none"; });
+        saveState(true);
+        const btn = document.getElementById("checkBtn");
+        btn.classList.add("success");
+        btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        btn.style.pointerEvents = "auto";
+        btn.onclick = () => window.location.href = NEXT;
+      }
+
+      function calcPoints() { return tokens.filter(t => marked[t.id] === t.correct).length; }
+      function lsGet(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+      function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
+
+      function saveState(done) {
+        lsSet(KEY, done ? "done" : "attempted");
+        lsSet(KEY + "_attempts", attempts);
+        lsSet(KEY + "_marked",   JSON.stringify(marked));
+        lsSet(KEY + "_points",   calcPoints());
+        lsSet(KEY + "_date",     new Date().toLocaleDateString("de-DE"));
+        if (!done) lsSet(KEY + "_fail", "true");
+      }
+
+      (function restoreState() {
+        const saved = lsGet(KEY); if (!saved) return;
+        const savedMarked   = JSON.parse(lsGet(KEY + "_marked") || "{}");
+        const savedAttempts = parseInt(lsGet(KEY + "_attempts") || "0");
+        const savedDone     = saved === "done";
+        const savedFail     = lsGet(KEY + "_fail") === "true";
+        Object.assign(marked, savedMarked);
+        tokens.forEach(t => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const color = marked[t.id];
+          if (color) el.classList.add("marked", "marked-" + color);
+          if (savedDone) el.style.pointerEvents = "none";
+          else if (savedFail) el.style.pointerEvents = "auto";
+        });
+        for (let i = 1; i <= savedAttempts; i++) { const d = document.getElementById("dot" + i); if (d) d.classList.add("used"); }
+        attempts = savedAttempts; locked = savedDone || savedFail;
+        if (savedFail) { applyBorders(); showBadges(true); }
+        const btn = document.getElementById("checkBtn");
+        if (savedDone) {
+          showFeedback("ok", "Ausgezeichnet! Alle Wörter korrekt bestimmt!");
+          btn.classList.add("success");
+          btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          btn.style.pointerEvents = "auto"; btn.onclick = () => window.location.href = NEXT;
+        } else if (savedFail) {
+          showFeedback("warn", "Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.");
+          btn.classList.add("partial");
+          btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          btn.style.pointerEvents = "auto"; btn.onclick = () => window.location.href = NEXT;
+        }
+      })();
+
+      function handleBell()    { alert("Keine neuen Benachrichtigungen."); }
+      function toggleDropdown(){ document.getElementById("dropdown").classList.toggle("open"); }
+      function closeDropdown() { document.getElementById("dropdown").classList.remove("open"); }
+      document.addEventListener("click", e => {
+        if (!document.querySelector(".user-wrap").contains(e.target)) closeDropdown();
+        if (!e.target.closest(".word-token")) { document.querySelectorAll(".word-popover.show").forEach(p => p.classList.remove("show")); }
+      });
+    </script>
+  </body>
+</html>

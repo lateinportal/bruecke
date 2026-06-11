@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zusammenfassung KNG-Kongruenz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<!-- KaTeX for math rendering -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters:[{left:'$',right:'$',display:false}]});"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg:       #f8f8f6;
+    --white:    #ffffff;
+    --border:   #E6E4DF;
+    --text:     #111111;
+    --muted:    #898783;
+    --accent:   #c6613f;
+    --green:    #4caf50;
+    --red:      #c0392b;
+    --radius:   14px;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 1.5rem 3rem;
+    color: var(--text);
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 100;
+  }
+
+  .sitename {
+    font-size: 19px; font-weight: 700;
+    color: #111111; font-family: 'Lora', serif;
+    letter-spacing: -0.4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sitename a { color: inherit; text-decoration: none; }
+  .sitename .sep  { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sep2 { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sub  { font-size: 12px; font-weight: 600; color: #555555; font-family: 'Noto Sans', sans-serif; letter-spacing: 0; }
+  .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555555; font-family: 'Noto Sans', sans-serif; letter-spacing: 0; }
+
+  .topbar { display: flex; align-items: center; gap: 8px; }
+
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 12px;
+    border: 1px solid transparent; background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0;
+  }
+  .icon-btn:hover  { transform: scale(1.08); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px; background: #CC3300;
+    border-radius: 50%; border: 1.5px solid var(--white);
+  }
+  @keyframes ring {
+    0%,100% { transform: rotate(0); }
+    15% { transform: rotate(14deg); }
+    30% { transform: rotate(-12deg); }
+    45% { transform: rotate(8deg); }
+    60% { transform: rotate(-5deg); }
+    75% { transform: rotate(3deg); }
+  }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+
+  .dropdown {
+    display: none; position: absolute; top: 44px; right: 0;
+    background: var(--white); border: 1px solid #E0E0E0;
+    border-radius: 10px; min-width: 190px; overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+  }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #E8E8E8; background: #F9F9F9; }
+  .dropdown-name  { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item  { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left; }
+  .dropdown-item:hover { background: #F4F4F4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #E8E8E8; }
+  .dropdown-item.danger { color: #CC3300; }
+  .dropdown-item.danger svg { stroke: #CC3300; }
+
+  /* ── Page layout ── */
+  .page-wrap { max-width: 780px; margin: 0 auto; }
+
+  /* ── Task card ── */
+  .task-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+  .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Lora', serif; }
+  .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Task content ── */
+  .task-content { padding: 22px 22px; }
+
+  .gr-block { margin-bottom: 28px; }
+  .gr-block:last-child { margin-bottom: 0; }
+
+  /* "Was fällt dir auf?" button */
+  .gr-notice-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1.5px solid rgb(220, 38, 38);
+    border-radius: 6px;
+    color: rgb(220, 38, 38);
+    font-size: 13px; font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    padding: 5px 14px;
+    cursor: default;
+    margin-bottom: 12px;
+  }
+
+  /* Observation text */
+  .gr-observation {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+  .gr-observation em { font-style: italic; }
+
+  /* Rule box */
+  .gr-rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #f0faf0;
+    border: 1px solid #c8e6c9;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1b5e20;
+  }
+  .gr-rule-badge {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--green);
+    color: #fff;
+    font-size: 12px; font-weight: 700;
+    font-family: 'Noto Sans', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .gr-rule strong { font-weight: 700; }
+  .gr-rule u { text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ── Example note box (sticky-note style) ── */
+  .example-note {
+    background: #FFFDE7;
+    border: 1px solid #F5E49C;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    font-size: 14px;
+    line-height: 1.9;
+    font-family: 'Lora', serif;
+  }
+  .example-note .note-label {
+    font-size: 13px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-family: 'Noto Sans', sans-serif;
+  }
+  .example-note .lat { color: var(--text); font-weight: 700; }
+  .example-note .lat-red { color: var(--red); font-weight: 700; }
+  .example-note .de  { font-style: italic; color: var(--muted); font-family: 'Noto Sans', sans-serif; font-size: 13.5px; }
+  .example-note .de .de-bold { font-weight: 700; color: var(--red); font-style: normal; }
+
+  /* ── image block ── */
+  .img-block {
+    margin: 18px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .img-block img {
+    width: 100%;
+    display: block;
+  }
+
+  /* ── Deklinationstabelle ── */
+  .dekl-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13.5px;
+    margin: 14px 0;
+  }
+  .dekl-table caption {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'Lora', serif;
+    text-align: left;
+    padding: 12px 16px 8px;
+    caption-side: top;
+  }
+  .dekl-table th {
+    background: #F2F1EF;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .dekl-table th:first-child,
+  .dekl-table th:nth-child(2) { text-align: left; }
+  .dekl-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .dekl-table tr:last-child td { border-bottom: none; }
+  .dekl-table td:first-child {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    background: #fafaf9;
+  }
+  .dekl-table td:nth-child(2) {
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    background: #fafaf9;
+  }
+  .dekl-table .stem { color: var(--text); }
+  .dekl-table .ending { color: var(--red); font-weight: 700; }
+  .dekl-table .lat { font-family: 'Lora', serif; }
+
+  /* ── Info / Achtung box ── */
+  .info-box {
+    background: #FFF8ED;
+    border: 1px solid #FDE68A;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #78350f;
+    margin-top: 12px;
+  }
+  .info-box .lat { font-family: 'Lora', serif; font-weight: 700; color: var(--red); }
+
+  /* footnote */
+  .footnote {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+
+  /* ── Task footer ── */
+  .task-footer {
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+  }
+  .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+  .attempt-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    border: 1.5px solid #D0CEC9; background: transparent;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+
+  .check-btn {
+    background: #111111; color: #ffffff;
+    border: none; border-radius: 10px;
+    padding: 9px 20px;
+    font-size: 14px; font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .check-btn:hover  { background: #333; transform: translateY(-1px); }
+  .check-btn:active { transform: scale(0.97); }
+  .check-btn.success { background: var(--green); pointer-events: none; }
+
+  /* ── Feedback ── */
+  .feedback {
+    display: none;
+    margin: 0 22px 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    align-items: center; gap: 8px;
+  }
+  .feedback.show { display: flex; }
+  .feedback.ok { background: #EDF7ED; color: #2E7D32; border: 1px solid #C8E6C9; }
+  .feedback svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  @media (max-width: 500px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-content { padding: 14px; }
+    .task-footer  { padding: 12px 16px; }
+    .dekl-table th, .dekl-table td { padding: 7px 8px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion05.html" class="sub">Lektion 5</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Zusammenfassung KNG-Kongruenz</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+
+    <div class="task-header">
+      <div class="task-title">Adjektiv als Attribut, KNG-Kongruenz</div>
+      <div class="task-instruction">Lies dir die Grammatikregel durch.</div>
+    </div>
+
+    <div class="task-content">
+
+      <!-- ── Block 1: Beispiel + Regel 1 ── -->
+      <div class="gr-block">
+
+        <!-- Sticky-note example box -->
+        <div class="example-note">
+          <div class="note-label">Beispiel:</div>
+          <div>
+            <span class="lat">Līberī virum <span class="lat-red">īrātum</span> vident.</span><br>
+            <span class="de">Die Kinder sehen einen <span class="de-bold">wütenden</span> Mann.</span>
+          </div>
+        </div>
+
+        <!-- Was fällt dir auf? -->
+        <div class="gr-notice-btn">Was fällt dir auf?</div>
+
+        <div class="gr-observation">
+          Die rot markierten Wörter geben Antwort auf die Frage „Was für einen / welchen Mann sehen die Kinder?"
+        </div>
+
+        <!-- Regel 1 -->
+        <div class="gr-rule" style="margin-top:16px;margin-bottom:0;">
+          <div class="gr-rule-badge">R</div>
+          <div>
+            Genauso wie <em>wütend</em> ist <strong style="font-family:'Lora',serif;color:var(--red);">īrātum</strong> ein <strong>Adjektiv</strong> (Eigenschaftswort). Ein Adjektiv bestimmt ein Substantiv näher. Wenn man es mit „<strong>Was für ein(e)?</strong>" oder „<strong>Welche(r, s)?</strong>" erfragen kann, ist es ein <u>Attribut</u>. Das Attribut ist kein eigenes Satzglied, sondern immer nur Teil eines Satzgliedes.
+          </div>
+        </div>
+
+      </div><!-- /.gr-block -->
+
+      <!-- ── Block 2: Bild mit Satzgliedanalyse ── -->
+      <div class="gr-block">
+
+        <div class="img-block">
+          <img src="images/zsmf-kng.png" alt="Beispielsätze mit Satzgliedanalyse" />
+        </div>
+
+      </div><!-- /.gr-block -->
+
+      <!-- ── Block 3: Regel 2 + Deklinationstabelle ── -->
+      <div class="gr-block">
+
+        <!-- Regel 2 -->
+        <div class="gr-rule" style="margin-bottom:18px;">
+          <div class="gr-rule-badge">R</div>
+          <div>
+            Adjektive werden dekliniert und richten sich in <strong>Kasus, Numerus und Genus</strong> nach dem Substantiv, auf das sie sich beziehen. Die Übereinstimmung des Adjektivs mit seinem Bezugswort in Kasus, Numerus und Genus wird <strong><u>KöNiGsregel</u></strong> oder auch <u>KNG-Kongruenz</u> genannt.<br><br>
+            Die Adjektive der o-/a-Deklination werden wie die Substantive dieser Deklinationen dekliniert. Die Neutrum-Regel ($\rightarrow$ G12) gilt auch für die Adjektive.
+          </div>
+        </div>
+
+        <!-- Deklinationstabelle -->
+        <table class="dekl-table">
+          <caption>Deklinationstabelle</caption>
+          <thead>
+            <tr>
+              <th>Numerus</th>
+              <th>Kasus</th>
+              <th>o-Dekl. m.</th>
+              <th>a-Dekl. f.</th>
+              <th>o-Dekl. n.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Singular</td>
+              <td>Nominativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">us</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">am</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+            </tr>
+            <tr>
+              <td rowspan="2">Plural</td>
+              <td>Nominativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ī</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ae</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ōs</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ās</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="footnote">Warum in dieser Tabelle keine Übersetzungen stehen, erfährst du im Formenspeicher F2 auf S. 230.</p>
+
+        <!-- Info box -->
+        <div class="info-box">
+          <strong>Achtung:</strong> Manche Adjektive haben im Nominativ Singular m. einen Buchstaben, der in den anderen Formen nicht mehr erscheint: <span class="lat">pulcher</span> (m.) $\rightarrow$ <span class="lat">pulchra</span> (f.), <span class="lat">pulchrum</span> (n.).
+        </div>
+
+      </div><!-- /.gr-block -->
+
+      <!-- ── Block 4: Adjektiv als Prädikatsnomen ── -->
+      <div class="gr-block" style="margin-top:28px;">
+
+        <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;">
+          Adjektiv als Prädikatsnomen
+        </div>
+
+        <!-- Beispiel-Box -->
+        <div class="example-note">
+          <div class="note-label">Beispiele:</div>
+          <div>
+            Statua <strong style="color:var(--red);">pulchra</strong> est. – Die Statue ist <strong style="color:var(--red);">schön</strong>.<br>
+            Statuae <strong style="color:var(--red);">pulchrae</strong> sunt. – Die Statuen sind <strong style="color:var(--red);">schön</strong>.
+          </div>
+        </div>
+
+        <!-- Regel -->
+        <div class="gr-rule" style="margin-bottom:18px;">
+          <div class="gr-rule-badge">R</div>
+          <div>
+            Als Ergänzung zu <strong style="font-family:'Lora',serif;">esse</strong> ist das Adjektiv im Satz ein <strong><u>Prädikatsnomen</u></strong>. Nach dem Prädikatsnomen fragt man: „<strong>Wie ist jemand/etwas?</strong>"<br>
+            In solch einem Fall besteht das Prädikat dann aus dem Adjektiv (<strong style="font-family:'Lora',serif;">pulchra / pulchrae</strong>) und dem Verb (<strong style="font-family:'Lora',serif;">est / sunt</strong>).<br>
+            Auch für das Adjektiv als Prädikatsnomen gilt die <strong>KöNiGsregel</strong>.
+          </div>
+        </div>
+
+        <!-- Bild -->
+        <div class="img-block">
+          <img src="images/adjektiv-als-praedikatsnomen.png" alt="Adjektiv als Prädikatsnomen" />
+        </div>
+
+
+      <!-- ── Block 5: Substantiv und Adjektiv aus verschiedenen Deklinationsklassen ── -->
+      <div class="gr-block" style="margin-top:28px;">
+
+        <div style="font-family:'Lora',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;">
+          Substantiv und Adjektiv aus verschiedenen Deklinationsklassen
+        </div>
+
+        <p style="font-size:14px;line-height:1.75;color:var(--text);margin-bottom:18px;">
+          Adjektive und Substantive folgen immer ihrer eigenen Deklinationsklasse. Daher k&#246;nnen die Endungen gleich sein (z.&nbsp;B.: <span style="font-family:'Lora',serif;">servus bonus</span>) oder unterschiedlich (z.&nbsp;B. f&#252;r <span style="font-family:'Lora',serif;">malus</span>).
+        </p>
+
+        <!-- Tabelle 1: servus bonus -->
+        <table class="dekl-table">
+          <caption><span style="font-family:'Lora',serif;font-style:italic;">servus bonus</span> &ndash; gleiche Endungen bei Substantiv und Adjektiv</caption>
+          <thead>
+            <tr>
+              <th>Numerus</th>
+              <th>Kasus</th>
+              <th>o-Deklination</th>
+              <th>o-Deklination</th>
+              <th>Deutsch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Singular</td>
+              <td>Nominativ</td>
+              <td class="lat">serv<span class="ending">us</span></td>
+              <td class="lat">bon<span class="ending">us</span></td>
+              <td style="text-align:left;font-size:13px;">der gute / ein guter Sklave</td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">serv<span class="ending">um</span></td>
+              <td class="lat">bon<span class="ending">um</span></td>
+              <td style="text-align:left;font-size:13px;">den guten / einen guten Sklaven</td>
+            </tr>
+            <tr>
+              <td rowspan="2">Plural</td>
+              <td>Nominativ</td>
+              <td class="lat">serv<span class="ending">&#299;</span></td>
+              <td class="lat">bon<span class="ending">&#299;</span></td>
+              <td style="text-align:left;font-size:13px;">die guten / gute Sklaven</td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">serv<span class="ending">&#333;s</span></td>
+              <td class="lat">bon<span class="ending">&#333;s</span></td>
+              <td style="text-align:left;font-size:13px;">die guten / gute Sklaven</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Tabelle 2: für malus -->
+        <table class="dekl-table" style="margin-top:22px;">
+          <caption>f&#252;r <span style="font-family:'Lora',serif;font-style:italic;">malus</span> &ndash; unterschiedliche Endungen bei Substantiv und Adjektiv</caption>
+          <thead>
+            <tr>
+              <th>Numerus</th>
+              <th>Kasus</th>
+              <th>kons. Dekl.</th>
+              <th>o-Deklination</th>
+              <th>Deutsch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="2">Singular</td>
+              <td>Nominativ</td>
+              <td class="lat">f&#363;r</td>
+              <td class="lat">mal<span class="ending">us</span></td>
+              <td style="text-align:left;font-size:13px;">der b&#246;se / ein b&#246;ser Dieb</td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">f&#363;r<span class="ending">em</span></td>
+              <td class="lat">mal<span class="ending">um</span></td>
+              <td style="text-align:left;font-size:13px;">den b&#246;sen / einen b&#246;sen Dieb</td>
+            </tr>
+            <tr>
+              <td rowspan="2">Plural</td>
+              <td>Nominativ</td>
+              <td class="lat">f&#363;r<span class="ending">&#275;s</span></td>
+              <td class="lat">mal<span class="ending">&#299;</span></td>
+              <td style="text-align:left;font-size:13px;">die b&#246;sen / b&#246;se Diebe</td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">f&#363;r<span class="ending">&#275;s</span></td>
+              <td class="lat">mal<span class="ending">&#333;s</span></td>
+              <td style="text-align:left;font-size:13px;">die b&#246;sen / b&#246;se Diebe</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /.gr-block -->
+
+    </div><!-- /.task-content -->
+
+    <div class="feedback" id="feedback">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      Sehr gut! Du hast den Text gelesen und erhältst 1 Punkt.
+    </div>
+
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="submit()">Gelesen</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const KEY  = 'task_l05_zusammenfassung_kng';
+  const NEXT = 'ereignisreicher-heimweg-1.html';
+
+  const checkBtn = document.getElementById('checkBtn');
+  const feedback = document.getElementById('feedback');
+  let attempts = 0;
+
+  function submit() {
+    attempts++;
+    const dot = document.getElementById('dot' + attempts);
+    if (dot) dot.classList.add('used');
+    feedback.classList.add('show', 'ok');
+    checkBtn.classList.add('success');
+    localStorage.setItem(KEY, 'done');
+    localStorage.setItem(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    localStorage.setItem(KEY + '_attempts', attempts);
+    localStorage.setItem(KEY + '_points',   1);
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.style.pointerEvents = 'auto';
+    checkBtn.onclick = () => window.location.href = NEXT;
+  }
+
+  if (localStorage.getItem(KEY) === 'done') {
+    feedback.classList.add('show', 'ok');
+    checkBtn.classList.add('success');
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.style.background = '#4CAF50';
+    checkBtn.style.pointerEvents = 'auto';
+    checkBtn.onclick = () => window.location.href = NEXT;
+    const savedAttempts = parseInt(localStorage.getItem(KEY + '_attempts') || '1');
+    for (let i = 1; i <= savedAttempts; i++) {
+      const d = document.getElementById('dot' + i);
+      if (d) d.classList.add('used');
+    }
+  }
+
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+  });
+</script>
+</body>
+</html>

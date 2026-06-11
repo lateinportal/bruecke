@@ -1,0 +1,1349 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schlagfertig (D)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --accent: #c6613f;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 100;
+      }
+
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto 0 max(1.5rem, calc(50% - 560px));
+      }
+      .translation-row-wrap {
+        position: relative;
+      }
+
+      .row-gloss {
+        position: absolute;
+        left: calc(100% + 32px);
+        top: 0;
+        width: 220px;
+        display: none;
+        padding-top: 6px;
+      }
+      .row-gloss.has-entries {
+        display: block;
+      }
+      .rg-item {
+        font-size: 13px;
+        line-height: 1.85;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .rg-word {
+        font-family: "Lora", serif;
+        font-style: italic;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .rg-sep {
+        color: var(--muted);
+        margin: 0 4px;
+      }
+      .rg-de {
+        color: var(--text);
+      }
+
+      .lat-word {
+        cursor: context-menu;
+        border-radius: 3px;
+        transition: background 0.12s;
+      }
+      .lat-word:hover {
+        background: rgba(198, 97, 63, 0.1);
+      }
+      .lat-word.pinned {
+        color: var(--accent);
+      }
+
+      @media (max-width: 1100px) {
+        .row-gloss {
+          display: none !important;
+        }
+      }
+
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .task-hero {
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-hero img {
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        display: block;
+      }
+
+      .task-content {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .translation-row {
+        display: flex;
+        align-items: stretch;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .row-body {
+        flex: 1;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+      }
+      .latin-sentence {
+        font-size: 15px;
+        font-style: normal;
+        color: var(--text);
+        line-height: 1.5;
+        font-family: "Lora", serif;
+      }
+
+      .translation-input-wrap {
+        position: relative;
+      }
+      .translation-input {
+        width: 100%;
+        font-size: 14px;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        background: var(--white);
+        border: 1.5px solid #d0cec9;
+        border-radius: 8px;
+        padding: 10px 14px;
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+        resize: none;
+        min-height: 44px;
+        overflow: hidden;
+      }
+      .translation-input::placeholder {
+        color: #b0ada8;
+      }
+      .translation-input:focus {
+        border-color: var(--accent);
+      }
+      .translation-input.correct {
+        border-color: var(--green) !important;
+        border-width: 2px;
+      }
+      .translation-input.wrong {
+        border-color: var(--yellow) !important;
+        border-width: 2px;
+      }
+
+      .input-badge {
+        display: none;
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .input-badge.show {
+        display: flex;
+      }
+      .input-badge.ok {
+        background: var(--green);
+      }
+      .input-badge.fail {
+        background: var(--yellow);
+      }
+      .input-badge svg {
+        width: 11px;
+        height: 11px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .input-popover {
+        display: none;
+        position: fixed;
+        background: #111;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 7px 12px;
+        border-radius: 8px;
+        white-space: nowrap;
+        text-align: left;
+        z-index: 9999;
+        pointer-events: none;
+        transform: translateX(-50%);
+      }
+      .input-popover::before {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border: 5px solid transparent;
+        border-bottom-color: #111;
+      }
+      .input-popover.show {
+        display: block;
+        animation: fadeDown 0.15s ease;
+      }
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback.warn {
+        background: #fff8ee;
+        color: #92610a;
+        border: 1px solid #f5dfa0;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+
+      .check-btn {
+        background: #111111;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+      }
+      .check-btn:hover {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn:active {
+        transform: scale(0.97);
+      }
+      .check-btn.success {
+        background: var(--green);
+        pointer-events: none;
+      }
+      .check-btn.partial {
+        background: var(--yellow);
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .task-content {
+          padding: 12px;
+        }
+        .task-footer {
+          padding: 12px 16px;
+        }
+        .feedback {
+          margin: 0 12px 12px;
+        }
+        .row-body {
+          padding: 12px;
+        }
+        .latin-sentence {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">&#8250;</span>
+        <a href="lektion04.html" class="sub">Lektion 4</a>
+        <span class="sep2">&#8250;</span>
+        <span class="sub2">Schlagfertig (D)</span>
+      </div>
+      <div class="topbar">
+        <a
+          href="vokabeltraining.html"
+          class="icon-btn vocab-btn"
+          title="Vokabeltraining"
+          style="text-decoration: none"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            style="
+              width: 16px;
+              height: 16px;
+              fill: none;
+              stroke: #898783;
+              stroke-width: 2;
+              stroke-linecap: round;
+              stroke-linejoin: round;
+            "
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+        </a>
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" /></svg
+              >Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                /></svg
+              >Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" /></svg
+              >Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Schlagfertig (D)</div>
+          <div class="task-instruction">
+            Übersetze die lateinischen Sätze ins Deutsche. Schreibe deine
+            Übersetzung in das Textfeld.
+          </div>
+        </div>
+
+        <div class="task-hero">
+          <img src="images/schlagfertig-d.png" alt="Schlagfertig (D)" />
+        </div>
+
+        <div class="task-content">
+          <!-- Satz 1 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s1">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="postea">Post&#275;&#257;</span>
+                  <span class="lat-word" data-lat="discipuli">discipul&#299;</span>
+                  <span class="lat-word" data-lat="discipulae">discipulae</span><span class="lat-word" data-lat="que">que</span>
+                  <span class="lat-word" data-lat="scribunt">scr&#299;bunt</span>.
+                  <span class="lat-word" data-lat="subito">Subit&#333;</span>
+                  <span class="lat-word" data-lat="iulia">I&#363;lia</span>
+                  <span class="lat-word" data-lat="ridet">r&#299;det</span>.
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea
+                    class="translation-input"
+                    id="input-s1"
+                    placeholder="Übersetzung …"
+                    autocomplete="off"
+                    spellcheck="true"
+                    lang="de"
+                    rows="1"
+                  ></textarea>
+                  <div class="input-badge" id="badge-s1"></div>
+                  <div class="input-popover" id="popover-s1"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s1"></div>
+          </div>
+
+          <!-- Satz 2 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s2">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="magister">Magister</span>
+                  <span class="lat-word" data-lat="rogat">rogat</span>:
+                  „<span class="lat-word" data-lat="quis">Quis</span>
+                  <span class="lat-word" data-lat="ridet">r&#299;det</span>?"
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea
+                    class="translation-input"
+                    id="input-s2"
+                    placeholder="Übersetzung …"
+                    autocomplete="off"
+                    spellcheck="true"
+                    lang="de"
+                    rows="1"
+                  ></textarea>
+                  <div class="input-badge" id="badge-s2"></div>
+                  <div class="input-popover" id="popover-s2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s2"></div>
+          </div>
+
+          <!-- Satz 3 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s3">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="iulia">I&#363;lia</span>:
+                  „<span class="lat-word" data-lat="ego">Ego</span>."
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea
+                    class="translation-input"
+                    id="input-s3"
+                    placeholder="Übersetzung …"
+                    autocomplete="off"
+                    spellcheck="true"
+                    lang="de"
+                    rows="1"
+                  ></textarea>
+                  <div class="input-badge" id="badge-s3"></div>
+                  <div class="input-popover" id="popover-s3"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s3"></div>
+          </div>
+
+          <!-- Satz 4 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s4">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="magister">Magister</span>
+                  <span class="lat-word" data-lat="rogat">rogat</span>:
+                  „<span class="lat-word" data-lat="dic">D&#299;c</span>,
+                  <span class="lat-word" data-lat="iulia">I&#363;lia</span>:
+                  <span class="lat-word" data-lat="cur">C&#363;r</span>
+                  <span class="lat-word" data-lat="rides">r&#299;d&#275;s</span>?"
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea
+                    class="translation-input"
+                    id="input-s4"
+                    placeholder="Übersetzung …"
+                    autocomplete="off"
+                    spellcheck="true"
+                    lang="de"
+                    rows="1"
+                  ></textarea>
+                  <div class="input-badge" id="badge-s4"></div>
+                  <div class="input-popover" id="popover-s4"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s4"></div>
+          </div>
+
+          <!-- Satz 5 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s5">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="iulia">I&#363;lia</span>
+                  <span class="lat-word" data-lat="respondet">respondet</span>:
+                  „<span class="lat-word" data-lat="vide">Vid&#275;</span>
+                  <span class="lat-word" data-lat="et">et</span>
+                  <span class="lat-word" data-lat="lege">lege</span>
+                  <span class="lat-word" data-lat="ipse">ipse</span><sup style="font-size: 11px; color: var(--muted)">4</sup>!
+                  <span class="lat-word" data-lat="luci">L&#363;c&#299;</span>,
+                  <span class="lat-word" data-lat="monstra">m&#333;nstr&#257;</span>
+                  <span class="lat-word" data-lat="tabulam">tabulam</span>!"
+                  <span style="font-size: 12px; color: var(--muted); font-style: normal;">[<sup>4</sup> ipse: selbst]</span>
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea
+                    class="translation-input"
+                    id="input-s5"
+                    placeholder="Übersetzung …"
+                    autocomplete="off"
+                    spellcheck="true"
+                    lang="de"
+                    rows="1"
+                  ></textarea>
+                  <div class="input-badge" id="badge-s5"></div>
+                  <div class="input-popover" id="popover-s5"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s5"></div>
+          </div>
+        </div>
+        <!-- /task-content -->
+
+        <div class="feedback" id="feedback">
+          <svg viewBox="0 0 24 24" id="feedbackIcon">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">
+            Überprüfen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function normalizeIulia(s) {
+        return s.replace(/iulia/gi, "julia");
+      }
+
+      const fields = [
+        {
+          id: "s1",
+          answers: [
+            "Danach schreiben die Sch\u00fcler und Sch\u00fclerinnen. Pl\u00f6tzlich lacht Julia.",
+            "Sp\u00e4ter schreiben die Sch\u00fcler und Sch\u00fclerinnen. Pl\u00f6tzlich lacht Julia.",
+            "Danach schreiben die Sch\u00fcler und Sch\u00fclerinnen. Julia lacht pl\u00f6tzlich.",
+            "Sp\u00e4ter schreiben die Sch\u00fcler und Sch\u00fclerinnen. Julia lacht pl\u00f6tzlich.",
+            "Danach schreiben die Sch\u00fcler und Sch\u00fclerinnen. Pl\u00f6tzlich lacht Iulia.",
+            "Sp\u00e4ter schreiben die Sch\u00fcler und Sch\u00fclerinnen. Pl\u00f6tzlich lacht Iulia.",
+            "Danach schreiben die Sch\u00fcler und Sch\u00fclerinnen. Iulia lacht pl\u00f6tzlich.",
+            "Sp\u00e4ter schreiben die Sch\u00fcler und Sch\u00fclerinnen. Iulia lacht pl\u00f6tzlich.",
+          ],
+        },
+        {
+          id: "s2",
+          answers: [
+            "Der Lehrer fragt: Wer lacht?",
+          ],
+        },
+        {
+          id: "s3",
+          answers: [
+            "Julia sagt: Ich.",
+            "Julia antwortet: Ich.",
+            "Julia: Ich.",
+            "Iulia sagt: Ich.",
+            "Iulia antwortet: Ich.",
+            "Iulia: Ich.",
+          ],
+        },
+        {
+          id: "s4",
+          answers: [
+            "Der Lehrer fragt: Sag, Julia: Warum lachst du?",
+            "Der Lehrer fragt: Sag uns, Julia: Warum lachst du?",
+            "Der Lehrer fragt: Sag, Iulia: Warum lachst du?",
+            "Der Lehrer fragt: Sag uns, Iulia: Warum lachst du?",
+          ],
+        },
+        {
+          id: "s5",
+          answers: [
+            "Julia antwortet: Sieh und lies selbst! Lucius, zeig das Wachst\u00e4felchen!",
+            "Julia antwortet: Sieh und lies selbst! Lucius, zeig die Wachstafel!",
+            "Iulia antwortet: Sieh und lies selbst! Lucius, zeig das Wachst\u00e4felchen!",
+            "Iulia antwortet: Sieh und lies selbst! Lucius, zeig die Wachstafel!",
+          ],
+        },
+      ];
+
+      const KEY = "task_l04_schlagfertig_d";
+      let attempts = 0;
+      let locked = false;
+      const checkBtn = document.getElementById("checkBtn");
+      const feedback = document.getElementById("feedback");
+
+      function normalize(str) {
+        return normalizeIulia(
+          str
+            .trim()
+            .replace(
+              /[\u201e\u201c\u201d\u201f\u00ab\u00bb\u2039\u203a\u0022\u0027\u2018\u2019\u201a\u201b\u275b\u275c\u275d\u275e]/g,
+              "",
+            )
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase(),
+        );
+      }
+
+      function isCorrect(field, value) {
+        const n = normalize(value);
+        return field.answers.some((a) => normalize(a) === n);
+      }
+
+      function autoGrow(ta) {
+        ta.style.height = "auto";
+        ta.style.height = ta.scrollHeight + "px";
+      }
+      document.querySelectorAll(".translation-input").forEach((ta) => {
+        ta.addEventListener("input", () => autoGrow(ta));
+      });
+
+      function applyBorders(markEmpty) {
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          if (input.value.trim() === "" && !markEmpty) return;
+          input.classList.remove("correct", "wrong");
+          input.classList.add(isCorrect(f, input.value) ? "correct" : "wrong");
+        });
+      }
+
+      function showBadges(revealWrong) {
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          const badge = document.getElementById("badge-" + f.id);
+          if (isCorrect(f, input.value)) {
+            badge.className = "input-badge show ok";
+            badge.innerHTML =
+              '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          } else {
+            badge.className = "input-badge show fail";
+            badge.innerHTML =
+              '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          }
+        });
+        if (revealWrong) setupPopovers();
+      }
+
+      const popoverPairs = [];
+      function repositionOpenPopovers() {
+        popoverPairs.forEach(({ wrap, popover }) => {
+          if (popover.classList.contains("show")) {
+            const rect = wrap.getBoundingClientRect();
+            popover.style.left = rect.left + rect.width / 2 + "px";
+            popover.style.top = rect.bottom + 8 + "px";
+          }
+        });
+      }
+      window.addEventListener("scroll", repositionOpenPopovers, {
+        passive: true,
+      });
+
+      function setupPopovers() {
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          const popover = document.getElementById("popover-" + f.id);
+          const wrap = input.closest(".translation-input-wrap");
+          if (isCorrect(f, input.value)) return;
+          popover.textContent = f.answers[0];
+          document.body.appendChild(popover);
+          popoverPairs.push({ wrap, popover });
+          function pos() {
+            const rect = wrap.getBoundingClientRect();
+            popover.style.left = rect.left + rect.width / 2 + "px";
+            popover.style.top = rect.bottom + 8 + "px";
+          }
+          wrap.style.cursor = "pointer";
+          wrap.addEventListener("click", () => {
+            if (!popover.classList.contains("show")) pos();
+            popover.classList.toggle("show");
+          });
+        });
+      }
+
+      function lockInputs() {
+        fields.forEach((f) => {
+          const inp = document.getElementById("input-" + f.id);
+          inp.readOnly = true;
+          inp.style.pointerEvents = "none";
+        });
+      }
+
+      function checkAnswers() {
+        if (locked || attempts >= 3) return;
+        const anyFilled = fields.some(
+          (f) => document.getElementById("input-" + f.id).value.trim() !== "",
+        );
+        if (!anyFilled) {
+          showFeedback("warn", "F\u00fclle mindestens eine L\u00fccke aus.");
+          return;
+        }
+
+        attempts++;
+        const dot = document.getElementById("dot" + attempts);
+        if (dot) dot.classList.add("used");
+
+        let correctCount = 0;
+        fields.forEach((f) => {
+          if (isCorrect(f, document.getElementById("input-" + f.id).value))
+            correctCount++;
+        });
+        const points = correctCount * 5;
+
+        if (correctCount === fields.length) {
+          applyBorders();
+          showBadges(false);
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle \u00dcbersetzungen sind richtig!",
+          );
+          winState(points);
+          return;
+        }
+        if (attempts < 3) {
+          applyBorders();
+          showFeedback(
+            "warn",
+            correctCount +
+              " von " +
+              fields.length +
+              " richtig. Versuche es nochmal!",
+          );
+          return;
+        }
+        applyBorders(true);
+        showBadges(true);
+        locked = true;
+        lockInputs();
+        showFeedback(
+          "warn",
+          "Klicke auf die gelb markierten Felder um die richtige \u00dcbersetzung zu sehen.",
+        );
+        saveState(points, false);
+        checkBtn.classList.add("partial");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = "schlagfertig-e.html");
+      }
+
+      function winState(points) {
+        locked = true;
+        lockInputs();
+        showBadges(false);
+        saveState(points, true);
+        checkBtn.classList.add("success");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = "schlagfertig-e.html");
+      }
+
+      function saveState(points, done) {
+        const values = {};
+        fields.forEach((f) => {
+          values[f.id] = document.getElementById("input-" + f.id).value;
+        });
+        localStorage.setItem(KEY, done ? "done" : "attempted");
+        localStorage.setItem(KEY + "_points", points);
+        localStorage.setItem(
+          KEY + "_date",
+          new Date().toLocaleDateString("de-DE"),
+        );
+        localStorage.setItem(KEY + "_attempts", attempts);
+        localStorage.setItem(KEY + "_values", JSON.stringify(values));
+        if (!done) localStorage.setItem(KEY + "_fail", "true");
+      }
+
+      function showFeedback(type, text) {
+        feedback.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML =
+          type === "ok"
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      (function restoreState() {
+        const saved = localStorage.getItem(KEY);
+        if (!saved) return;
+        const savedValues = JSON.parse(
+          localStorage.getItem(KEY + "_values") || "{}",
+        );
+        const savedAttempts = parseInt(
+          localStorage.getItem(KEY + "_attempts") || "0",
+        );
+        const savedDone = saved === "done";
+        const savedFail = localStorage.getItem(KEY + "_fail") === "true";
+
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          if (savedValues[f.id] !== undefined) {
+            input.value = savedValues[f.id];
+            autoGrow(input);
+          }
+          if (savedDone || savedFail) {
+            input.readOnly = true;
+            input.style.pointerEvents = "none";
+          }
+        });
+        for (let i = 1; i <= savedAttempts; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+        attempts = savedAttempts;
+        if (savedDone || savedFail) locked = true;
+        applyBorders(savedFail);
+        if (savedDone || savedFail) showBadges(savedFail);
+
+        const nextHref = "schlagfertig-e.html";
+        const weiterBtn =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        if (savedDone) {
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle \u00dcbersetzungen sind richtig!",
+          );
+          checkBtn.classList.add("success");
+          checkBtn.innerHTML = weiterBtn;
+          checkBtn.style.pointerEvents = "auto";
+          checkBtn.onclick = () => (window.location.href = nextHref);
+        } else if (savedFail) {
+          showFeedback(
+            "warn",
+            "Klicke auf die gelb markierten Felder um die richtige \u00dcbersetzung zu sehen.",
+          );
+          checkBtn.classList.add("partial");
+          checkBtn.innerHTML = weiterBtn;
+          checkBtn.style.pointerEvents = "auto";
+          checkBtn.onclick = () => (window.location.href = nextHref);
+        }
+      })();
+
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+        if (!e.target.closest(".translation-input-wrap")) {
+          document
+            .querySelectorAll(".input-popover.show")
+            .forEach((p) => p.classList.remove("show"));
+        }
+      });
+
+      // ── Vokabeln ──────────────────────────────────────────────────────────────
+      const DISPLAY_MODE = "full";
+
+      const vocab = {
+        postea:       { form: "post\u0113\u0101",      wordType: "other",                                                  de: "danach, sp\u00e4ter" },
+        discipuli:    { form: "discipulus",             wordType: "subst", genSg: "discipul\u012b", genus: "m",             de: "Sch\u00fcler" },
+        discipulae:   { form: "discipula",              wordType: "subst", genSg: "discipulae", genus: "f",                 de: "Sch\u00fclerin" },
+        que:          { form: "-que",                   wordType: "other",                                                  de: "und (angeh\u00e4ngtes Bindewort)" },
+        scribunt:     { form: "scr\u012bbere",          wordType: "verb",  inf: "scr\u012bbere", sg1: "scr\u012bb\u014d", sg3: "scr\u012bbit", de: "schreiben" },
+        subito:       { form: "subit\u014d",            wordType: "other",                                                  de: "pl\u00f6tzlich" },
+        iulia:        { form: "I\u016blia",             wordType: "other",                                                  de: "Julia (Eigenname)" },
+        ridet:        { form: "r\u012bd\u0113re",       wordType: "verb",  inf: "r\u012bd\u0113re", sg1: "ride\u014d", sg3: "ridet", de: "lachen" },
+
+        magister:     { form: "magister",               wordType: "subst", genSg: "magistr\u012b", genus: "m",             de: "Lehrer" },
+        rogat:        { form: "rog\u0101re",            wordType: "verb",  inf: "rog\u0101re", sg1: "rog\u014d", sg3: "rogat", de: "fragen, bitten" },
+        quis:         { form: "quis",                   wordType: "other",                                                  de: "wer?" },
+
+        ego:          { form: "ego",                    wordType: "other",                                                  de: "ich" },
+
+        dic:          { form: "d\u012bcere",            wordType: "verb",  inf: "d\u012bcere", sg1: "d\u012bc\u014d", sg3: "d\u012bcit", de: "sagen, sprechen" },
+        cur:          { form: "c\u016br",               wordType: "other",                                                  de: "warum?" },
+        rides:        { form: "r\u012bd\u0113re",       wordType: "verb",  inf: "r\u012bd\u0113re", sg1: "ride\u014d", sg3: "ridet", de: "lachen" },
+
+        respondet:    { form: "respond\u0113re",        wordType: "verb",  inf: "respond\u0113re", sg1: "responde\u014d", sg3: "respondet", de: "antworten" },
+        vide:         { form: "vid\u0113re",            wordType: "verb",  inf: "vid\u0113re", sg1: "vide\u014d", sg3: "videt", de: "sehen" },
+        et:           { form: "et",                     wordType: "other",                                                  de: "und, auch" },
+        lege:         { form: "legere",                 wordType: "verb",  inf: "legere", sg1: "leg\u014d", sg3: "legit",   de: "lesen, vorlesen" },
+        ipse:         { form: "ipse",                   wordType: "other",                                                  de: "selbst" },
+        luci:         { form: "L\u016bcius",            wordType: "other",                                                  de: "Lucius (Eigenname, Vokativ)" },
+        monstra:      { form: "m\u014bnstr\u0101re",    wordType: "verb",  inf: "m\u014bnstr\u0101re", sg1: "m\u014bnstr\u014d", sg3: "m\u014bnstrat", de: "zeigen" },
+        tabulam:      { form: "tabula",                 wordType: "subst", genSg: "tabulae", genus: "f",                   de: "Wachst\u00e4felchen" },
+      };
+
+      const STORAGE_KEY = "schlagfertig-d-pinned";
+      function loadPinned() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return {
+            s1: new Set(saved.s1 || []),
+            s2: new Set(saved.s2 || []),
+            s3: new Set(saved.s3 || []),
+            s4: new Set(saved.s4 || []),
+            s5: new Set(saved.s5 || []),
+          };
+        } catch {
+          return {
+            s1: new Set(), s2: new Set(), s3: new Set(),
+            s4: new Set(), s5: new Set(),
+          };
+        }
+      }
+      function savePinned() {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            s1: [...rowPinned.s1],
+            s2: [...rowPinned.s2],
+            s3: [...rowPinned.s3],
+            s4: [...rowPinned.s4],
+            s5: [...rowPinned.s5],
+          }),
+        );
+      }
+      const rowPinned = loadPinned();
+
+      function renderGloss(rowId) {
+        const gloss = document.getElementById("gloss-" + rowId);
+        if (!gloss) return;
+        const keys = [...rowPinned[rowId]];
+        if (keys.length === 0) {
+          gloss.classList.remove("has-entries");
+          gloss.innerHTML = "";
+          return;
+        }
+        gloss.classList.add("has-entries");
+        gloss.innerHTML = keys
+          .map((k) => {
+            const v = vocab[k];
+            if (!v) return "";
+            let formStr;
+            if (DISPLAY_MODE === "simple") {
+              if (v.wordType === "subst")
+                formStr = v.form + " " + v.genus + ".";
+              else if (v.wordType === "verb") formStr = v.sg3;
+              else formStr = v.form;
+            } else {
+              if (v.wordType === "verb") formStr = v.inf + ", " + v.sg1;
+              else if (v.wordType === "subst")
+                formStr = v.form + ", " + v.genSg + " " + v.genus + ".";
+              else formStr = v.form;
+            }
+            return (
+              '<div class="rg-item"><span class="rg-word">' +
+              formStr +
+              '</span><span class="rg-sep">\u2013</span><span class="rg-de">' +
+              v.de +
+              "</span></div>"
+            );
+          })
+          .join("");
+      }
+
+      function togglePin(key, rowId) {
+        if (!vocab[key] || !rowPinned[rowId] || rowPinned[rowId].has(key))
+          return;
+        rowPinned[rowId].add(key);
+        document
+          .querySelectorAll(
+            '[data-row="' + rowId + '"] .lat-word[data-lat="' + key + '"]',
+          )
+          .forEach((s) => s.classList.add("pinned"));
+        savePinned();
+        renderGloss(rowId);
+      }
+
+      Object.keys(rowPinned).forEach((rowId) => {
+        rowPinned[rowId].forEach((key) => {
+          document
+            .querySelectorAll(
+              '[data-row="' + rowId + '"] .lat-word[data-lat="' + key + '"]',
+            )
+            .forEach((s) => s.classList.add("pinned"));
+        });
+        renderGloss(rowId);
+      });
+
+      document.querySelectorAll(".lat-word").forEach((span) => {
+        const rowEl = span.closest("[data-row]");
+        const rowId = rowEl && rowEl.dataset.row;
+        if (!rowId) return;
+        span.addEventListener("click", (e) => {
+          e.stopPropagation();
+          togglePin(span.dataset.lat, rowId);
+        });
+        span.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          togglePin(span.dataset.lat, rowId);
+        });
+        let pressTimer = null;
+        span.addEventListener(
+          "touchstart",
+          () => {
+            pressTimer = setTimeout(
+              () => togglePin(span.dataset.lat, rowId),
+              500,
+            );
+          },
+          { passive: true },
+        );
+        span.addEventListener("touchend", () => clearTimeout(pressTimer));
+        span.addEventListener("touchmove", () => clearTimeout(pressTimer));
+      });
+    </script>
+  </body>
+</html>

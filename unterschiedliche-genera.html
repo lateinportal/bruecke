@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unterschiedliche Genera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg:      #f8f8f6;
+    --white:   #ffffff;
+    --border:  #E6E4DF;
+    --text:    #111111;
+    --muted:   #898783;
+    --green:   #4CAF50;
+    --yellow:  #F5A623;
+    --radius:  14px;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 1.5rem 3rem;
+    color: var(--text);
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px; background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem; z-index: 200;
+  }
+  .sitename { font-size: 19px; font-weight: 700; color: #111; font-family: 'Lora', serif; letter-spacing: -0.4px; display: flex; align-items: center; gap: 6px; }
+  .sitename a { color: inherit; text-decoration: none; }
+  .sitename .sep  { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sep2 { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sub  { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; }
+  .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; }
+  .topbar { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0; }
+  .icon-btn:hover { transform: scale(1.08); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #CC3300; border-radius: 50%; border: 1.5px solid var(--white); }
+  @keyframes ring { 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 75%{transform:rotate(3deg)} }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+  .dropdown { display: none; position: absolute; top: 44px; right: 0; background: var(--white); border: 1px solid #E0E0E0; border-radius: 10px; min-width: 190px; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,0.10); }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #E8E8E8; background: #F9F9F9; }
+  .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left; }
+  .dropdown-item:hover { background: #F4F4F4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #E8E8E8; }
+  .dropdown-item.danger { color: #CC3300; }
+  .dropdown-item.danger svg { stroke: #CC3300; }
+
+  /* ── Page ── */
+  .page-wrap { max-width: 780px; margin: 0 auto; }
+
+  /* ── Task card ── */
+  .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+  .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Lora', serif; }
+  .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Task content ── */
+  .task-content { padding: 24px 22px; }
+
+  /* ── Checkbox grid ── */
+  .cb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ── Checkbox item ── */
+  .cb-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
+  }
+  .cb-item:hover { background: #fafaf8; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .cb-item.checked {
+    border-color: #111;
+    background: #f5f4f0;
+  }
+
+  /* Custom checkbox box */
+  .cb-box {
+    width: 20px; height: 20px;
+    border: 2px solid #D0CEC9;
+    border-radius: 5px;
+    background: var(--white);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .cb-item.checked .cb-box {
+    background: #111;
+    border-color: #111;
+  }
+  .cb-box svg {
+    width: 12px; height: 12px;
+    stroke: #fff; fill: none;
+    stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+    display: none;
+  }
+  .cb-item.checked .cb-box svg { display: block; }
+
+  /* Label text */
+  .cb-label {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .cb-latin {
+    font-weight: 700;
+    font-style: italic;
+    font-family: 'Lora', serif;
+    color: var(--text);
+  }
+  .cb-german {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* States after check */
+  .cb-item.locked-ok {
+    border-color: var(--green) !important;
+    background: #EDF7ED;
+    cursor: default;
+  }
+  .cb-item.locked-ok .cb-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .cb-item.locked-wrong {
+    border-color: var(--yellow) !important;
+    background: #FFF8ED;
+    cursor: default;
+  }
+  .cb-item.locked-wrong .cb-box {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  /* Correct answer revealed (was unchecked but should have been checked) */
+  .cb-item.locked-missed {
+    border-color: var(--yellow) !important;
+    background: #FFF8ED;
+    cursor: default;
+  }
+  .cb-item.locked-missed .cb-box {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    border-style: dashed;
+  }
+
+  /* ── Feedback ── */
+  .feedback {
+    display: none; margin: 0 22px 16px;
+    padding: 12px 14px; border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    align-items: center; gap: 8px;
+  }
+  .feedback.show { display: flex; }
+  .feedback.warn { background: #FFF8ED; color: #b45309; border: 1px solid #FDE68A; }
+  .feedback.ok   { background: #EDF7ED; color: #2E7D32; border: 1px solid #C8E6C9; }
+  .feedback svg  { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── Task footer ── */
+  .task-footer {
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: flex-end; gap: 16px;
+  }
+  .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+  .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #D0CEC9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+
+  .check-btn {
+    background: #111; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 20px; font-size: 14px; font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    cursor: pointer; transition: background 0.15s, transform 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .check-btn:hover { background: #333; transform: translateY(-1px); }
+  .check-btn:active { transform: scale(0.97); }
+  .check-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .check-btn.success { background: var(--green); }
+  .check-btn.partial { background: var(--yellow); }
+  .check-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  @media (max-width: 520px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-content { padding: 16px 14px; }
+    .task-footer  { padding: 12px 14px; }
+    .task-header  { padding: 16px 14px 12px; }
+    .cb-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion01.html" class="sub">Lektion 1</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Unterschiedliche Genera</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+
+    <div class="task-header">
+      <div class="task-title">Unterschiedliche Genera</div>
+      <div class="task-instruction">Kreuze die Substantive an, bei denen sich das Geschlecht im Lateinischen und Deutschen unterscheidet.</div>
+    </div>
+
+    <div class="task-content">
+      <div class="cb-grid" id="cbGrid"></div>
+    </div>
+
+    <div class="feedback" id="feedback">
+      <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+      <span id="feedbackText"></span>
+    </div>
+
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Data ─────────────────────────────────────────────────────────────────
+  // ans: true = should be checked (Genus differs), false = should NOT be checked
+  const items = [
+    { id: 'cb-pater',   latin: 'pater',   german: 'der Vater',           ans: false }, // m = m
+    { id: 'cb-catella', latin: 'catella', german: 'das Hündchen',        ans: true  }, // f ≠ n
+    { id: 'cb-dominus', latin: 'dominus', german: 'der Hausherr',        ans: false }, // m = m
+    { id: 'cb-familia', latin: 'familia', german: 'die Hausgemeinschaft', ans: false }, // f = f
+    { id: 'cb-clamor',  latin: 'clamor',  german: 'das Geschrei',        ans: true  }, // m ≠ n
+    { id: 'cb-avus',    latin: 'avus',    german: 'der Großvater',       ans: false }, // m = m
+  ];
+
+  const KEY = 'task_l1_unterschiedliche_genera';
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  let checked = {}; // id → true/false
+  let tries   = 0;
+  let locked  = false;
+
+  items.forEach(d => { checked[d.id] = false; });
+
+  // ── Build items ───────────────────────────────────────────────────────────
+  const grid = document.getElementById('cbGrid');
+  items.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cb-item';
+    el.id = d.id;
+    el.innerHTML = `
+      <div class="cb-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="cb-label">
+        <div class="cb-latin">${d.latin}</div>
+        <div class="cb-german">${d.german}</div>
+      </div>`;
+    el.onclick = () => toggleItem(d.id);
+    grid.appendChild(el);
+  });
+
+  // ── Toggle ────────────────────────────────────────────────────────────────
+  function toggleItem(id) {
+    if (locked) return;
+    checked[id] = !checked[id];
+    document.getElementById(id).classList.toggle('checked', checked[id]);
+  }
+
+  // ── Check ─────────────────────────────────────────────────────────────────
+  function checkAnswers() {
+    if (locked || tries >= 3) return;
+
+    tries++;
+    document.getElementById('dot' + tries).classList.add('used');
+
+    const allOk  = items.every(d => checked[d.id] === d.ans);
+    const doLock = tries >= 3;
+    const btn    = document.getElementById('checkBtn');
+
+    if (allOk) {
+      items.forEach(d => {
+        const el = document.getElementById(d.id);
+        el.classList.remove('checked');
+        el.classList.add(d.ans ? 'locked-ok' : 'locked-ok');
+        if (d.ans) el.querySelector('.cb-box svg').style.display = 'block';
+      });
+      locked = true;
+      btn.disabled = true;
+      showFeedback('ok', 'Ausgezeichnet! Alle Antworten richtig!');
+      winState();
+      return;
+    }
+
+    if (!doLock) {
+      showFeedback('warn', 'Das ist noch nicht ganz richtig. Versuche es nochmal!');
+      return;
+    }
+
+    // 3rd failed attempt → lock and reveal
+    items.forEach(d => {
+      const el       = document.getElementById(d.id);
+      const isChecked = checked[d.id];
+      el.classList.remove('checked');
+      if (isChecked === d.ans) {
+        el.classList.add('locked-ok');
+        if (d.ans) el.querySelector('.cb-box svg').style.display = 'block';
+      } else if (isChecked && !d.ans) {
+        // wrongly checked
+        el.classList.add('locked-wrong');
+        el.querySelector('.cb-box svg').style.display = 'block';
+      } else {
+        // should have been checked but wasn't
+        el.classList.add('locked-missed');
+      }
+    });
+    locked = true;
+    btn.classList.add('partial');
+    btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.disabled = false;
+    btn.onclick = () => window.location.href = 'akkusativ.html';
+    showFeedback('warn', 'Die gelb markierten Antworten waren nicht korrekt.');
+    saveState(false);
+  }
+
+  function winState() {
+    saveState(true);
+    const btn = document.getElementById('checkBtn');
+    btn.classList.add('success');
+    btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.disabled = false;
+    btn.onclick = () => window.location.href = 'akkusativ.html';
+  }
+
+  function saveState(done) {
+    const correct = items.filter(d => checked[d.id] === d.ans).length;
+    const points  = items.every(d => checked[d.id] === d.ans) ? 1 : 0;
+    localStorage.setItem(KEY, done ? 'done' : 'attempted');
+    localStorage.setItem(KEY + '_checked',  JSON.stringify(checked));
+    localStorage.setItem(KEY + '_attempts', tries);
+    localStorage.setItem(KEY + '_points',   points);
+    localStorage.setItem(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    if (!done) localStorage.setItem(KEY + '_fail', 'true');
+  }
+
+  function showFeedback(type, text) {
+    const fb   = document.getElementById('feedback');
+    const icon = document.getElementById('feedbackIcon');
+    fb.className = 'feedback show ' + type;
+    icon.innerHTML = type === 'ok'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    document.getElementById('feedbackText').textContent = text;
+  }
+
+  // ── Restore saved state ───────────────────────────────────────────────────
+  (function restoreState() {
+    const savedDone    = localStorage.getItem(KEY) === 'done';
+    const savedFail    = localStorage.getItem(KEY + '_fail') === 'true';
+    const savedChecked = localStorage.getItem(KEY + '_checked');
+    const savedTries   = parseInt(localStorage.getItem(KEY + '_attempts') || '0');
+    if (!savedChecked || (!savedDone && !savedFail)) return;
+
+    checked = JSON.parse(savedChecked);
+    tries   = savedTries;
+    locked  = true;
+
+    for (let i = 1; i <= savedTries; i++) {
+      const d = document.getElementById('dot' + i);
+      if (d) d.classList.add('used');
+    }
+
+    items.forEach(d => {
+      const el        = document.getElementById(d.id);
+      const isChecked = checked[d.id];
+      el.classList.remove('checked');
+      if (isChecked === d.ans) {
+        el.classList.add('locked-ok');
+        if (d.ans) el.querySelector('.cb-box svg').style.display = 'block';
+      } else if (isChecked && !d.ans) {
+        el.classList.add('locked-wrong');
+        el.querySelector('.cb-box svg').style.display = 'block';
+      } else {
+        el.classList.add('locked-missed');
+      }
+    });
+
+    const btn = document.getElementById('checkBtn');
+    if (savedDone) {
+      btn.classList.add('success');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.disabled = false;
+      btn.onclick = () => window.location.href = 'akkusativ.html';
+      showFeedback('ok', 'Ausgezeichnet! Alle Antworten richtig!');
+    } else {
+      btn.classList.add('partial');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.disabled = false;
+      btn.onclick = () => window.location.href = 'akkusativ.html';
+      showFeedback('warn', 'Die gelb markierten Antworten waren nicht korrekt.');
+    }
+  })();
+
+  // ── Bell & dropdown ───────────────────────────────────────────────────────
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+  });
+</script>
+
+</body>
+</html>

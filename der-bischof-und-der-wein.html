@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Der Bischof und der Wein</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-gutter: stable; }
+
+    :root {
+      --bg:     #f8f8f6;
+      --white:  #ffffff;
+      --border: #e6e4df;
+      --text:   #111111;
+      --muted:  #898783;
+      --accent: #c6613f;
+      --green:  #4caf50;
+      --yellow-feedback: #f5a623;
+      --radius: 14px;
+      --blue:          #2563eb;
+      --blue-bg:       rgba(37,99,235,0.08);
+      --blue-sel:      rgba(37,99,235,0.06);
+    }
+
+    body { font-family:"Noto Sans",sans-serif;background:var(--bg);min-height:100vh;padding:5rem 1.5rem 3rem;color:var(--text); }
+
+    /* Header */
+    header { position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:100; }
+    .sitename { font-size:19px;font-weight:700;color:#111111;font-family:"Lora",serif;letter-spacing:-0.4px;display:flex;align-items:center;gap:6px; }
+    .sitename a { color:inherit;text-decoration:none; }
+    .sitename .sep  { color:#cccccc;font-family:"Noto Sans",sans-serif;font-weight:400;font-size:17px; }
+    .sitename .sep2 { color:#cccccc;font-family:"Noto Sans",sans-serif;font-weight:400;font-size:17px; }
+    .sitename .sub  { font-size:12px;font-weight:600;color:#555555;font-family:"Noto Sans",sans-serif;letter-spacing:0; }
+    .sitename .sub2 { font-size:12px;font-weight:600;color:#555555;font-family:"Noto Sans",sans-serif;letter-spacing:0; }
+    .topbar { display:flex;align-items:center;gap:8px; }
+    .icon-btn { width:34px;height:34px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;position:relative;outline:none;flex-shrink:0; }
+    .icon-btn:hover { transform:scale(1.08); } .icon-btn:active { transform:scale(0.94); }
+    .icon-btn svg { width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .bell-btn svg { stroke:#898783; }
+    .bell-btn .dot { position:absolute;top:6px;right:6px;width:7px;height:7px;background:#cc3300;border-radius:50%;border:1.5px solid var(--white); }
+    @keyframes ring{0%,100%{transform:rotate(0)}15%{transform:rotate(14deg)}30%{transform:rotate(-12deg)}45%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}75%{transform:rotate(3deg)}}
+    .bell-btn:hover svg { animation:ring 0.55s ease;transform-origin:50% 3px; }
+    .user-btn svg { stroke:#898783; }
+    .user-wrap { position:relative; }
+    .dropdown { display:none;position:absolute;top:44px;right:0;background:var(--white);border:1px solid #e0e0e0;border-radius:10px;min-width:190px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.1); }
+    .dropdown.open { display:block;animation:dropIn 0.15s ease; }
+    @keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .dropdown-header { padding:13px 16px 9px;border-bottom:1px solid #e8e8e8;background:#f9f9f9; }
+    .dropdown-name { font-size:14px;font-weight:600;color:#111; } .dropdown-email { font-size:12px;color:#888;margin-top:2px; }
+    .dropdown-item { display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14px;color:#111;cursor:pointer;border:none;background:none;width:100%;font-family:"Noto Sans",sans-serif;transition:background 0.12s;text-align:left; }
+    .dropdown-item:hover { background:#f4f4f4; }
+    .dropdown-item svg { width:15px;height:15px;stroke:#555;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+    .dropdown-sep-line { height:1px;background:#e8e8e8; }
+    .dropdown-item.danger { color:#cc3300; } .dropdown-item.danger svg { stroke:#cc3300; }
+
+    .page-wrap { max-width:780px;margin:0 auto; }
+    .task-card { background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
+    .task-header { padding:20px 22px 16px;border-bottom:1px solid var(--border); }
+    .task-title { font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;font-family:"Lora",serif; }
+    .task-instruction { font-size:14px;color:var(--muted);line-height:1.6; }
+    .task-content { padding:22px 22px; }
+
+    /* Legend – single color */
+    .legend { display:flex;align-items:center;gap:8px;background:#f2f1ef;border-radius:10px;padding:10px 14px;margin-bottom:18px;flex-wrap:wrap; }
+    .legend-item { display:flex;align-items:center;gap:7px;padding:5px 11px 5px 7px;border-radius:20px;background:var(--blue-bg);border:2px solid var(--blue);font-family:"Noto Sans",sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--text); }
+    .legend-dot { width:22px;height:22px;border-radius:50%;flex-shrink:0;background:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,0.2); }
+
+    /* Text block */
+    .text-block {
+      font-family:'Lora',serif;
+      font-size:16px;
+      line-height:2.2;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:18px 20px;
+      background:#FDFCFB;
+    }
+
+    /* Sentence tokens – whole bold sentences */
+    .sent-token {
+      display:inline;
+      position:relative;
+      font-weight:700;
+      cursor:pointer;
+      border-radius:4px;
+      padding:1px 3px;
+      border:2px solid transparent;
+      transition:background 0.12s, border-color 0.12s;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    .sent-token:hover:not(.locked-token) { background:var(--blue-bg); }
+    .sent-token.marked-blue   { border-color:var(--blue);color:var(--blue);background:var(--blue-sel); }
+    .sent-token.correct { border-color:var(--green)!important; }
+    .sent-token.wrong   { border-color:var(--yellow-feedback)!important; }
+
+    .sent-badge { display:none;position:absolute;top:-8px;right:-8px;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;z-index:10; }
+    .sent-badge.show { display:flex; } .sent-badge.ok { background:var(--green); } .sent-badge.fail { background:var(--yellow-feedback); }
+    .sent-badge svg { width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+    .sent-popover { display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:12px;font-weight:600;font-style:normal;padding:6px 10px;border-radius:8px;white-space:nowrap;z-index:50;pointer-events:none;animation:fadeDown 0.15s ease; }
+    .sent-popover::after { content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:#111; }
+    .sent-popover.show { display:block; }
+    @keyframes fadeDown{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+    /* Feedback */
+    .feedback { display:none;margin:0 22px 16px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;align-items:center;gap:8px; }
+    .feedback.show { display:flex; }
+    .feedback.ok   { background:#edf7ed;color:#2e7d32;border:1px solid #c8e6c9; }
+    .feedback.warn { background:#fff8ee;color:#92610a;border:1px solid #f5dfa0; }
+    .feedback svg  { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+
+    .task-footer { padding:16px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:16px; }
+    .attempts-wrap { display:flex;gap:5px;align-items:center; }
+    .attempt-dot { width:7px;height:7px;border-radius:50%;border:1.5px solid #d0cec9;background:transparent;transition:background 0.2s,border-color 0.2s; }
+    .attempt-dot.used { background:var(--muted);border-color:var(--muted); }
+    .check-btn { background:#111111;color:#ffffff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;font-family:"Noto Sans",sans-serif;cursor:pointer;transition:background 0.15s,transform 0.15s; }
+    .check-btn:hover   { background:#333;transform:translateY(-1px); }
+    .check-btn:active  { transform:scale(0.97); }
+    .check-btn.success { background:var(--green);pointer-events:none; }
+    .check-btn.partial { background:var(--yellow-feedback); }
+
+    @media(max-width:500px){body{padding:4.5rem 1rem 2rem}.task-content{padding:12px}.task-footer{padding:12px 16px}.feedback{margin:0 12px 12px}.text-block{font-size:14px;padding:14px}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion05.html" class="sub">Lektion 5</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Der Bischof und der Wein</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title">Der Bischof und der Wein</div>
+      <div class="task-instruction">Welcher der drei fettgedruckten Sätze ist grammatikalisch korrekt? Markiere.</div>
+    </div>
+
+    <div class="task-content">
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot"></div>Grammatikalisch korrekter Satz
+        </div>
+      </div>
+
+      <!-- Text block -->
+      <div class="text-block" id="textBlock"></div>
+
+    </div>
+
+    <div class="feedback" id="feedback">
+      <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+      <span id="feedbackText"></span>
+    </div>
+
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────────────────────
+  // segments: plain text or markable sentence tokens
+  // correct: only s3 ("Vīnum bonum est.") is grammatically correct
+  const segments = [
+    { type: 'text', html: 'Im Mittelalter, als Latein weiterhin unter den Gelehrten gesprochen wurde, besucht eines Tages ein Bischof einen Pfarrer seines Bistums. Dieser bietet ihm einen Becher Wein an. Prüfend schlürft der Bischof den sauren Tropfen und meint: ' },
+    { type: 'sent', id: 's1', text: '„Vīnus bonus est."', correct: false },
+    { type: 'text', html: ' Der Pfarrer wundert sich zwar über das nicht so gute Latein seines Bischofs, sagt aber nichts und holt einen anderen Wein. Der Bischof probiert erneut und meint: ' },
+    { type: 'sent', id: 's2', text: '„Vīnum bonus est."', correct: false },
+    { type: 'text', html: ' Wieder lässt der Pfarrer sich nichts anmerken, sondern holt eine weitere Sorte Wein aus dem Keller. Nach dem ersten Probeschluck meint der Bischof: ' },
+    { type: 'sent', id: 's3', text: '„Vīnum bonum est."', correct: true },
+    { type: 'text', html: ' Daraufhin erlaubt sich der Pfarrer zu sagen: „Exzellenz, zuerst sprachen Sie schlechtes Latein, dann wurde es immer besser. Woran liegt das?" Der Bischof antwortet: „Wie der Wein, so das Latein."' },
+  ];
+
+  const KEY  = 'task_l05_bischof_wein';
+  const NEXT = 'was-ist-auf-dem-forum-los.html';
+
+  let attempts = 0;
+  let locked   = false;
+  const marked = {}; // id → true/false (true = selected)
+  segments.filter(s => s.type === 'sent').forEach(s => { marked[s.id] = false; });
+
+  // ── Build text block ──────────────────────────────────────────────────────
+  const block = document.getElementById('textBlock');
+
+  segments.forEach(seg => {
+    if (seg.type === 'text') {
+      const span = document.createElement('span');
+      span.innerHTML = seg.html;
+      block.appendChild(span);
+    } else {
+      const el = document.createElement('span');
+      el.className = 'sent-token';
+      el.id = 'tok-' + seg.id;
+      el.textContent = seg.text;
+
+      const badge = document.createElement('div');
+      badge.className = 'sent-badge';
+      badge.id = 'badge-' + seg.id;
+      el.appendChild(badge);
+
+      const popover = document.createElement('div');
+      popover.className = 'sent-popover';
+      popover.id = 'popover-' + seg.id;
+      el.appendChild(popover);
+
+      el.addEventListener('click', () => {
+        if (locked) return;
+        // toggle this sentence, deselect others
+        const wasMarked = marked[seg.id];
+        segments.filter(s => s.type === 'sent').forEach(s => {
+          marked[s.id] = false;
+          const t = document.getElementById('tok-' + s.id);
+          t.classList.remove('marked-blue');
+        });
+        if (!wasMarked) {
+          marked[seg.id] = true;
+          el.classList.add('marked-blue');
+        }
+        document.querySelectorAll('.sent-popover.show').forEach(p => p.classList.remove('show'));
+      });
+
+      block.appendChild(el);
+    }
+  });
+
+  // ── Check ─────────────────────────────────────────────────────────────────
+  const sents = segments.filter(s => s.type === 'sent');
+
+  function checkAnswers() {
+    if (locked || attempts >= 3) return;
+    const anyMarked = sents.some(s => marked[s.id]);
+    if (!anyMarked) { showFeedback('warn', 'Markiere zuerst einen Satz.'); return; }
+
+    attempts++;
+    document.getElementById('dot' + attempts).classList.add('used');
+
+    const allCorrect = sents.every(s => marked[s.id] === s.correct);
+
+    if (allCorrect) {
+      applyBorders();
+      showBadges(false);
+      showFeedback('ok', 'Richtig! „Vīnum bonum est." – Substantiv und Adjektiv stimmen in Kasus, Numerus und Genus überein.');
+      winState();
+      return;
+    }
+
+    if (attempts < 3) {
+      showFeedback('warn', 'Das ist nicht der grammatikalisch korrekte Satz. Versuche es nochmal!');
+      return;
+    }
+
+    // 3rd fail
+    applyBorders();
+    showBadges(true);
+    locked = true;
+    showFeedback('warn', 'Klicke auf die markierten Sätze, um einen Hinweis zu sehen.');
+    saveState(false);
+    const btn = document.getElementById('checkBtn');
+    btn.classList.add('partial');
+    btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.style.pointerEvents = 'auto';
+    btn.onclick = () => window.location.href = NEXT;
+  }
+
+  function applyBorders() {
+    sents.forEach(s => {
+      const el = document.getElementById('tok-' + s.id);
+      el.classList.remove('correct', 'wrong');
+      if (marked[s.id] && s.correct)  el.classList.add('correct');
+      if (marked[s.id] && !s.correct) el.classList.add('wrong');
+      if (!marked[s.id] && s.correct && attempts >= 3) el.classList.add('wrong');
+    });
+  }
+
+  function showBadges(revealWrong) {
+    sents.forEach(s => {
+      const badge   = document.getElementById('badge-' + s.id);
+      const popover = document.getElementById('popover-' + s.id);
+      const correct = marked[s.id] && s.correct;
+      const wrong   = (marked[s.id] && !s.correct) || (!marked[s.id] && s.correct && revealWrong);
+      if (correct) {
+        badge.className = 'sent-badge show ok';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      } else if (wrong) {
+        badge.className = 'sent-badge show fail';
+        badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+        if (revealWrong) {
+          popover.textContent = s.correct ? 'Dieser Satz ist korrekt!' : 'Falsch – Kasus/Genus stimmt nicht überein.';
+          const el = document.getElementById('tok-' + s.id);
+          el.addEventListener('click', () => {
+            document.querySelectorAll('.sent-popover.show').forEach(p => p.classList.remove('show'));
+            popover.classList.toggle('show');
+          });
+        }
+      } else {
+        badge.className = 'sent-badge';
+        badge.innerHTML = '';
+      }
+    });
+  }
+
+  function winState() {
+    locked = true;
+    sents.forEach(s => {
+      document.getElementById('tok-' + s.id).classList.add('locked-token');
+    });
+    saveState(true);
+    const btn = document.getElementById('checkBtn');
+    btn.classList.add('success');
+    btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.style.pointerEvents = 'auto';
+    btn.onclick = () => window.location.href = NEXT;
+  }
+
+  function showFeedback(type, text) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show ' + type;
+    document.getElementById('feedbackIcon').innerHTML = type === 'ok'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    document.getElementById('feedbackText').textContent = text;
+  }
+
+  function calcPoints() {
+    const correctSent = sents.find(s => s.correct);
+    return correctSent && marked[correctSent.id] ? 1 : 0;
+  }
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
+
+  function saveState(done) {
+    lsSet(KEY, done ? 'done' : 'attempted');
+    lsSet(KEY + '_attempts', attempts);
+    lsSet(KEY + '_marked',   JSON.stringify(marked));
+    lsSet(KEY + '_points',   calcPoints());
+    lsSet(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    if (!done) lsSet(KEY + '_fail', 'true');
+  }
+
+  (function restoreState() {
+    const saved = lsGet(KEY); if (!saved) return;
+    const savedMarked   = JSON.parse(lsGet(KEY + '_marked') || '{}');
+    const savedAttempts = parseInt(lsGet(KEY + '_attempts') || '0');
+    const savedDone     = saved === 'done';
+    const savedFail     = lsGet(KEY + '_fail') === 'true';
+    Object.assign(marked, savedMarked);
+    sents.forEach(s => {
+      if (marked[s.id]) document.getElementById('tok-' + s.id).classList.add('marked-blue');
+    });
+    for (let i = 1; i <= savedAttempts; i++) { const d = document.getElementById('dot' + i); if (d) d.classList.add('used'); }
+    attempts = savedAttempts; locked = savedDone || savedFail;
+    if (savedFail) { applyBorders(); showBadges(true); }
+    const btn = document.getElementById('checkBtn');
+    if (savedDone) {
+      showFeedback('ok', 'Richtig! „Vīnum bonum est." – Substantiv und Adjektiv stimmen in Kasus, Numerus und Genus überein.');
+      btn.classList.add('success');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.style.pointerEvents = 'auto'; btn.onclick = () => window.location.href = NEXT;
+    } else if (savedFail) {
+      showFeedback('warn', 'Klicke auf die markierten Sätze, um einen Hinweis zu sehen.');
+      btn.classList.add('partial');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.style.pointerEvents = 'auto'; btn.onclick = () => window.location.href = NEXT;
+    }
+  })();
+
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+    if (!e.target.closest('.sent-token')) { document.querySelectorAll('.sent-popover.show').forEach(p => p.classList.remove('show')); }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verschwundene Endungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg:      #f8f8f6;
+    --white:   #ffffff;
+    --border:  #E6E4DF;
+    --text:    #111111;
+    --muted:   #898783;
+    --accent:  #c6613f;
+    --green:   #4CAF50;
+    --yellow:  #F5A623;
+    --radius:  14px;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 1.5rem 3rem;
+    color: var(--text);
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px; background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem; z-index: 200;
+  }
+  .sitename { font-size: 19px; font-weight: 700; color: #111; font-family: 'Lora', serif; letter-spacing: -0.4px; display: flex; align-items: center; gap: 6px; }
+  .sitename a { color: inherit; text-decoration: none; }
+  .sitename .sep  { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sep2 { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sub  { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; }
+  .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; }
+  .topbar { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0; }
+  .icon-btn:hover { transform: scale(1.08); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #CC3300; border-radius: 50%; border: 1.5px solid var(--white); }
+  @keyframes ring { 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 75%{transform:rotate(3deg)} }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+  .dropdown { display: none; position: absolute; top: 44px; right: 0; background: var(--white); border: 1px solid #E0E0E0; border-radius: 10px; min-width: 190px; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,0.10); }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #E8E8E8; background: #F9F9F9; }
+  .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left; }
+  .dropdown-item:hover { background: #F4F4F4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #E8E8E8; }
+  .dropdown-item.danger { color: #CC3300; }
+  .dropdown-item.danger svg { stroke: #CC3300; }
+
+  /* ── Page ── */
+  .page-wrap { max-width: 780px; margin: 0 auto; }
+
+  /* ── Task card ── */
+  .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; }
+  .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+  .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Lora', serif; }
+  .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Task content ── */
+  .task-content { padding: 24px 22px; display: flex; flex-direction: column; gap: 0; }
+
+  /* ── Exercise rows ── */
+  .ex-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ex-row:last-child { border-bottom: none; }
+
+  .ex-left { flex: 1; min-width: 0; }
+
+  .ex-sentence {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    line-height: 1.8;
+  }
+
+  .ex-num {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--muted);
+    font-size: 13px;
+    margin-right: 2px;
+    flex-shrink: 0;
+    min-width: 18px;
+  }
+
+  .ex-translation {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    font-style: normal;
+    padding-left: 24px;
+  }
+
+  /* ── Inline slot ── */
+  .slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80px;
+    height: 34px;
+    border: 1.5px dashed #D0CEC9;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #C0BEB9;
+    font-style: normal;
+    font-weight: 600;
+    padding: 0 10px;
+    background: #FDFCFB;
+    position: relative;
+    white-space: nowrap;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+  }
+  .slot.filled {
+    border-style: solid;
+    border-color: var(--border);
+    background: #FFF9E6;
+    color: var(--text);
+  }
+  .slot.correct {
+    border-style: solid;
+    border-color: var(--green) !important;
+    border-width: 2px;
+    background: #F0FBF0;
+    color: var(--text);
+  }
+  .slot.wrong {
+    border-style: solid;
+    border-color: var(--yellow) !important;
+    border-width: 2px;
+    background: #FFFBF0;
+    color: var(--text);
+  }
+
+  /* Slot badge */
+  .slot-badge {
+    position: absolute;
+    top: -8px; right: -8px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 10;
+  }
+  .slot-badge.show { display: flex; }
+  .slot-badge.ok   { background: var(--green); }
+  .slot-badge.fail { background: var(--yellow); }
+  .slot-badge svg  { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Slot popover */
+  .slot-popover {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 50;
+    pointer-events: none;
+    animation: fadeUp 0.15s ease;
+  }
+  .slot-popover::after {
+    content: '';
+    position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #111;
+  }
+  .slot-popover.show { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateX(-50%) translateY(4px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+  /* ── Choice chips (right side) ── */
+  .ex-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .choice-btn {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    font-style: italic;
+    color: var(--text);
+    cursor: pointer;
+    min-width: 90px;
+    text-align: center;
+    transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .choice-btn:hover:not(:disabled) { box-shadow: 0 2px 8px rgba(0,0,0,0.1); transform: translateY(-1px); border-color: #C8C6C0; }
+  .choice-btn:active:not(:disabled) { transform: scale(0.96); }
+  .choice-btn:disabled { cursor: default; transform: none; box-shadow: none; }
+  .choice-btn.selected {
+    border-color: var(--accent);
+    background: rgba(198,97,63,0.06);
+    color: var(--accent);
+  }
+  .choice-btn.correct-reveal {
+    border-color: var(--green);
+    background: #F0FBF0;
+    color: #2E7D32;
+  }
+  .choice-btn.wrong-reveal {
+    border-color: var(--yellow);
+    background: #FFFBF0;
+    color: #b45309;
+  }
+  .choice-btn.dimmed { opacity: 0.35; }
+
+  /* ── Feedback ── */
+  .feedback {
+    display: none; margin: 0 22px 16px;
+    padding: 12px 14px; border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    align-items: center; gap: 8px;
+  }
+  .feedback.show { display: flex; }
+  .feedback.warn { background: #FFF8ED; color: #b45309; border: 1px solid #FDE68A; }
+  .feedback.ok   { background: #EDF7ED; color: #2E7D32; border: 1px solid #C8E6C9; }
+  .feedback svg  { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── Task footer ── */
+  .task-footer {
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center;
+    justify-content: flex-end; gap: 16px;
+  }
+  .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+  .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #D0CEC9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+
+  .check-btn {
+    background: #111; color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 20px; font-size: 14px; font-weight: 600;
+    font-family: 'Noto Sans', sans-serif;
+    cursor: pointer; transition: background 0.15s, transform 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .check-btn:hover { background: #333; transform: translateY(-1px); }
+  .check-btn:active { transform: scale(0.97); }
+  .check-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .check-btn.success { background: #4CAF50; }
+  .check-btn.partial { background: #F5A623; }
+  .check-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  @media (max-width: 600px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-content { padding: 16px 14px; }
+    .task-footer  { padding: 12px 14px; }
+    .task-header  { padding: 16px 14px 12px; }
+    .ex-sentence  { font-size: 14px; }
+    .choice-btn   { font-size: 12px; padding: 6px 12px; min-width: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion02.html" class="sub">Lektion 2</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Verschwundene Endungen</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+
+    <div class="task-header">
+      <div class="task-title">Verschwundene Endungen</div>
+      <div class="task-instruction">Wähle die richtige Endung aus.</div>
+    </div>
+
+    <div class="task-content" id="taskContent">
+      <!-- rows injected by JS -->
+    </div>
+
+    <div class="feedback" id="feedback">
+      <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+      <span id="feedbackText"></span>
+    </div>
+
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Data ─────────────────────────────────────────────────────────────────
+  // prefix:  the part of the sentence before the slot (italic)
+  // suffix:  the part after the slot (italic, can be empty)
+  // answer:  correct ending
+  // distractor: wrong ending
+  // translation: German sentence
+  const items = [
+    {
+      prefix: 'Aulus et Cornēlia ride',
+      suffix: '.',
+      answer: '-nt',
+      distractor: '-t',
+      translation: 'Aulus und Cornelia lachen.'
+    },
+    {
+      prefix: 'Frāter lūd',
+      suffix: '.',
+      answer: '-it',
+      distractor: '-unt',
+      translation: 'Der Bruder spielt.'
+    },
+    {
+      prefix: 'Serva et servus labōra',
+      suffix: '.',
+      answer: '-nt',
+      distractor: '-t',
+      translation: 'Die Sklavin und der Sklave arbeiten.'
+    },
+    {
+      prefix: 'Fīlia canta',
+      suffix: '.',
+      answer: '-t',
+      distractor: '-nt',
+      translation: 'Die Tochter singt.'
+    },
+  ];
+
+  const KEY  = 'task_l2_verschwundene_endungen';
+  const NEXT = 'verben-und-ihre-klassen-1.html';
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  const slotState = new Array(items.length).fill(null);
+  let attempts = 0;
+  let revealed = false;
+  let locked   = false;
+
+  const slotEls    = [];
+  const rowChoices = [];
+
+  // ── Build rows ────────────────────────────────────────────────────────────
+  const container = document.getElementById('taskContent');
+
+  items.forEach((item, i) => {
+    const showAnswerFirst = Math.random() < 0.5;
+    const choiceA = showAnswerFirst ? item.answer      : item.distractor;
+    const choiceB = showAnswerFirst ? item.distractor  : item.answer;
+
+    const row = document.createElement('div');
+    row.className = 'ex-row';
+
+    row.innerHTML = `
+      <div class="ex-left">
+        <div class="ex-sentence">
+          <span class="ex-num">${i + 1}.</span>
+          <span><i>${item.prefix}</i></span>
+          <div class="slot" id="slot-${i}">
+            <span class="slot-badge" id="badge-${i}"></span>
+            <span class="slot-popover" id="popover-${i}">${item.answer}</span>
+            <span class="slot-text" id="slottext-${i}"></span>
+          </div>
+          ${item.suffix ? `<span><i>${item.suffix}</i></span>` : ''}
+        </div>
+        <div class="ex-translation">${item.translation}</div>
+      </div>
+      <div class="ex-choices" id="choices-${i}">
+        <button class="choice-btn" id="btn-${i}-a" data-idx="${i}" data-value="${choiceA}" onclick="selectChoice(${i}, '${choiceA}', this)">${choiceA}</button>
+        <button class="choice-btn" id="btn-${i}-b" data-idx="${i}" data-value="${choiceB}" onclick="selectChoice(${i}, '${choiceB}', this)">${choiceB}</button>
+      </div>
+    `;
+
+    container.appendChild(row);
+    slotEls.push(document.getElementById('slot-' + i));
+    rowChoices.push([
+      document.getElementById('btn-' + i + '-a'),
+      document.getElementById('btn-' + i + '-b'),
+    ]);
+  });
+
+  // ── Select choice ─────────────────────────────────────────────────────────
+  function selectChoice(idx, value, btn) {
+    if (locked || revealed) return;
+
+    if (slotState[idx] === value) {
+      slotState[idx] = null;
+      renderSlot(idx);
+      rowChoices[idx].forEach(b => b.classList.remove('selected'));
+      return;
+    }
+
+    slotState[idx] = value;
+    renderSlot(idx);
+    rowChoices[idx].forEach(b => {
+      b.classList.toggle('selected', b === btn);
+    });
+  }
+
+  function renderSlot(i) {
+    const slot  = slotEls[i];
+    const txtEl = document.getElementById('slottext-' + i);
+    const val   = slotState[i];
+    if (val) {
+      slot.classList.add('filled');
+      txtEl.textContent = val;
+    } else {
+      slot.classList.remove('filled');
+      txtEl.textContent = '';
+    }
+  }
+
+  // ── Check answers ─────────────────────────────────────────────────────────
+  function checkAnswers() {
+    if (revealed) return;
+    const allFilled = slotState.every(s => s !== null);
+    if (!allFilled) {
+      showFeedback('warn', 'Fülle zuerst alle Felder aus!');
+      return;
+    }
+
+    attempts++;
+    document.getElementById('dot' + attempts).classList.add('used');
+
+    const allCorrect = slotState.every((val, i) => val === items[i].answer);
+    if (allCorrect) {
+      revealAll(true);
+      showFeedback('ok', 'Ausgezeichnet! Alle Antworten sind richtig!');
+      winState();
+      return;
+    }
+
+    if (attempts < 3) {
+      showFeedback('warn', 'Das ist noch nicht richtig. Versuche es nochmal!');
+      return;
+    }
+
+    // 3rd failed attempt
+    revealed = true;
+    revealAll(false);
+    showFeedback('warn', 'Klicke auf die gelb umrandeten Felder um die richtige Lösung zu sehen.');
+    saveState(false);
+    lockAll();
+    const failBtn = document.getElementById('checkBtn');
+    failBtn.classList.add('partial');
+    failBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    failBtn.disabled = false;
+    failBtn.onclick = () => window.location.href = NEXT;
+  }
+
+  // ── Reveal helpers ────────────────────────────────────────────────────────
+  function revealAll(allCorrect) {
+    items.forEach((item, i) => {
+      const correct = slotState[i] === item.answer;
+      const slot    = slotEls[i];
+      slot.classList.add(correct ? 'correct' : 'wrong');
+
+      const badge = document.getElementById('badge-' + i);
+      badge.classList.add('show', correct ? 'ok' : 'fail');
+      badge.innerHTML = correct
+        ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+
+      rowChoices[i].forEach(btn => {
+        btn.disabled = true;
+        if (btn.dataset.value === item.answer) {
+          btn.classList.add('correct-reveal');
+        } else if (btn.dataset.value === slotState[i] && !correct) {
+          btn.classList.add('wrong-reveal');
+        } else {
+          btn.classList.add('dimmed');
+        }
+        btn.classList.remove('selected');
+      });
+
+      if (!correct) {
+        slot.style.cursor = 'pointer';
+        slot.addEventListener('click', () => {
+          document.getElementById('popover-' + i).classList.toggle('show');
+        });
+      }
+    });
+    revealed = true;
+  }
+
+  function winState() {
+    lockAll();
+    revealed = true;
+    saveState(true);
+    const btn = document.getElementById('checkBtn');
+    btn.classList.add('success');
+    btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    btn.onclick = () => window.location.href = NEXT;
+    btn.disabled = false;
+  }
+
+  function lockAll() {
+    locked = true;
+    rowChoices.forEach(pair => pair.forEach(b => { b.disabled = true; }));
+  }
+
+  // ── Persist ───────────────────────────────────────────────────────────────
+  function saveState(done) {
+    const points   = slotState.filter((v, i) => v === items[i].answer).length * 0.5;
+    const slotData = slotState.map((v, i) => ({ filled: v || '', correct: v === items[i].answer }));
+    localStorage.setItem(KEY,               done ? 'done' : 'attempted');
+    localStorage.setItem(KEY + '_slots',    JSON.stringify(slotData));
+    localStorage.setItem(KEY + '_attempts', attempts);
+    localStorage.setItem(KEY + '_points',   points);
+    localStorage.setItem(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    if (!done) localStorage.setItem(KEY + '_fail', 'true');
+  }
+
+  // ── Feedback ──────────────────────────────────────────────────────────────
+  function showFeedback(type, text) {
+    const fb   = document.getElementById('feedback');
+    const icon = document.getElementById('feedbackIcon');
+    const txt  = document.getElementById('feedbackText');
+    fb.className = 'feedback show ' + type;
+    icon.innerHTML = type === 'ok'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    txt.textContent = text;
+  }
+
+  // ── Restore saved state ───────────────────────────────────────────────────
+  (function restoreState() {
+    const savedSlots    = localStorage.getItem(KEY + '_slots');
+    const savedDone     = localStorage.getItem(KEY) === 'done';
+    const savedFail     = localStorage.getItem(KEY + '_fail') === 'true';
+    const savedAttempts = parseInt(localStorage.getItem(KEY + '_attempts') || '0');
+    if (!savedSlots || (!savedDone && !savedFail)) return;
+
+    const slotData = JSON.parse(savedSlots);
+    slotData.forEach((s, i) => {
+      if (!s.filled) return;
+      slotState[i] = s.filled;
+      renderSlot(i);
+      rowChoices[i].forEach(btn => {
+        if (btn.dataset.value === s.filled) btn.classList.add('selected');
+      });
+    });
+
+    for (let a = 1; a <= savedAttempts; a++) {
+      const d = document.getElementById('dot' + a);
+      if (d) d.classList.add('used');
+    }
+
+    revealed = true;
+    attempts = savedAttempts;
+    revealAll(savedDone);
+    lockAll();
+
+    const btn = document.getElementById('checkBtn');
+    if (savedDone) {
+      btn.classList.add('success');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.onclick = () => window.location.href = NEXT;
+      btn.disabled = false;
+      showFeedback('ok', 'Ausgezeichnet! Alle Antworten sind richtig!');
+    } else {
+      btn.classList.add('partial');
+      btn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+      btn.onclick = () => window.location.href = NEXT;
+      btn.disabled = false;
+      showFeedback('warn', 'Klicke auf die gelb umrandeten Felder um die richtige Lösung zu sehen.');
+    }
+  })();
+
+  // ── Bell & dropdown ───────────────────────────────────────────────────────
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Das Forum Romanum (2)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --accent: #c6613f;
+        --radius: 14px;
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      /* ── Header ── */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 100;
+      }
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn.has-notification {
+        background: #c6613f;
+      }
+      .bell-btn.has-notification svg {
+        stroke: #ffffff;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      /* ── Page layout ── */
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+
+      /* ── Task card ── */
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ── Task content ── */
+      .task-content {
+        padding: 32px 22px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        min-height: 220px;
+        justify-content: center;
+      }
+
+      /* Audio player area */
+      .audio-player-wrap {
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        background: #1a1a1a;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .audio-bg {
+        position: absolute;
+        inset: 0;
+        background-image: url("images/forum-romanum-1.png");
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.85);
+      }
+      .audio-controls {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 32px;
+      }
+      .play-btn {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+        position: relative;
+        backdrop-filter: blur(4px);
+      }
+      .play-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.06);
+      }
+      .play-btn:active {
+        transform: scale(0.96);
+      }
+      .play-btn svg {
+        width: 28px;
+        height: 28px;
+        stroke: #fff;
+        fill: #fff;
+        stroke-width: 1;
+        margin-left: 4px;
+      }
+      .play-btn.playing svg {
+        margin-left: 0;
+      }
+
+      /* Pulse rings */
+      .pulse-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        animation: pulseRing 2s ease-out infinite;
+        pointer-events: none;
+      }
+      .pulse-ring:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        animation-delay: 0s;
+      }
+      .pulse-ring:nth-child(2) {
+        width: 100px;
+        height: 100px;
+        animation-delay: 0.5s;
+      }
+      .pulse-ring:nth-child(3) {
+        width: 120px;
+        height: 120px;
+        animation-delay: 1s;
+      }
+      @keyframes pulseRing {
+        0% {
+          transform: scale(0.85);
+          opacity: 0.6;
+        }
+        100% {
+          transform: scale(1.4);
+          opacity: 0;
+        }
+      }
+
+      .audio-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.2px;
+      }
+
+      /* Progress bar */
+      .audio-progress-bar {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+        overflow: hidden;
+        cursor: pointer;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transition: height 0.15s ease;
+        transform-origin: bottom;
+      }
+      .audio-progress-bar:hover {
+        height: 9px;
+      }
+      .audio-progress-wrap {
+        position: relative;
+        height: 6px;
+        width: 100%;
+        max-width: 280px;
+        margin-bottom: 0;
+      }
+      .audio-progress-fill {
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.1s linear;
+        pointer-events: none;
+      }
+      .audio-time {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      /* ── Task footer ── */
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+
+      .check-btn {
+        background: #111111;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      .check-btn.enabled {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .check-btn.enabled:hover {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn.enabled:active {
+        transform: scale(0.97);
+      }
+      .check-btn.success {
+        background: #4caf50;
+        opacity: 1;
+        pointer-events: none;
+      }
+
+      /* ── Result feedback ── */
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .audio-controls {
+          padding: 24px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion05.html" class="sub">Lektion 5</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Das Forum Romanum (2)</span>
+      </div>
+      <div class="topbar">
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" /></svg
+              >Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                /></svg
+              >Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" /></svg
+              >Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Das Forum Romanum (2)</div>
+          <div class="task-instruction">
+            Drücke auf Play und höre den Beitrag vollständig an. Du erhältst
+            danach automatisch deinen Punkt.
+          </div>
+        </div>
+
+        <div class="task-content">
+          <div class="audio-player-wrap">
+            <div class="audio-bg"></div>
+            <div class="audio-controls">
+              <div
+                style="
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <div class="pulse-ring" id="pulse1"></div>
+                <div class="pulse-ring" id="pulse2"></div>
+                <div class="pulse-ring" id="pulse3"></div>
+                <button class="play-btn" id="playBtn" onclick="togglePlay()">
+                  <svg id="playIcon" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                </button>
+              </div>
+              <div class="audio-title">Das Forum Romanum (2)</div>
+              <div class="audio-progress-wrap">
+                <div class="audio-progress-bar">
+                  <div class="audio-progress-fill" id="progressFill"></div>
+                </div>
+                <div class="audio-time">
+                  <span id="timeElapsed">0:00</span>
+                  <span id="timeDuration">-:--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+          Sehr gut! Du hast den Beitrag angehört und erhältst 1 Punkt.
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="submit()">
+            Weiter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden audio element -->
+    <audio id="audioEl" src="audio/forum-romanum.mp3"></audio>
+
+    <script>
+      const KEY = "task_l05_forum_romanum_2";
+      const NEXT = "fuer-romkenner.html";
+
+      const audio = document.getElementById("audioEl");
+      const playBtn = document.getElementById("playBtn");
+      const playIcon = document.getElementById("playIcon");
+      const progressFill = document.getElementById("progressFill");
+      const timeElapsed = document.getElementById("timeElapsed");
+      const timeDuration = document.getElementById("timeDuration");
+      const checkBtn = document.getElementById("checkBtn");
+      const feedback = document.getElementById("feedback");
+      const pulses = [
+        document.getElementById("pulse1"),
+        document.getElementById("pulse2"),
+        document.getElementById("pulse3"),
+      ];
+
+      let hasListened = false;
+      let attempts = 0;
+      let isPlaying = false;
+
+      function fmt(s) {
+        const m = Math.floor(s / 60);
+        const sec = Math.floor(s % 60);
+        return m + ":" + (sec < 10 ? "0" : "") + sec;
+      }
+
+      audio.addEventListener("loadedmetadata", () => {
+        timeDuration.textContent = fmt(audio.duration);
+      });
+
+      audio.addEventListener("timeupdate", () => {
+        if (!audio.duration) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressFill.style.width = pct + "%";
+        timeElapsed.textContent = fmt(audio.currentTime);
+        // Unlock after 90% listened
+        if (pct >= 90 && !hasListened) {
+          hasListened = true;
+          checkBtn.classList.add("enabled");
+        }
+      });
+
+      // Seekable progress bar
+      const progressBar = document.querySelector(".audio-progress-bar");
+      let isSeeking = false;
+
+      function seek(e) {
+        const rect = progressBar.getBoundingClientRect();
+        const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+        audio.currentTime = (x / rect.width) * audio.duration;
+      }
+
+      progressBar.addEventListener("click", seek);
+      progressBar.addEventListener("mousedown", (e) => {
+        isSeeking = true;
+        seek(e);
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (isSeeking) seek(e);
+      });
+      document.addEventListener("mouseup", () => {
+        isSeeking = false;
+      });
+      progressBar.addEventListener(
+        "touchstart",
+        (e) => {
+          isSeeking = true;
+          seek(e.touches[0]);
+        },
+        { passive: true },
+      );
+      document.addEventListener(
+        "touchmove",
+        (e) => {
+          if (isSeeking) seek(e.touches[0]);
+        },
+        { passive: true },
+      );
+      document.addEventListener("touchend", () => {
+        isSeeking = false;
+      });
+
+      audio.addEventListener("ended", () => {
+        isPlaying = false;
+        playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+        pulses.forEach((p) => (p.style.animationPlayState = "paused"));
+        hasListened = true;
+        checkBtn.classList.add("enabled");
+      });
+
+      function togglePlay() {
+        if (isPlaying) {
+          audio.pause();
+          isPlaying = false;
+          playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+          pulses.forEach((p) => (p.style.animationPlayState = "paused"));
+        } else {
+          audio.play().catch(() => {
+            hasListened = true;
+            checkBtn.classList.add("enabled");
+          });
+          isPlaying = true;
+          playIcon.innerHTML =
+            '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+          pulses.forEach((p) => (p.style.animationPlayState = "running"));
+        }
+      }
+
+      function submit() {
+        if (!hasListened) return;
+        attempts++;
+        document.getElementById("dot" + attempts).classList.add("used");
+        feedback.classList.add("show", "ok");
+        checkBtn.classList.add("success");
+        localStorage.setItem(KEY, "done");
+        localStorage.setItem(
+          KEY + "_date",
+          new Date().toLocaleDateString("de-DE"),
+        );
+        localStorage.setItem(KEY + "_attempts", attempts);
+        localStorage.setItem(KEY + "_points", 1);
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = NEXT);
+        audio.pause();
+        isPlaying = false;
+        pulses.forEach((p) => (p.style.animationPlayState = "paused"));
+      }
+
+      // Restore state if already completed
+      if (localStorage.getItem(KEY) === "done") {
+        hasListened = true;
+        checkBtn.classList.add("enabled");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.background = "#4CAF50";
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = NEXT);
+        feedback.classList.add("show", "ok");
+        const savedAttempts = parseInt(
+          localStorage.getItem(KEY + "_attempts") || "1",
+        );
+        for (let i = 1; i <= savedAttempts; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+      }
+
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1231 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lektion 4 – Lektionsübersicht</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --accent: #c6613f;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+        --radius-sm: 10px;
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: #ffffff;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 100;
+      }
+
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .bell-btn {
+        background: transparent;
+        border-color: transparent;
+      }
+      .bell-btn.has-notification {
+        background: #c6613f;
+        border-color: transparent;
+      }
+      .bell-btn.has-notification svg {
+        stroke: #ffffff;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid #f8f8f6;
+      }
+
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+
+      .role-toggle {
+        display: flex;
+        align-items: center;
+        background: #f0efec;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 3px;
+        gap: 2px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .role-toggle span {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 16px;
+        color: var(--muted);
+        transition: all 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .role-toggle span.active {
+        background: var(--white);
+        color: var(--text);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-btn {
+        background: transparent;
+        border-color: transparent;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      .page-header {
+        max-width: 680px;
+        margin: 0 auto 2rem;
+      }
+      .page-header h1 {
+        font-family: "Lora", serif;
+        font-size: clamp(20px, 4vw, 26px);
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.4px;
+        margin-bottom: 4px;
+      }
+      .page-header p {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .section {
+        max-width: 680px;
+        margin: 0 auto 16px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s;
+      }
+      .section-header:hover {
+        background: #fafaf9;
+      }
+      .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .section-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .count-badge {
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2px 10px;
+        font-weight: 500;
+      }
+      .chevron {
+        width: 18px;
+        height: 18px;
+        stroke: var(--muted);
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+      }
+      .section.open .chevron {
+        transform: rotate(180deg);
+      }
+      .section-body {
+        display: none;
+        padding: 0 12px 12px;
+      }
+      .section.open .section-body {
+        display: block;
+      }
+
+      .task {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 13px 14px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          box-shadow 0.15s;
+      }
+      .task:last-child {
+        margin-bottom: 0;
+      }
+      .task:hover {
+        background: #e6e4df;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .badge.pending::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d0cec9;
+      }
+      .badge.ok {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .badge.ok svg {
+        width: 13px;
+        height: 13px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .badge.fail {
+        background: var(--yellow);
+        border-color: var(--yellow);
+      }
+      .badge.fail svg {
+        width: 13px;
+        height: 13px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .gr-tag {
+        font-size: 10px;
+        font-weight: 700;
+        background: #eef2ff;
+        color: #4f6ef7;
+        border-radius: 5px;
+        padding: 2px 5px;
+        flex-shrink: 0;
+        letter-spacing: 0.3px;
+      }
+      .task-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        flex: 1;
+      }
+      .task-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+
+      .eye-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+      }
+      .eye-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke: #d0cec9;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke 0.15s;
+      }
+      .eye-btn.seen svg {
+        stroke: var(--muted);
+      }
+
+      .task-date {
+        font-size: 11px;
+        color: #c0beb9;
+        white-space: nowrap;
+        min-width: 60px;
+        text-align: right;
+      }
+      .attempts {
+        display: flex;
+        gap: 3px;
+        min-width: 33px;
+        justify-content: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+      .points {
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+        min-width: 36px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .eye-btn {
+        min-width: 22px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .icon-action {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        opacity: 0.35;
+        transition: opacity 0.15s;
+      }
+      .icon-action:hover {
+        opacity: 1;
+      }
+      .icon-action svg {
+        width: 14px;
+        height: 14px;
+        stroke: var(--text);
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .arrow-right {
+        width: 15px;
+        height: 15px;
+        stroke: #d0cec9;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .task-date {
+          display: none;
+        }
+        .points {
+          display: none;
+        }
+        .dropdown {
+          min-width: 170px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a
+          href="lektionsuebersicht.html"
+          style="color: inherit; text-decoration: none"
+          >Latein*</a
+        >
+        <span class="sep">›</span>
+        <span class="sub">Lektion 4</span>
+      </div>
+      <div class="topbar">
+        <div class="role-toggle" onclick="toggleClean()">
+          <span id="roleSchueler" class="active">Schüler</span>
+          <span id="roleLehrer">Lehrer</span>
+        </div>
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+              Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-header">
+      <div
+        style="
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 1rem;
+        "
+      >
+        <div>
+          <h1>Lektion 4</h1>
+          <p>Bearbeite die Aufgaben der Reihe nach von oben bis unten.</p>
+        </div>
+        <button
+          onclick="resetAll()"
+          style="
+            background: none;
+            border: 1px solid #e6e4df;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: #898783;
+            cursor: pointer;
+            font-family: &quot;Noto Sans&quot;, sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 4px;
+          "
+        >
+          ↺ Demo
+        </button>
+      </div>
+    </div>
+
+    <div id="accordion"></div>
+
+    <script>
+      const data = [
+        {
+          title: "Vorwissen",
+          tasks: [
+            {
+              name: "Tipps zur Vorbereitung",
+              file: "tipps-zur-vorbereitung-l4.html",
+              key: "task_l04_tipps_vorbereitung",
+              pts: 1,
+            },
+            {
+              name: "Ponticulus 3A",
+              file: "ponticulus-3a-1.html",
+              key: "task_l04_ponticulus_3a_1",
+              pts: 2.5,
+            },
+            {
+              name: "Ponticulus 3B",
+              file: "ponticulus-3b-2.html",
+              key: "task_l04_ponticulus_3b_2",
+              pts: 3,
+            },
+            {
+              name: "In der Schule",
+              file: "in-der-schule.html",
+              key: "task_l04_in_der_schule",
+              pts: 1,
+            },
+            {
+              name: "Schule im alten Rom 1",
+              file: "schule-im-alten-rom-1.html",
+              key: "task_l04_schule_alten_rom_1",
+              pts: 1,
+            },
+            {
+              name: "Schule im alten Rom 2",
+              file: "schule-im-alten-rom-2.html",
+              key: "task_l04_schule_alten_rom_2",
+              pts: 3,
+            },
+            {
+              name: "Römischer Schulalltag",
+              file: "roemischer-schulalltag.html",
+              key: "task_l04_roemischer_schulalltag",
+              pts: 3,
+            },
+          ],
+        },
+        {
+          title: "Einstieg",
+          tasks: [
+            {
+              name: "Aufforderungssätze: Befehl und Verbot",
+              file: "aufforderungssaetze-befehl-verbot.html",
+              key: "task_l04_aufforderungssaetze",
+              pts: 1,
+              gr: true,
+            },
+            {
+              name: "Viele Befehle",
+              file: "viele-befehle.html",
+              key: "task_l04_viele_befehle",
+              pts: 4,
+            },
+            {
+              name: "Befehl oder Verbot 1",
+              file: "befehl-oder-verbot-1.html",
+              key: "task_l04_befehl_verbot_1",
+              pts: 6,
+            },
+            {
+              name: "Befehl oder Verbot 2",
+              file: "befehl-oder-verbot-2.html",
+              key: "task_l04_befehl_verbot_2",
+              pts: 3,
+            },
+            {
+              name: "Fragesätze",
+              file: "fragesaetze.html",
+              key: "task_l04_fragesaetze",
+              pts: 1,
+              gr: true,
+            },
+            {
+              name: "Frage wünscht Antwort",
+              file: "frage-wuenscht-antwort.html",
+              key: "task_l04_frage_wuenscht_antwort",
+              pts: 2,
+            },
+            {
+              name: "posse",
+              file: "posse.html",
+              key: "task_l04_posse",
+              pts: 1,
+              gr: true,
+            },
+            {
+              name: "esse und posse – eine Klasse für sich",
+              file: "esse-und-posse.html",
+              key: "task_l04_esse_posse",
+              pts: 3,
+            },
+            {
+              name: "Kennst du dich mit Substantiven aus? 1",
+              file: "kennst-du-dich-substantiven-1.html",
+              key: "task_l04_substantive_1",
+              pts: 4,
+            },
+            {
+              name: "Kennst du dich mit Substantiven aus? 2",
+              file: "kennst-du-dich-substantiven-2.html",
+              key: "task_l04_substantive_2",
+              pts: 4,
+            },
+            {
+              name: "Kennst du dich mit Substantiven aus? 3",
+              file: "kennst-du-dich-substantiven-3.html",
+              key: "task_l04_substantive_3",
+              pts: 4,
+            },
+            {
+              name: "Kennst du dich mit Substantiven aus? 4",
+              file: "kennst-du-dich-substantiven-4.html",
+              key: "task_l04_substantive_4",
+              pts: 4,
+            },
+            {
+              name: "Lateinische Sätze unter dem Mikroskop",
+              file: "lateinische-saetze-mikroskop.html",
+              key: "task_l04_saetze_mikroskop",
+              pts: 14,
+            },
+            {
+              name: "Detektivarbeit: Gleiche Formen – verschiedene Funktionen",
+              file: "detektivarbeit-gleiche-formen.html",
+              key: "task_l04_detektivarbeit",
+              pts: 8,
+            },
+          ],
+        },
+        {
+          title: "Übersetzung",
+          tasks: [
+            {
+              name: "Schlagfertig A",
+              file: "schlagfertig-a.html",
+              key: "task_l04_schlagfertig_a",
+              pts: 35,
+              pinnedKey: "schlagfertig-a-pinned",
+            },
+            {
+              name: "Schlagfertig B",
+              file: "schlagfertig-b.html",
+              key: "task_l04_schlagfertig_b",
+              pts: 45,
+              pinnedKey: "schlagfertig-b-pinned",
+            },
+            {
+              name: "Schlagfertig C",
+              file: "schlagfertig-c.html",
+              key: "task_l04_schlagfertig_c",
+              pts: 45,
+              pinnedKey: "schlagfertig-c-pinned",
+            },
+            {
+              name: "Schlagfertig D",
+              file: "schlagfertig-d.html",
+              key: "task_l04_schlagfertig_d",
+              pts: 25,
+              pinnedKey: "schlagfertig-d-pinned",
+            },
+            {
+              name: "Schlagfertig E",
+              file: "schlagfertig-e.html",
+              key: "task_l04_schlagfertig_e",
+              pts: 30,
+              pinnedKey: "schlagfertig-e-pinned",
+            },
+          ],
+        },
+        {
+          title: "Vertiefung",
+          tasks: [
+            {
+              name: "Komm und lies! 1",
+              file: "komm-und-lies-1.html",
+              key: "task_l04_komm_lies_1",
+              pts: 10,
+            },
+            {
+              name: "Komm und lies! 2",
+              file: "komm-und-lies-2.html",
+              key: "task_l04_komm_lies_2",
+              pts: 4,
+            },
+            {
+              name: "Typische Lehrerfragen 1",
+              file: "typische-lehrerfragen-1.html",
+              key: "task_l04_lehrerfragen_1",
+              pts: 6,
+            },
+            {
+              name: "Typische Lehrerfragen 2",
+              file: "typische-lehrerfragen-2.html",
+              key: "task_l04_lehrerfragen_2",
+              pts: 3,
+            },
+            {
+              name: "Schriftrollen ausfüllen",
+              file: "schriftrollen-ausfuellen.html",
+              key: "task_l04_schriftrollen",
+              pts: 5,
+            },
+            {
+              name: "Befehle und Verbote in der Schule 1",
+              file: "befehle-verbote-schule-1.html",
+              key: "task_l04_befehle_verbote_1",
+              pts: 3,
+            },
+            {
+              name: "Befehle und Verbote in der Schule 2",
+              file: "befehle-verbote-schule-2.html",
+              key: "task_l04_befehle_verbote_2",
+              pts: 6,
+            },
+            {
+              name: "Wortsalat",
+              file: "wortsalat.html",
+              key: "task_l04_wortsalat",
+              pts: 4,
+            },
+            {
+              name: "Die \u201egroße\u201c Julia A",
+              file: "die-grosse-julia-a.html",
+              key: "task_l04_julia_a",
+              pts: 4,
+            },
+            {
+              name: "Die \u201egroße\u201c Julia B",
+              file: "die-grosse-julia-b.html",
+              key: "task_l04_julia_b",
+              pts: 4,
+            },
+            {
+              name: "Nach der Schule A",
+              file: "nach-der-schule-a.html",
+              key: "task_l04_nach_schule_a",
+              pts: 30,
+              pinnedKey: "nach-schule-a-pinned",
+            },
+            {
+              name: "Nach der Schule B",
+              file: "nach-der-schule-b.html",
+              key: "task_l04_nach_schule_b",
+              pts: 30,
+              pinnedKey: "nach-schule-b-pinned",
+            },
+            {
+              name: "Nach der Schule C",
+              file: "nach-der-schule-c.html",
+              key: "task_l04_nach_schule_c",
+              pts: 25,
+              pinnedKey: "nach-schule-c-pinned",
+            },
+          ],
+        },
+        {
+          title: "Wiederholung",
+          tasks: [
+            {
+              name: "Fragewörter",
+              file: "fragewoerter.html",
+              key: "task_l04_fragewoerter",
+              pts: 2.5,
+            },
+            {
+              name: "Antwort erwartet",
+              file: "antwort-erwartet.html",
+              key: "task_l04_antwort_erwartet",
+              pts: 5,
+            },
+            {
+              name: "Wortende gesucht 1",
+              file: "wortende-gesucht-1.html",
+              key: "task_l04_wortende_1",
+              pts: 5.5,
+            },
+            {
+              name: "Wortende gesucht 2",
+              file: "wortende-gesucht-2.html",
+              key: "task_l04_wortende_2",
+              pts: 4,
+            },
+            {
+              name: "Nichts als Verbote 1",
+              file: "nichts-als-verbote-1.html",
+              key: "task_l04_verbote_1",
+              pts: 2.5,
+            },
+            {
+              name: "Nichts als Verbote 2",
+              file: "nichts-als-verbote-2.html",
+              key: "task_l04_verbote_2",
+              pts: 4,
+            },
+            {
+              name: "Nominativ oder Akkusativ II",
+              file: "nominativ-oder-akkusativ-2.html",
+              key: "task_l04_nom_akk_2",
+              pts: 4,
+            },
+            {
+              name: "Formenlauf",
+              file: "formenlauf.html",
+              key: "task_l04_formenlauf",
+              pts: 3,
+            },
+            {
+              name: "Prädikat gesucht",
+              file: "praedikat-gesucht.html",
+              key: "task_l04_praedikat",
+              pts: 4,
+            },
+            {
+              name: "Schule ist schön A",
+              file: "schule-ist-schoen-a.html",
+              key: "task_l04_schule_schoen_a",
+              pts: 20,
+              pinnedKey: "schule-schoen-a-pinned",
+            },
+            {
+              name: "Schule ist schön B",
+              file: "schule-ist-schoen-b.html",
+              key: "task_l04_schule_schoen_b",
+              pts: 20,
+              pinnedKey: "schule-schoen-b-pinned",
+            },
+            {
+              name: "Schule ist schön C",
+              file: "schule-ist-schoen-c.html",
+              key: "task_l04_schule_schoen_c",
+              pts: 20,
+              pinnedKey: "schule-schoen-c-pinned",
+            },
+            {
+              name: "Schule ist schön D",
+              file: "schule-ist-schoen-d.html",
+              key: "task_l04_schule_schoen_d",
+              pts: 15,
+            },
+          ],
+        },
+      ];
+
+      // Safe localStorage wrapper (works in iframes/restricted contexts too)
+      const store = (() => {
+        try {
+          localStorage.setItem("_t", "1");
+          localStorage.removeItem("_t");
+          return localStorage;
+        } catch (e) {
+          const m = {};
+          return {
+            getItem: (k) => m[k] || null,
+            setItem: (k, v) => {
+              m[k] = v;
+            },
+            removeItem: (k) => {
+              delete m[k];
+            },
+          };
+        }
+      })();
+
+      let teacherMode = false;
+      const cleanTargets =
+        ".eye-btn, .task-date, .attempts, .points, .icon-action";
+
+      function applyCleanMode() {
+        document.querySelectorAll(cleanTargets).forEach((el) => {
+          el.style.display = teacherMode ? "" : "none";
+        });
+      }
+
+      function renderAccordion() {
+        const accordion = document.getElementById("accordion");
+        accordion.innerHTML = "";
+        data.forEach((section, si) => {
+          const div = document.createElement("div");
+          const hasActivity = section.tasks.some(
+            (t) => t.key && store.getItem(t.key) !== null,
+          );
+          div.className = "section" + (si === 0 || hasActivity ? " open" : "");
+
+          const tasksHTML = section.tasks
+            .map((t) => {
+              const done = t.key && store.getItem(t.key) === "done";
+              const date = t.key ? store.getItem(t.key + "_date") || "" : "";
+              const usedAttempts = t.key
+                ? parseInt(store.getItem(t.key + "_attempts") || "0")
+                : 0;
+              const failed = t.key && store.getItem(t.key + "_fail") === "true";
+              const badgeHTML = done
+                ? `<div class="badge ok"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`
+                : failed
+                  ? `<div class="badge fail"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`
+                  : `<div class="badge pending"></div>`;
+              const nameHTML = t.file
+                ? `<span class="task-name"><a href="${t.file}" style="color:inherit;text-decoration:none;">${t.name}</a></span>`
+                : `<span class="task-name">${t.name}</span>`;
+              const eyeClass = done ? "eye-btn seen" : "eye-btn";
+              const dots = [1, 2, 3]
+                .map(
+                  (i) =>
+                    `<div class="attempt-dot${i <= usedAttempts ? " used" : ""}"></div>`,
+                )
+                .join("");
+              const resetFn = t.key
+                ? `resetTask('${t.key}', ${t.pinnedKey ? `'${t.pinnedKey}'` : "null"})`
+                : "";
+              return `
+              <div class="task" onclick="${t.file ? `window.location.href='${t.file}'` : ""}">
+                ${badgeHTML}
+                ${t.gr ? '<span class="gr-tag">GR</span>' : ""}
+                ${nameHTML}
+                <div class="task-right">
+                  <button class="${eyeClass}" title="Angesehen" onclick="event.stopPropagation()">
+                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                  <span class="task-date">${date}</span>
+                  <div class="attempts">${dots}</div>
+                  <span class="points">${(() => {
+                    const pts = t.key ? store.getItem(t.key + "_points") : null;
+                    const max = t.pts !== undefined ? t.pts : "__";
+                    return (pts !== null ? pts : "__") + "/" + max;
+                  })()}</span>
+                  <button class="icon-action" title="Zurücksetzen" onclick="event.stopPropagation(); ${resetFn}">
+                    <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                  </button>
+                  <button class="icon-action" title="Bearbeiten" onclick="event.stopPropagation()">
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </button>
+                  <svg class="arrow-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+              </div>`;
+            })
+            .join("");
+
+          div.innerHTML = `
+              <div class="section-header" onclick="this.closest('.section').classList.toggle('open')">
+                <span class="section-title">${section.title}</span>
+                <div class="section-meta">
+                  <span class="count-badge">${section.tasks.length} Aufgaben</span>
+                  <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="section-body">${tasksHTML}</div>
+            `;
+          accordion.appendChild(div);
+        });
+      }
+      renderAccordion();
+      applyCleanMode();
+
+      function updateBellState() {
+        const hasNote = store.getItem("latinNotification") === "true";
+        const bell = document.querySelector(".bell-btn");
+        const dot = document.getElementById("bellDot");
+        if (hasNote) {
+          bell.classList.add("has-notification");
+          dot.style.display = "";
+        } else {
+          bell.classList.remove("has-notification");
+          dot.style.display = "none";
+        }
+      }
+      updateBellState();
+
+      function toggleClean() {
+        teacherMode = !teacherMode;
+        document
+          .getElementById("roleSchueler")
+          .classList.toggle("active", !teacherMode);
+        document
+          .getElementById("roleLehrer")
+          .classList.toggle("active", teacherMode);
+        applyCleanMode();
+      }
+
+      function resetTask(key, pinnedKey) {
+        [
+          "",
+          "_date",
+          "_attempts",
+          "_points",
+          "_fail",
+          "_slots",
+          "_values",
+        ].forEach((suffix) => {
+          store.removeItem(key + suffix);
+        });
+        if (pinnedKey) store.removeItem(pinnedKey);
+        renderAccordion();
+        applyCleanMode();
+      }
+
+      function resetAll() {
+        if (!confirm("Alle Aufgaben zurücksetzen?")) return;
+        data.forEach((section) => {
+          section.tasks.forEach((t) => {
+            if (!t.key) return;
+            [
+              "",
+              "_date",
+              "_attempts",
+              "_points",
+              "_fail",
+              "_slots",
+              "_values",
+            ].forEach((suffix) => {
+              store.removeItem(t.key + suffix);
+            });
+            if (t.pinnedKey) store.removeItem(t.pinnedKey);
+          });
+        });
+        renderAccordion();
+        applyCleanMode();
+      }
+
+      function handleBell() {
+        store.setItem("latinNotification", "false");
+        updateBellState();
+        alert("Keine neuen Benachrichtigungen.");
+      }
+
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+
+      document.addEventListener("click", function (e) {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+      });
+    </script>
+  </body>
+</html>

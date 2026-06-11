@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unser Obelisk 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --blue: #2563eb;
+        --radius: 14px;
+      }
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 200;
+      }
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .task-content {
+        padding: 22px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+
+      /* Each noun block can have multiple rows (main + extra) */
+      .noun-block {
+        border-bottom: 1px solid var(--border);
+      }
+      .noun-block:last-child {
+        border-bottom: none;
+      }
+
+      .noun-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 0 10px;
+        flex-wrap: wrap;
+      }
+      .noun-row.extra-row {
+        padding: 6px 0 12px;
+        padding-left: 146px;
+      }
+
+      .noun-label {
+        font-family: "Lora", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        min-width: 130px;
+        flex-shrink: 0;
+      }
+
+      .chip-groups {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        flex: 1;
+      }
+      .chip-group {
+        display: flex;
+        gap: 5px;
+      }
+
+      .chip {
+        position: relative;
+        padding: 5px 13px;
+        border-radius: 7px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          color 0.15s;
+        font-family: "Noto Sans", sans-serif;
+        white-space: nowrap;
+      }
+      .chip:hover:not(.locked) {
+        border-color: #b0aead;
+        color: var(--text);
+      }
+      .chip.selected {
+        background: #eef3fc;
+        border-color: #2563eb;
+        color: #2563eb;
+      }
+      .chip.correct-chip {
+        background: #edf7ed;
+        border-color: var(--green);
+        border-width: 2px;
+        color: #2e7d32;
+      }
+      .chip.wrong-chip {
+        background: #fff8ed;
+        border-color: var(--yellow);
+        border-width: 2px;
+        color: #b45309;
+      }
+      .chip.locked {
+        cursor: default;
+        pointer-events: none;
+      }
+      .chip.locked.wrong-chip {
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .chip-popover {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 7px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #111;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        padding: 4px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .chip-popover::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 4px solid transparent;
+        border-top-color: #111;
+      }
+      .chip-popover.show {
+        display: block;
+      }
+
+      .chip-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+
+      /* Checkbox: "noch eine weitere Möglichkeit" */
+      .more-option-wrap {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 4px 0 10px 0;
+        flex-wrap: nowrap;
+      }
+      .more-checkbox {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid #ccc;
+        border-radius: 4px;
+        background: var(--white);
+        cursor: pointer;
+        flex-shrink: 0;
+        position: relative;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+        vertical-align: middle;
+      }
+      .more-checkbox:checked {
+        background: var(--blue);
+        border-color: var(--blue);
+      }
+      .more-checkbox:checked::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 4px;
+        width: 5px;
+        height: 9px;
+        border: 2px solid #fff;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg);
+      }
+      .more-checkbox:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      .more-label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+      }
+      .more-checkbox:checked + .more-label {
+        color: var(--blue);
+      }
+
+      /* Extra row of chips (second possibility) */
+      .extra-chip-row {
+        display: none;
+        padding: 4px 0 10px;
+        padding-left: 146px;
+      }
+      .extra-chip-row.visible {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .solution-label {
+        display: none;
+        font-size: 12px;
+        color: var(--muted);
+        font-style: italic;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .solution-label strong {
+        color: var(--text);
+        font-style: normal;
+        font-weight: 600;
+      }
+      .solution-label.show {
+        display: inline;
+      }
+
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.warn {
+        background: #fff8ed;
+        color: #b45309;
+        border: 1px solid #fde68a;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+      .check-btn {
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .check-btn:hover {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn:active {
+        transform: scale(0.97);
+      }
+      .check-btn.success {
+        background: var(--green);
+      }
+      .check-btn.partial {
+        background: var(--yellow);
+      }
+      .check-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 4.5rem 0.75rem 2rem;
+        }
+        .task-content {
+          padding: 14px 12px;
+        }
+        .noun-label {
+          min-width: 100px;
+          font-size: 14px;
+        }
+        .chip {
+          font-size: 12px;
+          padding: 4px 10px;
+        }
+        .noun-row.extra-row {
+          padding-left: 116px;
+        }
+        .extra-chip-row {
+          padding-left: 116px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion06.html" class="sub">Lektion 6</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Unser Obelisk 2</span>
+      </div>
+      <div class="topbar">
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" /></svg
+              >Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                /></svg
+              >Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" /></svg
+              >Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Unser Obelisk 2</div>
+          <div class="task-instruction">
+            Bestimme die Wortpaare nach Kasus, Numerus und Genus. Manchmal gibt
+            es mehrere Möglichkeiten.
+          </div>
+        </div>
+
+        <div class="task-content" id="nounList"></div>
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn">Überprüfen</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── Daten ─────────────────────────────────────────────────────────────────
+      // correct: array of possible readings, each [Kasus, Numerus, Genus]
+      // double: true wenn mehrere Lösungen möglich sind
+      const nouns = [
+        {
+          id: "n1",
+          word: "agitator meus",
+          double: false,
+          correct: [["Nom", "Sg", "m"]],
+        },
+        {
+          id: "n2",
+          word: "amicas meas",
+          double: false,
+          correct: [["Akk", "Pl", "f"]],
+        },
+        {
+          id: "n3",
+          word: "equos vestros",
+          double: false,
+          correct: [["Akk", "Pl", "m"]],
+        },
+        {
+          id: "n4",
+          word: "pecuniam nostram",
+          double: false,
+          correct: [["Akk", "Sg", "f"]],
+        },
+        {
+          id: "n5",
+          word: "imperatoris nostri",
+          double: false,
+          correct: [["Gen", "Sg", "m"]],
+        },
+        {
+          id: "n6",
+          word: "munus tuum",
+          double: true,
+          correct: [
+            ["Nom", "Sg", "n"],
+            ["Akk", "Sg", "n"],
+          ],
+        },
+        {
+          id: "n7",
+          word: "quadrigae tuae",
+          double: true,
+          correct: [
+            ["Gen", "Sg", "f"],
+            ["Nom", "Pl", "f"],
+          ],
+        },
+        {
+          id: "n8",
+          word: "verba tua",
+          double: true,
+          correct: [
+            ["Nom", "Pl", "n"],
+            ["Akk", "Pl", "n"],
+          ],
+        },
+        {
+          id: "n9",
+          word: "virorum vestrorum",
+          double: false,
+          correct: [["Gen", "Pl", "m"]],
+        },
+      ];
+
+      const KEY = "task_l06_unser_obelisk_2";
+      const NEXT = "auf-dem-weg-zum-circus.html";
+
+      const KASUS_VALS = ["Nom", "Gen", "Akk"];
+      const NUMERUS_VALS = ["Sg", "Pl"];
+      const GENUS_VALS = ["m", "f", "n"];
+
+      let tries = 0,
+        locked = false;
+
+      // state[nid] = { row1: {kasus:null, numerus:null, genus:null}, row2: {kasus:null, numerus:null, genus:null}, hasSecond: bool }
+      const state = {};
+      nouns.forEach((n) => {
+        state[n.id] = {
+          row1: { kasus: null, numerus: null, genus: null },
+          row2: { kasus: null, numerus: null, genus: null },
+          hasSecond: false,
+        };
+      });
+
+      // ── Aufbau ────────────────────────────────────────────────────────────────
+      const container = document.getElementById("nounList");
+
+      nouns.forEach((n) => {
+        const block = document.createElement("div");
+        block.className = "noun-block";
+        block.id = "block-" + n.id;
+
+        // ── Zeile 1 (Haupt-Zeile) ──
+        const row1 = document.createElement("div");
+        row1.className = "noun-row";
+        row1.id = "row1-" + n.id;
+
+        const label = document.createElement("span");
+        label.className = "noun-label";
+        label.textContent = n.word;
+        row1.appendChild(label);
+
+        const groups1 = makeChipGroups(n.id, "row1");
+        row1.appendChild(groups1);
+
+        const solLabel = document.createElement("span");
+        solLabel.className = "solution-label";
+        solLabel.id = "sol-" + n.id;
+        row1.appendChild(solLabel);
+
+        block.appendChild(row1);
+
+        // ── Checkbox "noch eine weitere Möglichkeit" ──
+        const moreWrap = document.createElement("div");
+        moreWrap.className = "more-option-wrap";
+        moreWrap.style.paddingLeft = "146px";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.className = "more-checkbox";
+        cb.id = "cb-" + n.id;
+        cb.addEventListener("change", () => {
+          if (locked) {
+            cb.checked = state[n.id].hasSecond;
+            return;
+          }
+          state[n.id].hasSecond = cb.checked;
+          extraRow.classList.toggle("visible", cb.checked);
+          // reset row2 state when unchecked
+          if (!cb.checked) {
+            state[n.id].row2 = { kasus: null, numerus: null, genus: null };
+            KASUS_VALS.forEach((k) => {
+              const c = document.getElementById(`chip-${n.id}-row2-kasus-${k}`);
+              if (c)
+                c.classList.remove("selected", "correct-chip", "wrong-chip");
+            });
+            NUMERUS_VALS.forEach((num) => {
+              const c = document.getElementById(
+                `chip-${n.id}-row2-numerus-${num}`,
+              );
+              if (c)
+                c.classList.remove("selected", "correct-chip", "wrong-chip");
+            });
+            GENUS_VALS.forEach((g) => {
+              const c = document.getElementById(`chip-${n.id}-row2-genus-${g}`);
+              if (c)
+                c.classList.remove("selected", "correct-chip", "wrong-chip");
+            });
+          }
+        });
+
+        const cbLabel = document.createElement("label");
+        cbLabel.className = "more-label";
+        cbLabel.htmlFor = "cb-" + n.id;
+        cbLabel.textContent = "noch eine weitere Möglichkeit";
+
+        moreWrap.appendChild(cb);
+        moreWrap.appendChild(cbLabel);
+        block.appendChild(moreWrap);
+
+        // ── Extra-Zeile (Zeile 2) ──
+        const extraRow = document.createElement("div");
+        extraRow.className = "extra-chip-row";
+        extraRow.id = "extrarow-" + n.id;
+
+        const groups2 = makeChipGroups(n.id, "row2");
+        extraRow.appendChild(groups2);
+
+        block.appendChild(extraRow);
+
+        container.appendChild(block);
+      });
+
+      function makeChipGroups(nid, rowKey) {
+        const groups = document.createElement("div");
+        groups.className = "chip-groups";
+
+        const kasusGroup = document.createElement("div");
+        kasusGroup.className = "chip-group";
+        KASUS_VALS.forEach((k) =>
+          kasusGroup.appendChild(makeChip(nid, rowKey, "kasus", k, k + ".")),
+        );
+        groups.appendChild(kasusGroup);
+        groups.appendChild(makeDivider());
+
+        const numerusGroup = document.createElement("div");
+        numerusGroup.className = "chip-group";
+        NUMERUS_VALS.forEach((num) =>
+          numerusGroup.appendChild(
+            makeChip(nid, rowKey, "numerus", num, num + "."),
+          ),
+        );
+        groups.appendChild(numerusGroup);
+        groups.appendChild(makeDivider());
+
+        const genusGroup = document.createElement("div");
+        genusGroup.className = "chip-group";
+        GENUS_VALS.forEach((g) =>
+          genusGroup.appendChild(makeChip(nid, rowKey, "genus", g, g + ".")),
+        );
+        groups.appendChild(genusGroup);
+
+        return groups;
+      }
+
+      function makeDivider() {
+        const d = document.createElement("div");
+        d.className = "chip-divider";
+        return d;
+      }
+
+      function makeChip(nid, rowKey, type, value, lbl) {
+        const chip = document.createElement("button");
+        chip.className = "chip";
+        chip.textContent = lbl;
+        chip.dataset.nid = nid;
+        chip.dataset.row = rowKey;
+        chip.dataset.type = type;
+        chip.dataset.value = value;
+        chip.id = `chip-${nid}-${rowKey}-${type}-${value}`;
+        const pop = document.createElement("span");
+        pop.className = "chip-popover";
+        pop.id = `pop-${nid}-${rowKey}-${type}-${value}`;
+        chip.appendChild(pop);
+        chip.addEventListener("click", (e) => {
+          if (chip.classList.contains("wrong-chip")) {
+            e.stopPropagation();
+            pop.classList.toggle("show");
+            return;
+          }
+          toggleChip(nid, rowKey, type, value);
+        });
+        return chip;
+      }
+
+      function toggleChip(nid, rowKey, type, value) {
+        if (locked) return;
+        const rowState = state[nid][rowKey];
+        if (type === "kasus") {
+          const current = rowState.kasus;
+          if (current === value) {
+            rowState.kasus = null;
+            document
+              .getElementById(`chip-${nid}-${rowKey}-kasus-${value}`)
+              .classList.remove("selected");
+          } else {
+            if (current)
+              document
+                .getElementById(`chip-${nid}-${rowKey}-kasus-${current}`)
+                .classList.remove("selected");
+            rowState.kasus = value;
+            document
+              .getElementById(`chip-${nid}-${rowKey}-kasus-${value}`)
+              .classList.add("selected");
+          }
+        } else {
+          const current = rowState[type];
+          if (current === value) {
+            rowState[type] = null;
+            document
+              .getElementById(`chip-${nid}-${rowKey}-${type}-${value}`)
+              .classList.remove("selected");
+          } else {
+            if (current)
+              document
+                .getElementById(`chip-${nid}-${rowKey}-${type}-${current}`)
+                .classList.remove("selected");
+            rowState[type] = value;
+            document
+              .getElementById(`chip-${nid}-${rowKey}-${type}-${value}`)
+              .classList.add("selected");
+          }
+        }
+      }
+
+      // ── Prüfung ───────────────────────────────────────────────────────────────
+      const checkBtn = document.getElementById("checkBtn");
+      checkBtn.onclick = checkAnswers;
+
+      function getRowSelections(nid, rowKey) {
+        const s = state[nid][rowKey];
+        return { kasus: s.kasus, numerus: s.numerus, genus: s.genus };
+      }
+
+      function rowMatchesOption(sel, option) {
+        return (
+          sel.kasus === option[0] &&
+          sel.numerus === option[1] &&
+          sel.genus === option[2]
+        );
+      }
+
+      function isNounOk(n) {
+        const sel1 = getRowSelections(n.id, "row1");
+        const hasSecond = state[n.id].hasSecond;
+
+        if (n.double) {
+          if (!hasSecond) return false;
+          const sel2 = getRowSelections(n.id, "row2");
+          const opts = n.correct;
+          const match1A =
+            rowMatchesOption(sel1, opts[0]) && rowMatchesOption(sel2, opts[1]);
+          const match1B =
+            rowMatchesOption(sel1, opts[1]) && rowMatchesOption(sel2, opts[0]);
+          return match1A || match1B;
+        } else {
+          if (hasSecond) return false;
+          return rowMatchesOption(sel1, n.correct[0]);
+        }
+      }
+
+      function checkAnswers() {
+        if (locked || tries >= 3) return;
+
+        const anySelected = nouns.some((n) => {
+          const s1 = state[n.id].row1;
+          return s1.kasus || s1.numerus || s1.genus;
+        });
+        if (!anySelected) {
+          showFeedback(
+            "warn",
+            "Wähle zuerst Kasus, Numerus und Genus für mindestens ein Wortpaar.",
+          );
+          return;
+        }
+
+        tries++;
+        document.getElementById("dot" + tries).classList.add("used");
+
+        const allOk = nouns.every((n) => isNounOk(n));
+        const doLock = tries >= 3 || allOk;
+
+        let totalPoints = 0;
+        nouns.forEach((n) => {
+          if (isNounOk(n)) totalPoints += 0.5;
+        });
+
+        if (doLock) {
+          locked = true;
+          nouns.forEach((n) => {
+            const cb = document.getElementById("cb-" + n.id);
+            if (cb) cb.disabled = true;
+          });
+
+          nouns.forEach((n) => {
+            if (!isNounOk(n)) {
+              showSolutionLabel(n);
+              markRowChips(n, "row1");
+              if (state[n.id].hasSecond) markRowChips(n, "row2");
+            } else {
+              markRowChipsCorrect(n, "row1");
+              if (state[n.id].hasSecond) markRowChipsCorrect(n, "row2");
+            }
+            lockRow(n.id);
+          });
+          save(allOk, totalPoints);
+        }
+
+        if (allOk) {
+          showFeedback("ok", "Ausgezeichnet! Alle Formen richtig bestimmt!");
+          checkBtn.classList.add("success");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        } else if (tries === 1) {
+          showFeedback("warn", "Das ist noch nicht richtig!");
+        } else if (tries === 2) {
+          showFeedback("warn", "Du hast noch einen Versuch übrig!");
+        } else {
+          showFeedback("warn", "Die richtigen Lösungen sind nun markiert.");
+          checkBtn.classList.add("partial");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        }
+      }
+
+      function markRowChipsCorrect(n, rowKey) {
+        const s = state[n.id][rowKey];
+        if (s.kasus) markChip(n.id, rowKey, "kasus", s.kasus, "correct-chip");
+        if (s.numerus)
+          markChip(n.id, rowKey, "numerus", s.numerus, "correct-chip");
+        if (s.genus) markChip(n.id, rowKey, "genus", s.genus, "correct-chip");
+      }
+
+      function markRowChips(n, rowKey) {
+        const sel = state[n.id][rowKey];
+        const opts = n.correct;
+        let matchedOpt = null;
+        if (rowKey === "row1") {
+          matchedOpt = opts[0];
+          for (const opt of opts) {
+            if (rowMatchesOption(sel, opt)) {
+              matchedOpt = opt;
+              break;
+            }
+          }
+        } else {
+          const sel1 = state[n.id].row1;
+          let usedOptIdx = 0;
+          for (let i = 0; i < opts.length; i++) {
+            if (rowMatchesOption(sel1, opts[i])) {
+              usedOptIdx = i;
+              break;
+            }
+          }
+          matchedOpt = opts[usedOptIdx === 0 ? 1 : 0] || opts[0];
+        }
+
+        KASUS_VALS.forEach((k) => {
+          const selected = sel.kasus === k,
+            expected = matchedOpt[0] === k;
+          if (selected && expected)
+            markChip(n.id, rowKey, "kasus", k, "correct-chip");
+          else if (selected && !expected) {
+            markChip(n.id, rowKey, "kasus", k, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-kasus-${k}`,
+            );
+            if (p) p.textContent = "Löschen";
+          } else if (!selected && expected) {
+            markChip(n.id, rowKey, "kasus", k, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-kasus-${k}`,
+            );
+            if (p) p.textContent = k + ".";
+          }
+        });
+        NUMERUS_VALS.forEach((num) => {
+          const selected = sel.numerus === num,
+            expected = matchedOpt[1] === num;
+          if (selected && expected)
+            markChip(n.id, rowKey, "numerus", num, "correct-chip");
+          else if (selected && !expected) {
+            markChip(n.id, rowKey, "numerus", num, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-numerus-${num}`,
+            );
+            if (p) p.textContent = "Löschen";
+          } else if (!selected && expected) {
+            markChip(n.id, rowKey, "numerus", num, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-numerus-${num}`,
+            );
+            if (p) p.textContent = num + ".";
+          }
+        });
+        GENUS_VALS.forEach((g) => {
+          const selected = sel.genus === g,
+            expected = matchedOpt[2] === g;
+          if (selected && expected)
+            markChip(n.id, rowKey, "genus", g, "correct-chip");
+          else if (selected && !expected) {
+            markChip(n.id, rowKey, "genus", g, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-genus-${g}`,
+            );
+            if (p) p.textContent = "Löschen";
+          } else if (!selected && expected) {
+            markChip(n.id, rowKey, "genus", g, "wrong-chip");
+            const p = document.getElementById(
+              `pop-${n.id}-${rowKey}-genus-${g}`,
+            );
+            if (p) p.textContent = g + ".";
+          }
+        });
+      }
+
+      function showSolutionLabel(n) {
+        const label = document.getElementById("sol-" + n.id);
+        if (!label) return;
+        const text = n.correct
+          .map((c) => c[0] + ". " + c[1] + ". " + c[2] + ".")
+          .join(" / ");
+        label.innerHTML = "Lösung: <strong>" + text + "</strong>";
+        label.classList.add("show");
+      }
+
+      function markChip(nid, rowKey, type, value, cls) {
+        const chip = document.getElementById(
+          `chip-${nid}-${rowKey}-${type}-${value}`,
+        );
+        if (!chip) return;
+        chip.classList.remove("selected", "wrong-chip", "correct-chip");
+        chip.classList.add(cls);
+      }
+
+      function lockRow(nid) {
+        document
+          .querySelectorAll(`[data-nid="${nid}"]`)
+          .forEach((c) => c.classList.add("locked"));
+      }
+
+      function lsSet(k, v) {
+        try {
+          localStorage.setItem(k, v);
+        } catch (e) {}
+      }
+      function lsGet(k) {
+        try {
+          return localStorage.getItem(k);
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function save(done, totalPoints) {
+        lsSet(KEY, done ? "done" : "attempted");
+        lsSet(KEY + "_attempts", tries);
+        lsSet(KEY + "_points", +totalPoints.toFixed(2));
+        lsSet(KEY + "_date", new Date().toLocaleDateString("de-DE"));
+        if (!done) lsSet(KEY + "_fail", "true");
+        const snap = {};
+        nouns.forEach((n) => {
+          snap[n.id] = {
+            row1: { ...state[n.id].row1 },
+            row2: { ...state[n.id].row2 },
+            hasSecond: state[n.id].hasSecond,
+          };
+        });
+        lsSet(KEY + "_state", JSON.stringify(snap));
+      }
+
+      function showFeedback(type, text) {
+        const fb = document.getElementById("feedback");
+        fb.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML =
+          type === "ok"
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      // ── Gespeicherten Zustand wiederherstellen ────────────────────────────────
+      (function restore() {
+        const savedDone = lsGet(KEY) === "done";
+        const savedFail = lsGet(KEY + "_fail") === "true";
+        const savedVals = lsGet(KEY + "_state");
+        const savedTries = parseInt(lsGet(KEY + "_attempts") || "0");
+        if (!savedVals || (!savedDone && !savedFail)) return;
+
+        const saved = JSON.parse(savedVals);
+        tries = savedTries;
+        locked = true;
+        for (let i = 1; i <= savedTries; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+
+        nouns.forEach((n) => {
+          const s = saved[n.id];
+          if (!s) return;
+          state[n.id].row1 = s.row1 || {
+            kasus: null,
+            numerus: null,
+            genus: null,
+          };
+          state[n.id].row2 = s.row2 || {
+            kasus: null,
+            numerus: null,
+            genus: null,
+          };
+          state[n.id].hasSecond = !!s.hasSecond;
+
+          const cb = document.getElementById("cb-" + n.id);
+          if (cb) {
+            cb.checked = s.hasSecond;
+            cb.disabled = true;
+          }
+          if (s.hasSecond) {
+            const extraRow = document.getElementById("extrarow-" + n.id);
+            if (extraRow) extraRow.classList.add("visible");
+          }
+
+          ["row1", "row2"].forEach((rowKey) => {
+            const rs = state[n.id][rowKey];
+            if (rs.kasus)
+              document
+                .getElementById(`chip-${n.id}-${rowKey}-kasus-${rs.kasus}`)
+                ?.classList.add("selected");
+            if (rs.numerus)
+              document
+                .getElementById(`chip-${n.id}-${rowKey}-numerus-${rs.numerus}`)
+                ?.classList.add("selected");
+            if (rs.genus)
+              document
+                .getElementById(`chip-${n.id}-${rowKey}-genus-${rs.genus}`)
+                ?.classList.add("selected");
+          });
+
+          const ok = isNounOk(n);
+          if (!ok) {
+            showSolutionLabel(n);
+            markRowChips(n, "row1");
+            if (state[n.id].hasSecond) markRowChips(n, "row2");
+          } else {
+            markRowChipsCorrect(n, "row1");
+            if (state[n.id].hasSecond) markRowChipsCorrect(n, "row2");
+          }
+          lockRow(n.id);
+        });
+
+        const checkBtn = document.getElementById("checkBtn");
+        if (savedDone) {
+          showFeedback("ok", "Ausgezeichnet! Alle Formen richtig bestimmt!");
+          checkBtn.classList.add("success");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        } else {
+          showFeedback("warn", "Die richtigen Lösungen sind nun markiert.");
+          checkBtn.classList.add("partial");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        }
+      })();
+
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+      });
+    </script>
+  </body>
+</html>

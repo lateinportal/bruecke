@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vokabeltraining</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,700;1,400;1,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-gutter: stable; }
+
+    :root {
+      --bg:       #f8f8f6;
+      --white:    #ffffff;
+      --border:   #e6e4df;
+      --text:     #111111;
+      --muted:    #898783;
+      --accent:   #3b6fd4;
+      --green:    #4caf50;
+      --green-bg: #edf7ee;
+      --red:      #e53935;
+      --red-bg:   #fdecea;
+      --yellow:   #f5a623;
+      --yellow-bg:#fffbeb;
+      --radius:   14px;
+    }
+
+    body {
+      font-family: "Noto Sans", sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0;
+      height: 56px; background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem; z-index: 100;
+    }
+    .sitename {
+      font-family: "Lora", serif; font-size: 19px; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sitename a { color: inherit; text-decoration: none; }
+    .sitename .sep { color: #ccc; font-family: "Noto Sans", sans-serif; font-weight: 400; font-size: 17px; }
+    .sitename .sub { font-size: 12px; font-weight: 600; color: #555; font-family: "Noto Sans", sans-serif; letter-spacing: 0; }
+
+    /* ── Nav tabs ── */
+    .nav-tabs {
+      display: flex; gap: 2px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 3px;
+    }
+    .nav-tab {
+      border: none; background: none; cursor: pointer;
+      font-family: "Noto Sans", sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--muted); border-radius: 7px;
+      padding: 5px 16px; transition: background .15s, color .15s; white-space: nowrap;
+    }
+    .nav-tab.active { background: var(--white); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+    /* ── Main ── */
+    .main { max-width: 420px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--muted); margin-bottom: 10px;
+    }
+
+    /* ════════════════════════════
+       FREIES ÜBEN
+    ════════════════════════════ */
+    .free-hero { text-align: center; margin-bottom: 2rem; }
+    .free-hero h2 { font-family: "Lora", serif; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .free-hero p  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .free-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.8rem; }
+    .free-option {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px;
+      cursor: pointer; display: flex; align-items: center; gap: 16px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .free-option:hover   { border-color: var(--accent); box-shadow: 0 2px 12px rgba(198,97,63,.1); }
+    .free-option.selected { border-color: var(--accent); background: #eef2fc; }
+    .free-option .opt-icon { font-size: 26px; flex-shrink: 0; }
+    .free-option .opt-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .free-option .opt-text p  { font-size: 13px; color: var(--muted); }
+
+    /* Vocab select list */
+    .fvs-wrap {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem;
+    }
+    .fvs-header {
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .fvs-all-btn {
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      background: none; border: none; cursor: pointer; font-family: inherit;
+    }
+    .fvs-list { max-height: 280px; overflow-y: auto; }
+
+
+
+    .training-overview {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    .to-icon { font-size: 48px; margin-bottom: 12px; }
+    .training-overview h2 { font-family: "Lora", serif; font-size: 22px; margin-bottom: 10px; }
+    .training-overview p  { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+
+    .lektion-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .ltab {
+      border: 1px solid var(--border); background: var(--white);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; font-family: inherit;
+      transition: border-color .12s, color .12s, background .12s;
+    }
+    .ltab.active { border-color: var(--accent); color: var(--accent); background: #eef2fc; }
+
+
+    .vocab-list { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .vl-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px; border-bottom: 1px solid var(--border);
+    }
+    .vl-item:last-child { border-bottom: none; }
+    .vl-medal { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
+    .vl-next-due { font-size: 11px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .vl-lat { font-family: "Lora", serif; font-style: italic; font-weight: 600; font-size: 14px; flex: 1; }
+    .vl-de  { font-size: 13px; color: var(--muted); }
+    .vl-type { font-size: 10px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 1px 7px; flex-shrink: 0; }
+
+    /* ════════════════════════════
+       SHARED: buttons
+    ════════════════════════════ */
+    .primary-btn {
+      width: 100%; background: #111; color: #fff; border: none;
+      border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700;
+      font-family: "Noto Sans", sans-serif; cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .primary-btn:hover { background: #333; transform: translateY(-1px); }
+    .primary-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+    /* ════════════════════════════
+       FLASHCARD
+    ════════════════════════════ */
+    .card-wrap { display: none; flex-direction: column; gap: 16px; }
+    .card-wrap.active { display: flex; }
+
+    .card-progress { display: flex; align-items: center; gap: 10px; }
+    .cp-bar  { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .cp-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s; }
+    .cp-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .cp-close {
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: 6px;
+    }
+    .cp-close:hover { color: var(--text); }
+
+    .flashcard {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+    }
+    .card-img {
+      width: 100%; height: 220px; background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--border); font-size: 38px;
+    }
+    .card-body { padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 14px; }
+
+    .card-example {
+      font-family: "Lora", serif; font-style: italic;
+      font-size: 16px; line-height: 1.65; color: var(--text);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; text-align: center;
+    }
+    .card-example .kw { color: var(--accent); font-style: normal; font-weight: 700; }
+
+    /* Input rows */
+    .card-fields { display: flex; flex-direction: column; gap: 8px; }
+    .card-row { display: flex; gap: 8px; align-items: flex-end; }
+
+    .inp-wrap { flex: 1; display: flex; flex-direction: column; gap: 3px; position: relative; }
+    .inp-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--muted); padding-left: 2px;
+    }
+    .card-inp {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 9px 12px; font-family: "Noto Sans", sans-serif;
+      font-size: 14px; color: var(--text); background: var(--white);
+      outline: none; transition: border-color .15s;
+    }
+    .card-inp:focus { border-color: var(--accent); }
+    .card-inp.ok      { border-color: var(--green); border-width: 2px; }
+    .card-inp.bad     { border-color: var(--red);   border-width: 2px; }
+    .card-inp.partial { border-color: var(--yellow); border-width: 2px; }
+
+    /* Input badge — top right corner of input */
+    .inp-badge {
+      display: none; position: absolute;
+      top: 8px; right: -7px; 
+      width: 18px; height: 18px; border-radius: 50%;
+      align-items: center; justify-content: center;
+      pointer-events: none; border: 2px solid var(--white);
+    }
+    .inp-badge.show { display: flex; }
+    .inp-badge.ok   { background: var(--green); }
+    .inp-badge.fail { background: var(--red); }
+    .inp-badge.warn { background: var(--yellow); }
+    .inp-badge svg  { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+
+    /* Toggle buttons */
+    .btn-group { display: flex; gap: 6px; }
+    .tgl-btn {
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 9px 16px; background: var(--white);
+      font-family: "Noto Sans", sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--muted); cursor: pointer; transition: all .12s; white-space: nowrap;
+    }
+    .tgl-btn:hover    { border-color: var(--accent); color: var(--accent); }
+    .tgl-btn.selected { border-color: var(--accent); background: #eef2fc; color: var(--accent); }
+    .tgl-btn.ok       { border-color: var(--green); color: var(--green); }
+    .tgl-btn.bad      { border-color: var(--red);   color: var(--red); }
+
+    /* ── Popover ── */
+    .vt-popover {
+      display: none; position: fixed;
+      background: #111; color: #fff;
+      font-size: 12px; font-weight: 600;
+      padding: 7px 12px; border-radius: 8px;
+      white-space: nowrap; z-index: 9999;
+      pointer-events: none; transform: translateX(-50%);
+    }
+    .vt-popover::before {
+      content: ""; position: absolute;
+      bottom: 100%; left: 50%; margin-left: -5px;
+      border: 5px solid transparent; border-bottom-color: #111;
+    }
+    .vt-popover.show { display: block; animation: fadeDown 0.15s ease; }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+
+    .card-actions { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .check-btn {
+      border: none; border-radius: 10px;
+      padding: 11px 28px; font-size: 14px; font-weight: 700;
+      font-family: "Noto Sans", sans-serif; cursor: pointer;
+      background: #111; color: #fff;
+      transition: background .15s, transform .1s;
+    }
+    .check-btn:hover { background: #333; transform: translateY(-1px); }
+    /* Answer panel */
+    .answer-panel {
+      display: none; background: var(--bg);
+      border-top: 1px solid var(--border); padding: 14px 18px;
+    }
+    .answer-panel.show { display: block; }
+    .answer-panel h4 {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--muted); margin-bottom: 8px;
+    }
+    .answer-grid { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 14px; }
+    .answer-grid dt { color: var(--muted); font-size: 12px; align-self: center; }
+    .answer-grid dd { font-weight: 600; }
+
+    /* Results */
+    .results-total { font-family: "Lora", serif; font-size: 28px; font-weight: 700; margin: 12px 0 16px; }
+    .results-rows  { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .results-row   { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+    .results-dot   { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .results-dot.ok   { background: var(--green); }
+    .results-dot.warn { background: var(--yellow); }
+    .results-dot.fail { background: var(--red); }
+    .results-duration { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* Session done */
+    .session-done {
+      display: none; background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2.5rem 2rem; text-align: center;
+    }
+    .session-done.show { display: block; }
+    .session-done .done-icon { font-size: 44px; margin-bottom: 12px; }
+    .session-done h3 { font-family: "Lora", serif; font-size: 20px; margin-bottom: 8px; }
+    .session-done p  { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .done-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .done-btn {
+      border: 1px solid var(--border); background: var(--white);
+      border-radius: 9px; padding: 8px 20px;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; font-family: inherit;
+      transition: border-color .12s, color .12s;
+    }
+    .done-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .done-btn.prim { background: #111; color: #fff; border-color: #111; }
+    .done-btn.prim:hover { background: #333; border-color: #333; }
+
+    /* Empty */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .empty-state .e-icon { font-size: 36px; margin-bottom: 10px; }
+    .empty-state h3 { font-family: "Lora", serif; font-size: 17px; margin-bottom: 6px; }
+    .empty-state p  { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 580px) {
+      .main { padding: 1.5rem 1rem 4rem; }
+      .nav-tab { padding: 5px 10px; font-size: 12px; }
+      .r-btn { min-width: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="besuch-des-grossvaters-1.html">Latein*</a>
+    <span class="sep">›</span>
+    <span class="sub">Vokabeltraining</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('freies-ueben')">Freies Üben</button>
+    <button class="nav-tab"       onclick="showView('vokabeln')">Vokabeln</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- ═══════════════════════════════════
+       VIEW: FREIES ÜBEN
+  ═══════════════════════════════════ -->
+  <div id="view-freies-ueben" class="view active">
+    <div id="fu-empty" class="empty-state hidden">
+      <div class="e-icon">📌</div>
+      <h3>Noch keine Vokabeln</h3>
+      <p>Rechtsklick auf lateinische Wörter im Text, um sie hier zu sammeln.</p>
+    </div>
+    <div id="fu-card" class="card-wrap"></div>
+    <div id="fu-done" class="session-done">
+      <div class="done-icon">✓</div>
+      <h3>Übung beendet!</h3>
+      <div class="results-stats" id="resultsStats"></div>
+      <div class="done-btns" id="resultsBtns"></div>
+    </div>
+    <div id="fu-chooser">
+      <div class="training-overview" id="fuOverview">
+        <div class="to-icon" id="fuIcon">📚</div>
+        <h2 id="fuTitle">Vokabeln</h2>
+        <p id="fuMsg"></p>
+        <button class="primary-btn" id="fuStartBtn" onclick="startFreeSession()" style="margin-top:1.5rem;">Lernen starten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       VIEW: DEINE VOKABELN
+  ═══════════════════════════════════ -->
+  <div id="view-vokabeln" class="view">
+    <div class="lektion-tabs" id="lektionTabs"></div>
+    <div class="lektion-tabs" id="medalTabs"></div>
+    <div class="vocab-list" id="vocabList"></div>
+    <div id="vok-empty" class="empty-state hidden" style="margin-top:1rem;">
+      <div class="e-icon">📌</div>
+      <h3>Noch leer</h3>
+      <p>Pinne Wörter im Text, um sie hier zu sehen.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// VOCAB DATA
+// ══════════════════════════════════════════════════
+// wordType: "subst" | "verb" | "adj" | "praep" | "other"
+// displayMode pro Lektion:
+// "simple" = nur Grundform + Genus / 3. Sg. (Lektion S — Schüler kennen noch keinen Infinitiv/Genitiv)
+// "full"   = mit Genitiv / Infinitiv / 1. Sg. (ab Lektion 1 — je nach Entscheidung der Lehrkraft)
+const LEKTION_DISPLAY = {
+  "S": "simple",
+  "1": "full",
+};
+function getDisplayMode(lektion) {
+  return LEKTION_DISPLAY[lektion] || "full";
+}
+
+const VOCAB = {
+  hic:     { form:"hic",                wordType:"other", de:["hier"],                                                          lektion:"S", img:"besuch-1.png" },
+  pater:   { form:"pater",              wordType:"subst", de:["Vater"],          genus:"m", genSg:"patris",   sg3:"pater",      lektion:"S", img:"besuch-1.png" },
+  est:     { form:"esse",               wordType:"verb",  de:["er/sie/es ist","es gibt"], inf:"esse", sg1:"sum", sg3:"est",     lektion:"S", img:"besuch-1.png" },
+  dominus: { form:"dominus",            wordType:"subst", de:["Herr","Hausherr"],genus:"m", genSg:"domini",   sg3:"dominus",   lektion:"S", img:"besuch-1.png" },
+  servus:  { form:"servus",             wordType:"subst", de:["Sklave"],         genus:"m", genSg:"servi",    sg3:"servus",    lektion:"S", img:"besuch-2.png" },
+  clamat:  { form:"cl\u0101mare",       wordType:"verb",  de:["rufen"],          inf:"cl\u0101mare", sg1:"cl\u0101mo", sg3:"cl\u0101mat", lektion:"S", img:"besuch-2.png" },
+  avus:    { form:"avus",               wordType:"subst", de:["Gro\xdfvater"],   genus:"m", genSg:"avi",      sg3:"avus",      lektion:"S", img:"besuch-2.png" },
+  venit:   { form:"ven\u012bre",        wordType:"verb",  de:["kommen"],         inf:"ven\u012bre", sg1:"venio", sg3:"venit",   lektion:"S", img:"besuch-2.png" },
+  mater:   { form:"m\u0101ter",         wordType:"subst", de:["Mutter"],         genus:"f", genSg:"matris",   sg3:"m\u0101ter", lektion:"S", img:"besuch-3.png" },
+  domina:  { form:"domina",             wordType:"subst", de:["Herrin"],         genus:"f", genSg:"dominae",  sg3:"domina",    lektion:"S", img:"besuch-3.png" },
+  serva:   { form:"serva",              wordType:"subst", de:["Sklavin"],        genus:"f", genSg:"servae",   sg3:"serva",     lektion:"S", img:"besuch-3.png" },
+  laborat: { form:"lab\u014dr\u0101re", wordType:"verb",  de:["arbeiten"],       inf:"lab\u014dr\u0101re", sg1:"lab\u014dro", sg3:"lab\u014drat", lektion:"S", img:"besuch-3.png" },
+  // Besuch (2)
+  filius:  { form:"filius",             wordType:"subst", de:["Sohn"],           genus:"m", genSg:"filii",    sg3:"filius",    lektion:"S", img:"besuch-4.png" },
+  ludit:   { form:"ludere",             wordType:"verb",  de:["er/sie/es spielt"], inf:"ludere", sg1:"ludo",  sg3:"l\u016bdit", lektion:"S", img:"besuch-4.png" },
+  filia:   { form:"filia",              wordType:"subst", de:["Tochter"],        genus:"f", genSg:"filiae",   sg3:"filia",     lektion:"S", img:"besuch-5.png" },
+  cantat:  { form:"cantare",            wordType:"verb",  de:["er/sie/es singt"], inf:"cantare", sg1:"canto", sg3:"cantat",    lektion:"S", img:"besuch-5.png" },
+  et:      { form:"et",                 wordType:"other", de:["und"],                                                          lektion:"S", img:"besuch-5.png" },
+  gaudet:  { form:"gaudere",            wordType:"verb",  de:["er/sie/es freut sich"], inf:"gaudere", sg1:"gaudeo", sg3:"gaudet", lektion:"S", img:"besuch-5.png" },
+  catella: { form:"catella",            wordType:"subst", de:["H\xfcndchen"],    genus:"f", genSg:"catellae", sg3:"catella",   lektion:"S", img:"besuch-6.png" },
+  currit:  { form:"currere",            wordType:"verb",  de:["er/sie/es l\xe4uft"], inf:"currere", sg1:"curro", sg3:"currit", lektion:"S", img:"besuch-6.png" },
+  // ── Lektion 1: Aufregung im Haus der Cornelier ──
+  l1_aulus:     { form:"Aulus",                wordType:"other", de:["Aulus"],                                                                              lektion:"1", img:"aufregung-1.png" },
+  l1_ludit:     { form:"l\u016bdere",          wordType:"verb",  de:["spielen"],          inf:"l\u016bdere",       sg1:"l\u016bd\u014d",   sg3:"l\u016bdit",  lektion:"1", img:"aufregung-1.png" },
+  l1_cornelia:  { form:"Corn\u0113lia",        wordType:"other", de:["Cornelia"],                                                                            lektion:"1", img:"aufregung-2.png" },
+  l1_cantat:    { form:"cant\u0101re",         wordType:"verb",  de:["singen"],           inf:"cant\u0101re",      sg1:"cant\u014d",       sg3:"cantat",      lektion:"1", img:"aufregung-2.png" },
+  l1_et:        { form:"et",                   wordType:"other", de:["und"],                                                                                 lektion:"1", img:"aufregung-2.png" },
+  l1_gaudet:    { form:"gaud\u0113re",         wordType:"verb",  de:["sich freuen"],      inf:"gaud\u0113re",      sg1:"gaude\u014d",      sg3:"gaudet",      lektion:"1", img:"aufregung-2.png" },
+  l1_nam:       { form:"nam",                  wordType:"other", de:["denn"],                                                                                lektion:"1", img:"aufregung-2.png" },
+  l1_hodie:     { form:"hodi\u0113",           wordType:"other", de:["heute"],                                                                               lektion:"1", img:"aufregung-2.png" },
+  l1_avus:      { form:"avus",                 wordType:"subst", de:["Gro\u00dfvater"],   genus:"m", genSg:"av\u012b",          sg3:"avus",                  lektion:"1", img:"aufregung-2.png" },
+  l1_avum:      { form:"avus",                 wordType:"subst", de:["Gro\u00dfvater"],   genus:"m", genSg:"av\u012b",          sg3:"avus",                  lektion:"1", img:"aufregung-3.png" },
+  l1_venit:     { form:"ven\u012bre",          wordType:"verb",  de:["kommen"],           inf:"ven\u012bre",       sg1:"veni\u014d",       sg3:"venit",       lektion:"1", img:"aufregung-2.png" },
+  l1_familia:   { form:"familia",              wordType:"subst", de:["Hausgemeinschaft"], genus:"f", genSg:"familiae",          sg3:"familia",               lektion:"1", img:"aufregung-3.png" },
+  l1_exspectat: { form:"exspect\u0101re",      wordType:"verb",  de:["erwarten"],         inf:"exspect\u0101re",   sg1:"exspect\u014d",    sg3:"exspectat",   lektion:"1", img:"aufregung-3.png" },
+  l1_subito:    { form:"subit\u014d",          wordType:"other", de:["pl\u00f6tzlich"],                                                                      lektion:"1", img:"aufregung-4.png" },
+  l1_clamor:    { form:"cl\u0101mor",          wordType:"subst", de:["L\u00e4rm","Krach","Geschrei"], genus:"m", genSg:"cl\u0101m\u014dris", sg3:"cl\u0101mor", lektion:"1", img:"aufregung-4.png" },
+  l1_est:       { form:"esse",                 wordType:"verb",  de:["sein","es gibt"],   inf:"esse",              sg1:"sum",              sg3:"est",         lektion:"1", img:"aufregung-4.png" },
+  l1_servus:    { form:"servus",               wordType:"subst", de:["Sklave"],           genus:"m", genSg:"serv\u012b",        sg3:"servus",                lektion:"1", img:"aufregung-5.png" },
+  l1_servum:    { form:"servus",               wordType:"subst", de:["Sklave"],           genus:"m", genSg:"serv\u012b",        sg3:"servus",                lektion:"1", img:"aufregung-5.png" },
+  l1_clamat:    { form:"cl\u0101m\u0101re",    wordType:"verb",  de:["rufen"],            inf:"cl\u0101m\u0101re", sg1:"cl\u0101m\u014d",  sg3:"cl\u0101mat", lektion:"1", img:"aufregung-5.png" },
+  l1_issa:      { form:"Issa",                 wordType:"other", de:["Issa (Name des Hundes)"],                                                              lektion:"1", img:"aufregung-5.png" },
+  l1_audit:     { form:"aud\u012bre",          wordType:"verb",  de:["h\u00f6ren","zuh\u00f6ren"], inf:"aud\u012bre", sg1:"audi\u014d",    sg3:"audit",       lektion:"1", img:"aufregung-6.png" },
+  l1_rogat:     { form:"rog\u0101re",          wordType:"verb",  de:["fragen"],           inf:"rog\u0101re",       sg1:"rog\u014d",        sg3:"rogat",       lektion:"1", img:"aufregung-6.png" },
+  l1_quid:      { form:"quid?",                wordType:"other", de:["was?"],                                                                                lektion:"1", img:"aufregung-6.png" },
+};
+
+const EXAMPLES = {
+  hic:     { lat:"Hic pater est.",                                     kw:["Hic"] },
+  pater:   { lat:"Hic pater est. Pater dominus est.",                  kw:["pater","Pater"] },
+  est:     { lat:"Pater dominus est.",                                 kw:["est"] },
+  dominus: { lat:"Pater dominus est.",                                 kw:["dominus"] },
+  servus:  { lat:"Hic servus est. Servus clamat: \u201eAvus venit!\u201c", kw:["servus","Servus"] },
+  clamat:  { lat:"Servus clamat: \u201eAvus venit!\u201c",             kw:["clamat"] },
+  avus:    { lat:"Servus clamat: \u201eAvus venit!\u201c",             kw:["Avus","avus"] },
+  venit:   { lat:"Servus clamat: \u201eAvus venit!\u201c",             kw:["venit"] },
+  mater:   { lat:"Hic mater est. Mater domina est.",                   kw:["mater","Mater"] },
+  domina:  { lat:"Mater domina est.",                                  kw:["domina"] },
+  serva:   { lat:"Hic serva est. Laborat.",                            kw:["serva"] },
+  laborat: { lat:"Laborat.",                                           kw:["Laborat","laborat"] },
+  // Besuch (2)
+  filius:  { lat:"Hic Aulus est. Aulus filius est.",                   kw:["filius"] },
+  ludit:   { lat:"Hic Aulus est. Aulus filius est. Ludit.",            kw:["Ludit","ludit"] },
+  filia:   { lat:"Hic Cornelia est. Cornelia filia est.",              kw:["filia"] },
+  cantat:  { lat:"Cornelia filia est. Cantat et gaudet.",              kw:["Cantat","cantat"] },
+  et:      { lat:"Cantat et gaudet.",                                  kw:["et"] },
+  gaudet:  { lat:"Cantat et gaudet.",                                  kw:["gaudet"] },
+  catella: { lat:"Hic Issa est. Issa catella est.",                    kw:["catella"] },
+  currit:  { lat:"Hic Issa est. Issa catella est. Currit.",            kw:["Currit","currit"] },
+  // Lektion 1
+  l1_aulus:     { lat:"Aulus l\u016bdit.",                                                          kw:["Aulus"] },
+  l1_ludit:     { lat:"Aulus l\u016bdit.",                                                          kw:["l\u016bdit"] },
+  l1_cornelia:  { lat:"Corn\u0113lia cantat et gaudet.",                                            kw:["Corn\u0113lia"] },
+  l1_cantat:    { lat:"Corn\u0113lia cantat et gaudet.",                                            kw:["cantat"] },
+  l1_et:        { lat:"Corn\u0113lia cantat et gaudet.",                                            kw:["et"] },
+  l1_gaudet:    { lat:"Corn\u0113lia cantat et gaudet.",                                            kw:["gaudet"] },
+  l1_nam:       { lat:"Corn\u0113lia gaudet, nam hodi\u0113 avus venit.",                           kw:["nam"] },
+  l1_hodie:     { lat:"Corn\u0113lia gaudet, nam hodi\u0113 avus venit.",                           kw:["hodi\u0113"] },
+  l1_avus:      { lat:"Corn\u0113lia gaudet, nam hodi\u0113 avus venit.",                           kw:["avus"] },
+  l1_avum:      { lat:"Familia avum exspectat.",                                                    kw:["avum"] },
+  l1_venit:     { lat:"Corn\u0113lia gaudet, nam hodi\u0113 avus venit.",                           kw:["venit"] },
+  l1_familia:   { lat:"Familia avum exspectat.",                                                    kw:["Familia"] },
+  l1_exspectat: { lat:"Familia avum exspectat.",                                                    kw:["exspectat"] },
+  l1_subito:    { lat:"Subit\u014d cl\u0101mor est.",                                               kw:["Subit\u014d"] },
+  l1_clamor:    { lat:"Subit\u014d cl\u0101mor est.",                                               kw:["cl\u0101mor"] },
+  l1_est:       { lat:"Subit\u014d cl\u0101mor est.",                                               kw:["est"] },
+  l1_servus:    { lat:"Servus cl\u0101mat: \u201eIssa, Issa!\u201c",                                kw:["Servus"] },
+  l1_servum:    { lat:"Corn\u0113lia servum audit.",                                                kw:["servum"] },
+  l1_clamat:    { lat:"Servus cl\u0101mat: \u201eIssa, Issa!\u201c",                                kw:["cl\u0101mat"] },
+  l1_issa:      { lat:"Servus cl\u0101mat: \u201eIssa, Issa!\u201c",                                kw:["Issa"] },
+  l1_audit:     { lat:"Corn\u0113lia servum audit et rogat: \u201eQuid est?\u201c",                 kw:["audit"] },
+  l1_rogat:     { lat:"Corn\u0113lia servum audit et rogat: \u201eQuid est?\u201c",                 kw:["rogat"] },
+  l1_quid:      { lat:"Corn\u0113lia rogat: \u201eQuid est?\u201c",                                 kw:["Quid"] },
+};
+
+function hlEx(key) {
+  const ex = EXAMPLES[key]; if (!ex) return "";
+  let s = ex.lat;
+  // \b funktioniert nicht mit Unicode-Sonderzeichen (ē, ō, ū …)
+  // Stattdessen: Wort zwischen Leerzeichen, Satzzeichen oder Stringanfang/-ende ersetzen
+  ex.kw.forEach(w => {
+    const escaped = w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    s = s.replace(new RegExp("(?<![\\w\u00C0-\u024F])" + escaped + "(?![\\w\u00C0-\u024F])", "g"),
+      `<span class="kw">${w}</span>`);
+  });
+  return s;
+}
+
+// ══════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════
+const PINNED_KEY  = "besuch-grossvaters-pinned";
+const PINNED_KEY2 = "besuch-grossvaters-2-pinned";
+const PINNED_KEY3 = "aufregung-cornelier-a-pinned";
+const SR_KEY     = "vokabeltraining-sr";
+
+// Medaillen-System: 0=neu, 1=Bronze, 2=Silber, 3=Gold, 4=Pokal
+const MEDAL_DAYS = [1, 2, 5, 10]; // Tage bis zur nächsten Abfrage nach Bronze/Silber/Gold
+const MEDAL_EMOJI= ["","🥉","🥈","🥇","🏆"];
+const MEDAL_LABEL= ["Neu","Bronze","Silber","Gold","Pokal"];
+
+function loadPinned() {
+  try {
+    const saved1 = JSON.parse(localStorage.getItem(PINNED_KEY)||"{}");
+    const saved2 = JSON.parse(localStorage.getItem(PINNED_KEY2)||"{}");
+    const saved3 = JSON.parse(localStorage.getItem(PINNED_KEY3)||"{}");
+    const all = new Set();
+    [saved1, saved2, saved3].forEach(saved =>
+      Object.values(saved).forEach(arr => (arr||[]).forEach(k => all.add(k)))
+    );
+    return [...all].filter(k=>!!VOCAB[k]);
+  } catch { return []; }
+}
+function srLoad()       { try { return JSON.parse(localStorage.getItem(SR_KEY)||"{}"); } catch { return {}; } }
+function srSave(st)     { localStorage.setItem(SR_KEY, JSON.stringify(st)); }
+function srToday()      { return new Date().toISOString().slice(0,10); }
+function srDaysSince(d) { if(!d) return 999; return Math.round((new Date(srToday())-new Date(d))/86400000); }
+
+function srGetMedal(key) {
+  const st=srLoad(); return st[key]||{medal:0,lastSeen:null};
+}
+function srIsDue(s) {
+  if(!s||s.medal===0) return true; // neu → immer fällig
+  if(s.medal===4) return false;    // Pokal → fertig
+  return srDaysSince(s.lastSeen) >= MEDAL_DAYS[s.medal-1];
+}
+function srEnsure(pins) {
+  const st=srLoad();
+  pins.forEach(k=>{ if(!st[k]) st[k]={medal:0,lastSeen:null}; });
+  srSave(st); return srLoad();
+}
+function srMarkCorrect(key) {
+  const st=srLoad(), s=st[key]||{medal:0,lastSeen:null};
+  s.medal=Math.min(4, s.medal+1);
+  s.lastSeen=srToday(); st[key]=s; srSave(st);
+}
+function srMarkWrong(key) {
+  const st=srLoad(), s=st[key]||{medal:0,lastSeen:null};
+  if(s.medal===0) { /* neu und falsch → bleibt neu, kein lastSeen */ }
+  else { s.medal=1; s.lastSeen=srToday(); } // zurück zu Bronze
+  st[key]=s; srSave(st);
+}
+
+// ══════════════════════════════════════════════════
+// APP STATE
+// ══════════════════════════════════════════════════
+let pinned      = [];
+let freeQueue   = [];
+let freeIdx     = 0;
+let activeLektion="Alle";
+let sessionResults = []; // {key, result: "ok"|"partial"|"bad"}
+let sessionStart   = null;
+
+// ══════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════
+function showView(v) {
+  document.querySelectorAll(".view").forEach(e=>e.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(e=>e.classList.remove("active"));
+  document.getElementById("view-"+v).classList.add("active");
+  const map={"freies-ueben":0,"vokabeln":1};
+  document.querySelectorAll(".nav-tab")[map[v]].classList.add("active");
+  if(v==="freies-ueben") initFree();
+  if(v==="vokabeln")     initVokabeln();
+}
+
+// ══════════════════════════════════════════════════
+// FREIES ÜBEN
+// ══════════════════════════════════════════════════
+function initFree() {
+  pinned=loadPinned();
+  document.getElementById("fu-card").classList.remove("active");
+  document.getElementById("fu-done").classList.remove("show");
+  document.getElementById("fu-chooser").classList.remove("hidden");
+  if(pinned.length===0){
+    document.getElementById("fu-empty").classList.remove("hidden");
+    document.getElementById("fu-chooser").classList.add("hidden");
+    return;
+  }
+  document.getElementById("fu-empty").classList.add("hidden");
+  renderFVS();
+  updateFuBtn();
+}
+function backToChooser() {
+  document.getElementById("fu-done").classList.remove("show");
+  document.getElementById("fu-card").classList.remove("active");
+  document.getElementById("fu-chooser").classList.remove("hidden");
+}
+function initFree() {
+  pinned=loadPinned();
+  const st=srEnsure(pinned);
+  document.getElementById("fu-card").classList.remove("active");
+  document.getElementById("fu-done").classList.remove("show");
+  document.getElementById("fu-chooser").classList.remove("hidden");
+
+  if(pinned.length===0){
+    document.getElementById("fuIcon").textContent="📌";
+    document.getElementById("fuTitle").textContent="Noch keine Vokabeln";
+    document.getElementById("fuMsg").textContent="Beim Übersetzen nicht gewusste Wörter werden hier gesammelt.";
+    document.getElementById("fuStartBtn").classList.add("hidden");
+    return;
+  }
+
+  const due=pinned.filter(k=>srIsDue(st[k]));
+  document.getElementById("fuStartBtn").classList.remove("hidden");
+
+  if(due.length===0){
+    // Find next due date
+    let minDays=Infinity;
+    pinned.forEach(k=>{
+      const s=st[k]; if(!s||s.medal===4) return;
+      const rem=MEDAL_DAYS[s.medal-1]-srDaysSince(s.lastSeen);
+      if(rem<minDays) minDays=rem;
+    });
+    document.getElementById("fuIcon").textContent="✅";
+    document.getElementById("fuTitle").textContent="Alles erledigt!";
+    document.getElementById("fuMsg").textContent=minDays===Infinity
+      ? "Alle Vokabeln haben den 🏆 Pokal erreicht!"
+      : "Keine Vokabeln fällig. Komme in "+minDays+" Tag"+(minDays!==1?"en":"")+" wieder.";
+    document.getElementById("fuStartBtn").disabled=true;
+  } else {
+    document.getElementById("fuIcon").textContent="📚";
+    document.getElementById("fuTitle").textContent=due.length+" Vokabel"+(due.length!==1?"n":"")+" fällig";
+    document.getElementById("fuMsg").textContent="Vokabeln, die du beim Übersetzen nicht gewusst hast, kannst du hier gezielt wiederholen.";
+    document.getElementById("fuStartBtn").disabled=false;
+  }
+}
+
+function backToChooser() {
+  document.getElementById("fu-done").classList.remove("show");
+  document.getElementById("fu-card").classList.remove("active");
+  document.getElementById("fu-chooser").classList.remove("hidden");
+  initFree();
+}
+
+function startFreeSession() {
+  pinned=loadPinned();
+  const st=srEnsure(pinned);
+  freeQueue=pinned.filter(k=>srIsDue(st[k])).sort(()=>Math.random()-.5);
+  freeIdx=0;
+  sessionResults=[];
+  sessionStart=Date.now();
+  document.getElementById("fu-chooser").classList.add("hidden");
+  document.getElementById("fu-done").classList.remove("show");
+  showFreeCard();
+}
+
+function resetFreeSession() {
+  freeIdx=0;
+  freeQueue=[...freeQueue].sort(()=>Math.random()-.5);
+  document.getElementById("fu-done").classList.remove("show");
+  showFreeCard();
+}
+
+function showFreeCard() {
+  if(freeIdx>=freeQueue.length) {
+    document.getElementById("fu-card").classList.remove("active");
+    showResults();
+    return;
+  }
+  renderCard("fu-card", freeQueue[freeIdx], "schreiben", false, ()=>{ freeIdx++; showFreeCard(); });
+  document.getElementById("fu-card").classList.add("active");
+}
+
+function showResults() {
+  const ok      = sessionResults.filter(r=>r.result==="ok").length;
+  const partial = sessionResults.filter(r=>r.result==="partial").length;
+  const bad     = sessionResults.filter(r=>r.result==="bad").length;
+  const total   = sessionResults.length;
+  const secs    = Math.round((Date.now()-sessionStart)/1000);
+  const mins    = Math.floor(secs/60);
+  const remSecs = secs%60;
+  const durLabel= mins>0
+    ? mins+" Minute"+(mins!==1?"n":"")+(remSecs>0?" "+remSecs+"s":"")
+    : secs+" Sekunde"+(secs!==1?"n":"");
+  const wrongKeys=sessionResults.filter(r=>r.result==="bad"||r.result==="partial").map(r=>r.key);
+
+  document.getElementById("resultsStats").innerHTML=`
+    <div class="results-total">${total} Aufgabe${total!==1?"n":""}</div>
+    <div class="results-rows">
+      <div class="results-row"><div class="results-dot ok"></div>${ok} richtig</div>
+      <div class="results-row"><div class="results-dot warn"></div>${partial} fast richtig</div>
+      <div class="results-row"><div class="results-dot fail"></div>${bad} falsch</div>
+    </div>
+    <div class="results-duration">⏱ ${durLabel} gelernt</div>`;
+
+  document.getElementById("resultsBtns").innerHTML=`
+    ${wrongKeys.length>0?`<button class="done-btn prim" onclick="repeatWrong()">Falsche wiederholen</button>`:""}
+    <button class="done-btn" onclick="backToChooser()">Beenden</button>`;
+
+  document.getElementById("fu-done").classList.add("show");
+}
+
+function repeatWrong() {
+  const wrongKeys=sessionResults.filter(r=>r.result==="bad"||r.result==="partial").map(r=>r.key);
+  freeQueue=wrongKeys.sort(()=>Math.random()-.5);
+  freeIdx=0;
+  sessionResults=[];
+  sessionStart=Date.now();
+  document.getElementById("fu-done").classList.remove("show");
+  showFreeCard();
+}
+
+// ══════════════════════════════════════════════════
+// VOKABELN VIEW
+// ══════════════════════════════════════════════════
+let activeMedal = "alle"; // "alle" | 0 | 1 | 2 | 3 | 4
+
+function initVokabeln() {
+  pinned=loadPinned();
+  const st=srLoad();
+
+  // Lektion tabs
+  const lektionen=["Alle",...new Set(pinned.map(k=>VOCAB[k]?.lektion).filter(Boolean))];
+  document.getElementById("lektionTabs").innerHTML=lektionen.map(l=>
+    `<button class="ltab ${l===activeLektion?"active":""}" onclick="setLektion('${l}')">
+      ${l==="Alle"?"Alle Vokabeln":"Lektion "+l}
+    </button>`).join("");
+
+  renderMedalTabs(st);
+  renderVokabelnList(st);
+}
+
+function renderMedalTabs(st) {
+  const filtered=activeLektion==="Alle"?pinned:pinned.filter(k=>VOCAB[k]?.lektion===activeLektion);
+  // Count per medal
+  const counts=Array(5).fill(0);
+  filtered.forEach(k=>{ counts[st[k]?.medal||0]++; });
+  const tabs=[
+    { val:"alle", label:"Alle", count:filtered.length, emoji:"" },
+    { val:0,      label:"",  count:counts[0], emoji:"🆕" },
+    { val:1,      label:"",  count:counts[1], emoji:"🥉" },
+    { val:2,      label:"",  count:counts[2], emoji:"🥈" },
+    { val:3,      label:"",  count:counts[3], emoji:"🥇" },
+    { val:4,      label:"",  count:counts[4], emoji:"🏆" },
+  ];
+  document.getElementById("medalTabs").innerHTML=tabs.map(t=>{
+    const valAttr=t.val==="alle" ? "'alle'" : t.val;
+    return `<button class="ltab ${activeMedal===t.val?"active":""}" onclick="setMedal(${valAttr})">
+      ${t.emoji} ${t.label} <span style="font-size:11px;opacity:.7">${t.count}</span>
+    </button>`;
+  }).join("");
+}
+
+function setLektion(l) {
+  activeLektion=l;
+  document.querySelectorAll(".ltab").forEach(t=>{
+    t.classList.toggle("active", t.textContent.trim().startsWith(l==="Alle"?"Alle Vokabeln":"Lektion "+l));
+  });
+  const st=srLoad();
+  renderMedalTabs(st);
+  renderVokabelnList(st);
+}
+
+function setMedal(val) {
+  activeMedal=val;
+  const st=srLoad();
+  renderMedalTabs(st);
+  renderVokabelnList(st);
+}
+
+function renderVokabelnList(st) {
+  let filtered=activeLektion==="Alle"?pinned:pinned.filter(k=>VOCAB[k]?.lektion===activeLektion);
+  if(activeMedal!=="alle") filtered=filtered.filter(k=>(st[k]?.medal||0)===activeMedal);
+
+  const listEl=document.getElementById("vocabList");
+  const emptyEl=document.getElementById("vok-empty");
+  if(filtered.length===0) {
+    listEl.classList.add("hidden"); emptyEl.classList.remove("hidden");
+    return;
+  }
+  listEl.classList.remove("hidden"); emptyEl.classList.add("hidden");
+  listEl.innerHTML=filtered.map(key=>{
+    const v=VOCAB[key], s=st[key]||{medal:0,lastSeen:null};
+    const medal=s.medal||0;
+    const isDue=srIsDue(s);
+    let nextLabel="";
+    if(medal===4) nextLabel="<span style='color:var(--green);font-weight:600'>Gemeistert 🏆</span>";
+    else if(isDue) nextLabel="<span style='color:var(--accent);font-weight:600'>Fällig ✦</span>";
+    else {
+      const daysLeft=MEDAL_DAYS[medal-1]-srDaysSince(s.lastSeen);
+      nextLabel="in "+daysLeft+" Tag"+(daysLeft!==1?"en":"");
+    }
+    const medalDisplay=medal===0
+      ? '<span style="font-size:11px;color:var(--muted)">Neu</span>'
+      : MEDAL_EMOJI[medal];
+    const mode = getDisplayMode(v.lektion);
+    const formStr = mode === "simple"
+      ? (v.wordType === "subst" ? `${v.form} ${v.genus}.` : v.form)
+      : (v.wordType === "verb"  ? `${v.inf}, ${v.sg1}`
+        : v.wordType === "subst" ? `${v.form}, ${v.genSg} ${v.genus}.`
+        : v.form);
+    return `<div class="vl-item">
+      <div class="vl-medal">${medalDisplay}</div>
+      <div class="vl-lat">${formStr}</div>
+      <div class="vl-de">${v.de.join(", ")}</div>
+      <div class="vl-next-due">${nextLabel}</div>
+    </div>`;
+  }).join("");
+}
+
+// ══════════════════════════════════════════════════
+// FLASHCARD RENDERER
+// ══════════════════════════════════════════════════
+// onNext(rating?) — rating only when useRating=true
+function renderCard(cid, key, mode, useRating, onNext) {
+  const c=document.getElementById(cid);
+  const v=VOCAB[key];
+  const st=srLoad(), s=st[key]||{fach:1};
+  const queue=cid==="fu-card"?freeQueue:trQueue;
+  const idx  =cid==="fu-card"?freeIdx  :trIdx;
+  const pct  =queue.length>0?(idx/queue.length*100):0;
+
+  c._onNext=onNext; c._useRating=useRating; c._key=key; c._mode=mode;
+
+  c.innerHTML=`
+    <div class="card-progress">
+      <div class="cp-bar"><div class="cp-fill" style="width:${pct}%"></div></div>
+      <div class="cp-label">${idx} / ${queue.length}</div>
+      <button class="cp-close" onclick="abortCard('${cid}')">✕</button>
+    </div>
+    <div class="flashcard">
+      <div class="card-img">${v.img
+        ? `<img src="images/${v.img}" alt="" style="width:100%;height:100%;object-fit:cover;display:block;">`
+        : "🖼"}</div>
+      <div class="card-body">
+        <div class="card-example">${hlEx(key)}</div>
+        <div class="card-fields" id="cf"></div>
+        <div class="card-actions" id="ca"></div>
+      </div>
+    </div>`;
+
+  buildFields(c.querySelector("#cf"), key, v, mode, cid);
+  buildActions(c.querySelector("#ca"), key, mode, cid, useRating);
+}
+
+function buildAnswerGrid(v) {
+  let rows="";
+  if(v.wordType==="subst") {
+    rows+=`<dt>Nom. Sg.</dt><dd>${v.form}</dd>`;
+    rows+=`<dt>Gen. Sg.</dt><dd>${v.genSg}</dd>`;
+    rows+=`<dt>Genus</dt><dd>${v.genus}.</dd>`;
+  } else if(v.wordType==="verb") {
+    rows+=`<dt>Infinitiv</dt><dd>${v.inf}</dd>`;
+    rows+=`<dt>1. Sg. Präs.</dt><dd>${v.sg1}</dd>`;
+  } else if(v.wordType==="adj") {
+    rows+=`<dt>Nom. Sg. m.</dt><dd>${v.form}</dd>`;
+  } else if(v.wordType==="praep") {
+    rows+=`<dt>Kasus</dt><dd>mit ${v.kasus}.</dd>`;
+  }
+  rows+=`<dt>Übersetzung</dt><dd>${v.de.join(", ")}</dd>`;
+  return rows;
+}
+
+function buildFields(cf, key, v, mode, cid) {
+  const wt=v.wordType;
+  if(wt==="subst") {
+    addRow(cf, [{ label:"Nom. Sg.", id:"nom" }]);
+    // Gen. Sg. + Genus in one row
+    const genGenusRow=document.createElement("div");
+    genGenusRow.className="card-row";
+    genGenusRow.innerHTML=`
+      <div class="inp-wrap" style="flex:2">
+        <div class="inp-label">Gen. Sg.</div>
+        <input class="card-inp" data-id="gen" type="text" autocomplete="off" style="width:100%"/>
+      </div>
+      <div class="inp-wrap" style="flex:none">
+        <div class="inp-label">Genus</div>
+        <div class="btn-group">
+          <button class="tgl-btn" data-val="m" onclick="pickBtn(this)">m</button>
+          <button class="tgl-btn" data-val="f" onclick="pickBtn(this)">f</button>
+          <button class="tgl-btn" data-val="n" onclick="pickBtn(this)">n</button>
+        </div>
+      </div>`;
+    cf.appendChild(genGenusRow);
+    addRow(cf, [{ label:"Übersetzung(en)", id:"de" }]);
+
+  } else if(wt==="verb") {
+    addRow(cf, [{ label:"Infinitiv",    id:"inf", ph:"Infinitiv …" }]);
+    addRow(cf, [{ label:"1. Sg. Präs.", id:"sg1", ph:"1. Person Singular …" }]);
+    addRow(cf, [{ label:"Übersetzung(en)", id:"de", ph:"Übersetzung …" }]);
+
+  } else if(wt==="adj") {
+    addRow(cf, [{ label:"Nom. Sg. m.", id:"nom", ph:"Nominativ Singular m. …" }]);
+    addRow(cf, [{ label:"Übersetzung(en)", id:"de", ph:"Übersetzung …" }]);
+
+  } else if(wt==="praep") {
+    const kasusRow=document.createElement("div");
+    kasusRow.className="card-row";
+    kasusRow.innerHTML=`
+      <div class="inp-wrap">
+        <div class="inp-label">Kasus</div>
+        <div class="btn-group">
+          <button class="tgl-btn" data-val="Akk" onclick="pickBtn(this)">mit Akk.</button>
+          <button class="tgl-btn" data-val="Abl" onclick="pickBtn(this)">mit Abl.</button>
+        </div>
+      </div>`;
+    cf.appendChild(kasusRow);
+    addRow(cf, [{ label:"Übersetzung(en)", id:"de", ph:"Übersetzung …" }]);
+
+  } else {
+    addRow(cf, [{ label:"Übersetzung(en)", id:"de", ph:"Übersetzung …" }]);
+  }
+
+  // Enter → check
+  cf.querySelectorAll(".card-inp").forEach(inp=>{
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter") checkAnswer(cid); });
+  });
+}
+
+function addRow(cf, fields) {
+  const row=document.createElement("div");
+  row.className="card-row";
+  row.innerHTML=fields.map(f=>`
+    <div class="inp-wrap">
+      <div class="inp-label">${f.label}</div>
+      <input class="card-inp" data-id="${f.id}" type="text" autocomplete="off"/>
+    </div>`).join("");
+  cf.appendChild(row);
+}
+
+function buildActions(ca, key, mode, cid) {
+  ca.innerHTML=`<button class="check-btn" id="checkBtn" onclick="checkAnswer('${cid}')">Überprüfen</button>`;
+}
+
+function pickBtn(btn) {
+  btn.closest(".btn-group").querySelectorAll(".tgl-btn").forEach(b=>{
+    b.classList.remove("selected","ok","bad"); delete b.dataset.selected;
+  });
+  btn.classList.add("selected");
+  btn.dataset.selected="1";
+}
+
+// ══════════════════════════════════════════════════
+// CHECK & REVEAL
+// ══════════════════════════════════════════════════
+function norm(s) {
+  return s.trim().toLowerCase()
+    .replace(/[\u0101]/g,"a").replace(/[\u0113]/g,"e")
+    .replace(/[\u012b]/g,"i").replace(/[\u014d]/g,"o")
+    .replace(/[\u016b]/g,"u")
+    .replace(/\s+/g," ");
+}
+
+function checkAnswer(cid) {
+  const c=document.getElementById(cid);
+  const key=c._key, v=VOCAB[key], wt=v.wordType;
+  let allOk=true;
+
+  function chkInp(fieldId, correctArr) {
+    const inp=c.querySelector(`.card-inp[data-id="${fieldId}"]`); if(!inp) return;
+    // correctArr is always an array of accepted answers
+    const answers=Array.isArray(correctArr)?correctArr:[correctArr];
+    // Normalize user input — split by comma
+    const userParts=inp.value.split(",").map(s=>norm(s)).filter(s=>s.length>0);
+    const correctParts=answers.flatMap(a=>a.split(",").map(s=>norm(s))).filter(s=>s.length>0);
+
+    if(correctParts.length===0) return;
+
+    // Check if all correct parts are covered (order-independent)
+    const allCovered=correctParts.every(cp=>userParts.some(up=>up===cp));
+    // Check if at least one correct part matches
+    const someCovered=correctParts.some(cp=>userParts.some(up=>up===cp));
+
+    inp.classList.remove("ok","bad","partial");
+    if(allCovered && userParts.length>0) {
+      inp.classList.add("ok");
+    } else if(someCovered && correctParts.length>1) {
+      inp.classList.add("partial");
+      allOk=false;
+      inp.dataset.correct=answers.join(", ");
+    } else {
+      inp.classList.add("bad");
+      allOk=false;
+      inp.dataset.correct=answers.join(", ");
+    }
+  }
+  function chkBtn(correctVal) {
+    const btns=c.querySelectorAll(".tgl-btn");
+    const sel=[...btns].find(b=>b.dataset.selected==="1");
+    btns.forEach(b=>{ b.classList.remove("ok","bad","selected"); });
+    if(sel && sel.dataset.val===correctVal) sel.classList.add("ok");
+    else {
+      allOk=false;
+      if(sel) sel.classList.add("bad");
+      btns.forEach(b=>{ if(b.dataset.val===correctVal) b.classList.add("ok"); });
+    }
+  }
+
+  if(wt==="subst")  { chkInp("nom",[v.form]); chkBtn(v.genus); chkInp("gen",[v.genSg]); chkInp("de",v.de); }
+  else if(wt==="verb")  { chkInp("inf",[v.inf]); chkInp("sg1",[v.sg1]); chkInp("de",v.de); }
+  else if(wt==="adj")   { chkInp("nom",[v.form]); chkInp("de",v.de); }
+  else if(wt==="praep") { chkBtn(v.kasus); chkInp("de",v.de); }
+  else                  { chkInp("de",v.de); }
+
+  // Update medal
+  if(allOk) srMarkCorrect(key); else srMarkWrong(key);
+  const newMedal=srLoad()[key]?.medal||0;
+
+  // Track result
+  const resultType = allOk ? "ok" : (c.querySelector(".card-inp.partial") ? "partial" : "bad");
+  sessionResults.push({key, result: resultType});
+
+  // Disable all toggle buttons after check
+  c.querySelectorAll(".tgl-btn").forEach(btn => {
+    btn.style.pointerEvents = "none";
+  });
+
+  // Remove old popovers
+  document.querySelectorAll(".vt-popover").forEach(p=>p.remove());
+
+  // Add badges to all inputs
+  c.querySelectorAll(".card-inp").forEach(inp=>{
+    // Remove old badge if any
+    const old=inp.parentNode.querySelector(".inp-badge");
+    if(old) old.remove();
+    const badge=document.createElement("div");
+    badge.className="inp-badge";
+    if(inp.classList.contains("ok")) {
+      badge.classList.add("show","ok");
+      badge.innerHTML=`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else if(inp.classList.contains("partial")) {
+      badge.classList.add("show","warn");
+      badge.innerHTML=`<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>`;
+    } else if(inp.classList.contains("bad")) {
+      badge.classList.add("show","fail");
+      badge.innerHTML=`<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+    }
+    inp.parentNode.appendChild(badge);
+  });
+
+  // Attach popovers to wrong inputs
+  c.querySelectorAll(".card-inp.bad, .card-inp.partial").forEach(inp=>{
+    const popover=document.createElement("div");
+    popover.className="vt-popover";
+    popover.textContent=inp.dataset.correct;
+    document.body.appendChild(popover);
+    function position() {
+      const r=inp.getBoundingClientRect();
+      popover.style.left=(r.left+r.width/2)+"px";
+      popover.style.top=(r.bottom+8)+"px";
+    }
+    inp.style.cursor="pointer";
+    inp.style.pointerEvents="auto";
+    inp.addEventListener("click",()=>{
+      document.querySelectorAll(".vt-popover").forEach(p=>{ if(p!==popover) p.classList.remove("show"); });
+      if(!popover.classList.contains("show")) position();
+      popover.classList.toggle("show");
+    });
+    window.addEventListener("scroll",()=>{ if(popover.classList.contains("show")) position(); },{passive:true});
+  });
+
+  // Attach popovers to wrong buttons
+  c.querySelectorAll(".tgl-btn.bad").forEach(btn=>{
+    const correctBtn=c.querySelector(`.tgl-btn.ok`);
+    if(!correctBtn) return;
+    const popover=document.createElement("div");
+    popover.className="vt-popover";
+    popover.textContent=correctBtn.textContent.trim();
+    document.body.appendChild(popover);
+    function position() {
+      const r=btn.getBoundingClientRect();
+      popover.style.left=(r.left+r.width/2)+"px";
+      popover.style.top=(r.bottom+8)+"px";
+    }
+    btn.style.cursor="pointer";
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".vt-popover").forEach(p=>{ if(p!==popover) p.classList.remove("show"); });
+      if(!popover.classList.contains("show")) position();
+      popover.classList.toggle("show");
+    });
+  });
+
+  const checkBtn=c.querySelector("#checkBtn");
+  if(!checkBtn || checkBtn.disabled) return; // prevent double execution
+  checkBtn.disabled=true;
+  checkBtn.style.display="none";
+  const ca=c.querySelector("#ca");
+
+  // Medal feedback
+  const feedback=document.createElement("div");
+  feedback.style.cssText="text-align:center;padding:8px 0;font-size:22px;";
+  if(allOk) {
+    feedback.innerHTML=`${MEDAL_EMOJI[newMedal]} <span style="font-size:13px;font-weight:600;color:var(--green)">${MEDAL_LABEL[newMedal]}!</span>`;
+  } else {
+    feedback.innerHTML=`<span style="font-size:13px;font-weight:600;color:var(--red)">Nicht ganz — richtige Antworten eingetragen.</span>`;
+  }
+  ca.appendChild(feedback);
+
+  const nextBtn=document.createElement("button");
+  nextBtn.className="check-btn";
+  nextBtn.textContent="Weiter →";
+  nextBtn.style.background=allOk?"var(--green)":"#555";
+  nextBtn.onclick=()=>{ document.querySelectorAll(".vt-popover,.inp-badge").forEach(p=>p.remove()); if(c._onNext) c._onNext(); };
+  ca.appendChild(nextBtn);
+}
+
+function revealAnswer(cid) {
+  const c=document.getElementById(cid);
+  if(c._mode==="muendlich") c.querySelector("#ra").classList.add("show");
+  c.querySelectorAll(".oral-field").forEach(el=>el.classList.add("revealed"));
+}
+
+function abortCard(cid) {
+  document.querySelectorAll(".vt-popover,.inp-badge").forEach(p=>p.remove());
+  const c=document.getElementById(cid);
+  c.classList.remove("active"); c.innerHTML="";
+  document.getElementById("fu-done").classList.remove("show");
+  document.getElementById("fu-chooser").classList.remove("hidden");
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+pinned=loadPinned();
+initFree();
+</script>
+</body>
+</html>

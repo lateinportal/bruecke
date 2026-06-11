@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aus eins mach zwei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+  :root {
+    --bg:#f8f8f6;--white:#ffffff;--border:#E6E4DF;--text:#111111;--muted:#898783;
+    --green:#4CAF50;--yellow:#F5A623;--blue:#2563eb;--radius:14px;
+  }
+  body { font-family:'Noto Sans',sans-serif;background:var(--bg);min-height:100vh;padding:5rem 1.5rem 3rem;color:var(--text); }
+  header { position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;z-index:200; }
+  .sitename { font-size:19px;font-weight:700;color:#111;font-family:'Lora',serif;letter-spacing:-0.4px;display:flex;align-items:center;gap:6px; }
+  .sitename a { color:inherit;text-decoration:none; }
+  .sitename .sep  { color:#CCCCCC;font-family:'Noto Sans',sans-serif;font-weight:400;font-size:17px; }
+  .sitename .sep2 { color:#CCCCCC;font-family:'Noto Sans',sans-serif;font-weight:400;font-size:17px; }
+  .sitename .sub  { font-size:12px;font-weight:600;color:#555;font-family:'Noto Sans',sans-serif; }
+  .sitename .sub2 { font-size:12px;font-weight:600;color:#555;font-family:'Noto Sans',sans-serif; }
+  .topbar { display:flex;align-items:center;gap:8px; }
+  .icon-btn { width:34px;height:34px;border-radius:12px;border:1px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;position:relative;outline:none;flex-shrink:0; }
+  .icon-btn:hover { transform:scale(1.08); } .icon-btn:active { transform:scale(0.94); }
+  .icon-btn svg { width:16px;height:16px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+  .bell-btn svg { stroke:#898783; }
+  .bell-btn .dot { position:absolute;top:6px;right:6px;width:7px;height:7px;background:#CC3300;border-radius:50%;border:1.5px solid var(--white); }
+  @keyframes ring{0%,100%{transform:rotate(0)}15%{transform:rotate(14deg)}30%{transform:rotate(-12deg)}45%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}75%{transform:rotate(3deg)}}
+  .bell-btn:hover svg { animation:ring 0.55s ease;transform-origin:50% 3px; }
+  .user-btn svg { stroke:#898783; }
+  .user-wrap { position:relative; }
+  .dropdown { display:none;position:absolute;top:44px;right:0;background:var(--white);border:1px solid #E0E0E0;border-radius:10px;min-width:190px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.10); }
+  .dropdown.open { display:block;animation:dropIn 0.15s ease; }
+  @keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .dropdown-header { padding:13px 16px 9px;border-bottom:1px solid #E8E8E8;background:#F9F9F9; }
+  .dropdown-name { font-size:14px;font-weight:600;color:#111; } .dropdown-email { font-size:12px;color:#888;margin-top:2px; }
+  .dropdown-item { display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:14px;color:#111;cursor:pointer;border:none;background:none;width:100%;font-family:'Noto Sans',sans-serif;transition:background 0.12s;text-align:left; }
+  .dropdown-item:hover { background:#F4F4F4; }
+  .dropdown-item svg { width:15px;height:15px;stroke:#555;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+  .dropdown-sep-line { height:1px;background:#E8E8E8; }
+  .dropdown-item.danger { color:#CC3300; } .dropdown-item.danger svg { stroke:#CC3300; }
+  .page-wrap { max-width:780px;margin:0 auto; }
+  .task-card { background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden; }
+  .task-header { padding:20px 22px 16px;border-bottom:1px solid var(--border); }
+  .task-title { font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;font-family:'Lora',serif; }
+  .task-instruction { font-size:14px;color:var(--muted);line-height:1.6; }
+  .task-content { padding:22px 22px;display:flex;flex-direction:column;gap:0; }
+
+  .ex-row { padding:14px 0;border-bottom:1px solid var(--border); }
+  .ex-row:last-child { border-bottom:none; }
+  .ex-num-badge { display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;border-radius:6px;flex-shrink:0;margin-right:8px;vertical-align:middle;position:relative;top:-1px; }
+  .ex-sentence { font-size:14px;color:var(--text);line-height:2;display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-family:'Lora',serif; }
+  .ex-translation { font-size:12.5px;color:var(--muted);font-style:italic;margin-top:4px;padding-left:30px;font-family:'Noto Sans',sans-serif;line-height:1.5; }
+
+  .fill-wrap { display:inline-flex;align-items:center;position:relative;vertical-align:middle; }
+  .fill-input { width:130px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);font-family:'Lora',serif;font-style:normal;font-size:14px;color:var(--text);padding:0 10px;outline:none;transition:border-color 0.18s,box-shadow 0.18s; }
+  .fill-input:focus { border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,0.08); }
+  .fill-input:disabled { opacity:1;-webkit-text-fill-color:var(--text);cursor:default; }
+  .fill-wrap.correct .fill-input { background:#EDF7ED;border-color:var(--green)!important;box-shadow:none; }
+  .fill-wrap.wrong   .fill-input { background:#FFF8ED;border-color:var(--yellow)!important;box-shadow:none; }
+  .fill-wrap.wrong-locked .fill-input { background:#FFF8ED;border-color:var(--yellow)!important;box-shadow:none;pointer-events:none; }
+  .fill-wrap.wrong-locked { cursor:pointer; }
+
+  .fill-badge { position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;z-index:10; }
+  .fill-badge.show { display:flex; } .fill-badge.ok { background:var(--green); } .fill-badge.fail { background:var(--yellow);cursor:pointer; }
+  .fill-badge svg { width:9px;height:9px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+  .fill-popover { display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:11px;font-weight:600;font-style:normal;font-family:'Noto Sans',sans-serif;padding:5px 9px;border-radius:7px;white-space:nowrap;z-index:50;pointer-events:none; }
+  .fill-popover::after { content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#111; }
+  .fill-popover.show { display:block; }
+
+  .feedback { display:none;margin:0 22px 16px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;align-items:center;gap:8px; }
+  .feedback.show { display:flex; }
+  .feedback.warn { background:#FFF8ED;color:#b45309;border:1px solid #FDE68A; }
+  .feedback.ok   { background:#EDF7ED;color:#2E7D32;border:1px solid #C8E6C9; }
+  .feedback svg  { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+  .task-footer { padding:16px 22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:16px; }
+  .attempts-wrap { display:flex;gap:5px;align-items:center; }
+  .attempt-dot { width:7px;height:7px;border-radius:50%;border:1.5px solid #D0CEC9;background:transparent;transition:background 0.2s,border-color 0.2s; }
+  .attempt-dot.used { background:var(--muted);border-color:var(--muted); }
+  .check-btn { background:#111;color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:14px;font-weight:600;font-family:'Noto Sans',sans-serif;cursor:pointer;transition:background 0.15s,transform 0.15s;display:flex;align-items:center;gap:6px; }
+  .check-btn:hover:not(:disabled) { background:#333;transform:translateY(-1px); }
+  .check-btn:active:not(:disabled) { transform:scale(0.97); }
+  .check-btn:disabled { opacity:0.4;cursor:default;transform:none; }
+  .check-btn.success { background:var(--green); } .check-btn.partial { background:var(--yellow); }
+  .check-btn svg { width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+  @media(max-width:560px){body{padding:4.5rem 1rem 2rem}.task-content{padding:14px 12px}.fill-input{width:110px;font-size:13px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion02.html" class="sub">Lektion 2</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Aus eins mach zwei</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+    <div class="task-header">
+      <div class="task-title">Aus eins mach zwei</div>
+      <div class="task-instruction">Vervollständige die Sätze.</div>
+    </div>
+    <div class="task-content">
+      <div id="exContainer"></div>
+    </div>
+    <div class="feedback" id="feedback">
+      <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+      <span id="feedbackText"></span>
+    </div>
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const sentences = [
+    {
+      num: 1,
+      parts: [
+        { type: 'text',  text: 'Aulus ludit. Aulus et Cornelia ' },
+        { type: 'input', id: 'i1', ans: ['ludunt'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Aulus spielt. Aulus und Cornelia spielen.',
+    },
+    {
+      num: 2,
+      parts: [
+        { type: 'text',  text: 'Delia incipit. Delia et Crispina ' },
+        { type: 'input', id: 'i2', ans: ['incipiunt'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Delia beginnt. Delia und Crispina beginnen.',
+    },
+    {
+      num: 3,
+      parts: [
+        { type: 'text',  text: 'Puer ridet. Puer et puella ' },
+        { type: 'input', id: 'i3', ans: ['rident', 'rīdent'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Der Junge lacht. Der Junge und das Mädchen lachen.',
+    },
+    {
+      num: 4,
+      parts: [
+        { type: 'text',  text: 'Syrus laborat. Syrus et Modestus ' },
+        { type: 'input', id: 'i4', ans: ['laborant', 'labōrant'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Syrus arbeitet. Syrus und Modestus arbeiten.',
+    },
+    {
+      num: 5,
+      parts: [
+        { type: 'text',  text: 'Mater venit. Parentes ' },
+        { type: 'input', id: 'i5', ans: ['veniunt'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Die Mutter kommt. Die Eltern kommen.',
+    },
+    {
+      num: 6,
+      parts: [
+        { type: 'text',  text: 'Frater currit. Frater et soror ' },
+        { type: 'input', id: 'i6', ans: ['currunt'] },
+        { type: 'text',  text: '.' },
+      ],
+      translation: 'Der Bruder läuft. Der Bruder und die Schwester laufen.',
+    },
+  ];
+
+  const KEY  = 'l02_aus_eins_mach_zwei';
+  const NEXT = 'viel-arbeit.html';
+
+  let tries = 0, locked = false;
+  const allInputs = {};
+
+  const container = document.getElementById('exContainer');
+  sentences.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'ex-row';
+    const sentLine = document.createElement('div');
+    sentLine.className = 'ex-sentence';
+    const numBadge = document.createElement('span');
+    numBadge.className = 'ex-num-badge';
+    numBadge.textContent = s.num;
+    sentLine.appendChild(numBadge);
+
+    s.parts.forEach(p => {
+      if (p.type === 'text') {
+        const span = document.createElement('span');
+        span.textContent = p.text;
+        sentLine.appendChild(span);
+      } else {
+        const wrap = document.createElement('span');
+        wrap.className = 'fill-wrap'; wrap.id = 'wrap-' + p.id;
+        const input = document.createElement('input');
+        input.type = 'text'; input.className = 'fill-input'; input.id = 'inp-' + p.id;
+        input.autocomplete = 'off'; input.autocorrect = 'off';
+        input.autocapitalize = 'none'; input.spellcheck = false;
+        input.addEventListener('input', updateBtn);
+        const fbadge = document.createElement('span');
+        fbadge.className = 'fill-badge'; fbadge.id = 'badge-' + p.id;
+        const popover = document.createElement('div');
+        popover.className = 'fill-popover'; popover.id = 'popover-' + p.id;
+        popover.textContent = p.ans[0];
+        wrap.appendChild(input); wrap.appendChild(fbadge); wrap.appendChild(popover);
+        sentLine.appendChild(wrap);
+        allInputs[p.id] = { el: input, ans: p.ans, wrapEl: wrap, badgeEl: fbadge, popoverEl: popover };
+        const togglePopover = () => {
+          if (locked && wrap.classList.contains('wrong-locked')) popover.classList.toggle('show');
+        };
+        wrap.addEventListener('click', togglePopover);
+        input.addEventListener('click', togglePopover);
+        fbadge.addEventListener('click', e => { e.stopPropagation(); togglePopover(); });
+      }
+    });
+
+    const trans = document.createElement('div');
+    trans.className = 'ex-translation';
+    trans.textContent = s.translation;
+    row.appendChild(sentLine); row.appendChild(trans);
+    container.appendChild(row);
+  });
+
+  const checkBtn = document.getElementById('checkBtn');
+  function updateBtn() {
+    checkBtn.disabled = !Object.values(allInputs).every(d => d.el.value.trim() !== '');
+  }
+  checkBtn.disabled = true;
+
+  function norm(s) {
+    return s.toLowerCase()
+      .replace(/\u0101/g,'a').replace(/\u0113/g,'e')
+      .replace(/\u012b/g,'i').replace(/\u014d/g,'o')
+      .replace(/\u016b/g,'u').trim();
+  }
+  function isOk(val, ans) { return ans.some(a => norm(val) === norm(a)); }
+
+  function checkAnswers() {
+    if (locked || tries >= 3) return;
+    tries++;
+    document.getElementById('dot' + tries).classList.add('used');
+    let correct = 0;
+    const total = Object.keys(allInputs).length;
+    Object.entries(allInputs).forEach(([id, d]) => {
+      const val = d.el.value.trim(), ok = isOk(val, d.ans);
+      if (ok) { correct++; d.wrapEl.classList.add('correct'); d.wrapEl.classList.remove('wrong'); d.el.disabled = true; }
+      else    { d.wrapEl.classList.add('wrong'); d.el.disabled = tries >= 3; }
+    });
+    const allOk = correct === total, doLock = tries >= 3 || allOk;
+    if (doLock) {
+      locked = true;
+      Object.entries(allInputs).forEach(([id, d]) => {
+        if (d.wrapEl.classList.contains('wrong')) { d.wrapEl.classList.remove('wrong'); d.wrapEl.classList.add('wrong-locked'); }
+      });
+      Object.entries(allInputs).forEach(([id, d]) => {
+        const ok = d.wrapEl.classList.contains('correct');
+        d.badgeEl.classList.add('show', ok ? 'ok' : 'fail');
+        d.badgeEl.innerHTML = ok
+          ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+        d.el.disabled = true;
+      });
+      save(allOk, correct);
+    }
+    if (allOk) {
+      showFeedback('ok','Ausgezeichnet! Alle Formen richtig!');
+      checkBtn.classList.add('success');
+      checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+      checkBtn.disabled = false; checkBtn.onclick = () => window.location.href = NEXT;
+    } else if (tries < 3) {
+      showFeedback('warn', `${correct} von ${total} richtig. Versuche es nochmal!`);
+      checkBtn.disabled = true; updateBtn();
+    } else {
+      showFeedback('warn','Klicke auf die gelb umrandeten Felder, um die richtige Lösung zu sehen.');
+      checkBtn.classList.add('partial');
+      checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+      checkBtn.disabled = false; checkBtn.onclick = () => window.location.href = NEXT;
+    }
+  }
+
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+
+  function save(done, correct) {
+    const vals = {};
+    Object.entries(allInputs).forEach(([id,d]) => { vals[id] = d.el.value.trim(); });
+    lsSet(KEY, done ? 'done' : 'attempted');
+    lsSet(KEY + '_vals',     JSON.stringify(vals));
+    lsSet(KEY + '_attempts', tries);
+    lsSet(KEY + '_points',   correct);
+    lsSet(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    if (!done) lsSet(KEY + '_fail', 'true');
+  }
+
+  function showFeedback(type, text) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show ' + type;
+    document.getElementById('feedbackIcon').innerHTML = type === 'ok'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    document.getElementById('feedbackText').textContent = text;
+  }
+
+  (function restore() {
+    const savedDone  = lsGet(KEY) === 'done';
+    const savedFail  = lsGet(KEY + '_fail') === 'true';
+    const savedVals  = lsGet(KEY + '_vals');
+    const savedTries = parseInt(lsGet(KEY + '_attempts') || '0');
+    if (!savedVals || (!savedDone && !savedFail)) return;
+    const vals = JSON.parse(savedVals);
+    tries = savedTries; locked = true;
+    for (let i = 1; i <= savedTries; i++) { const d = document.getElementById('dot' + i); if (d) d.classList.add('used'); }
+    Object.entries(allInputs).forEach(([id, d]) => {
+      const val = vals[id] || '', ok = isOk(val, d.ans);
+      d.el.value = val; d.el.disabled = true;
+      d.wrapEl.classList.add(ok ? 'correct' : 'wrong-locked');
+      d.badgeEl.classList.add('show', ok ? 'ok' : 'fail');
+      d.badgeEl.innerHTML = ok
+        ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+    });
+    if (savedDone) { showFeedback('ok','Ausgezeichnet! Alle Formen richtig!'); checkBtn.classList.add('success'); }
+    else           { showFeedback('warn','Klicke auf die gelb umrandeten Felder, um die richtige Lösung zu sehen.'); checkBtn.classList.add('partial'); }
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.disabled = false; checkBtn.onclick = () => window.location.href = NEXT;
+  })();
+
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => { if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown(); });
+</script>
+</body>
+</html>

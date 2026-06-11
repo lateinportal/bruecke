@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sind Sklaven Menschen? (B)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scrollbar-gutter: stable; }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --accent: #c6613f;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      header {
+        position: fixed; top: 0; left: 0; right: 0; height: 56px;
+        background: var(--white); border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 1.5rem; z-index: 100;
+      }
+
+      .sitename {
+        font-size: 19px; font-weight: 700; color: #111111;
+        font-family: "Lora", serif; letter-spacing: -0.4px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .sitename a { color: inherit; text-decoration: none; }
+      .sitename .sep  { color: #cccccc; font-family: "Noto Sans", sans-serif; font-weight: 400; font-size: 17px; }
+      .sitename .sep2 { color: #cccccc; font-family: "Noto Sans", sans-serif; font-weight: 400; font-size: 17px; }
+      .sitename .sub  { font-size: 12px; font-weight: 600; color: #555555; font-family: "Noto Sans", sans-serif; letter-spacing: 0; }
+      .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555555; font-family: "Noto Sans", sans-serif; letter-spacing: 0; }
+
+      .topbar { display: flex; align-items: center; gap: 8px; }
+
+      .icon-btn {
+        width: 34px; height: 34px; border-radius: 12px;
+        border: 1px solid transparent; background: transparent;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0;
+      }
+      .icon-btn:hover  { transform: scale(1.08); }
+      .icon-btn:active { transform: scale(0.94); }
+      .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+      .bell-btn svg { stroke: #898783; }
+      .bell-btn .dot {
+        position: absolute; top: 6px; right: 6px;
+        width: 7px; height: 7px; background: #cc3300;
+        border-radius: 50%; border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,100% { transform: rotate(0); }
+        15% { transform: rotate(14deg); }
+        30% { transform: rotate(-12deg); }
+        45% { transform: rotate(8deg); }
+        60% { transform: rotate(-5deg); }
+        75% { transform: rotate(3deg); }
+      }
+      .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+      .user-btn svg { stroke: #898783; }
+      .user-wrap { position: relative; }
+
+      .dropdown {
+        display: none; position: absolute; top: 44px; right: 0;
+        background: var(--white); border: 1px solid #e0e0e0;
+        border-radius: 10px; min-width: 190px; overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.1);
+      }
+      .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+      @keyframes dropIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #e8e8e8; background: #f9f9f9; }
+      .dropdown-name  { font-size: 14px; font-weight: 600; color: #111; }
+      .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+      .dropdown-item {
+        display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+        font-size: 14px; color: #111; cursor: pointer; border: none; background: none;
+        width: 100%; font-family: "Noto Sans", sans-serif; transition: background 0.12s; text-align: left;
+      }
+      .dropdown-item:hover { background: #f4f4f4; }
+      .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+      .dropdown-sep-line { height: 1px; background: #e8e8e8; }
+      .dropdown-item.danger { color: #cc3300; }
+      .dropdown-item.danger svg { stroke: #cc3300; }
+
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto 0 max(1.5rem, calc(50% - 560px));
+      }
+      .translation-row-wrap { position: relative; }
+
+      .row-gloss {
+        position: absolute; left: calc(100% + 32px); top: 0;
+        width: 190px; display: none; padding-top: 6px;
+      }
+      .row-gloss.has-entries { display: block; }
+      .rg-item { font-size: 13px; line-height: 1.85; color: var(--text); white-space: nowrap; }
+      .rg-word { font-family: "Lora", serif; font-style: italic; font-weight: 600; color: var(--text); }
+      .rg-sep  { color: var(--muted); margin: 0 4px; }
+      .rg-de   { color: var(--text); }
+
+      .lat-note {
+        font-size: 11px; vertical-align: super; color: var(--accent);
+        font-family: "Noto Sans", sans-serif; font-style: normal;
+        cursor: help; position: relative;
+      }
+      .lat-note .note-tip {
+        display: none; position: absolute; bottom: calc(100% + 6px);
+        left: 50%; transform: translateX(-50%);
+        background: #111; color: #fff; font-size: 12px; font-weight: 600;
+        padding: 5px 10px; border-radius: 7px; white-space: nowrap;
+        z-index: 999; pointer-events: none;
+      }
+      .lat-note .note-tip::after {
+        content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+        border: 5px solid transparent; border-top-color: #111;
+      }
+      .lat-note:hover .note-tip { display: block; }
+
+      .lat-word { cursor: context-menu; border-radius: 3px; transition: background 0.12s; }
+      .lat-word:hover  { background: rgba(198,97,63,0.1); }
+      .lat-word.pinned { color: var(--accent); }
+
+      @media (max-width: 1100px) { .row-gloss { display: none !important; } }
+
+      .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); }
+      .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+      .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: "Lora", serif; }
+      .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+      .task-hero {
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-hero img {
+        width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;
+      }
+
+      .task-content { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+
+      .translation-row {
+        display: flex; align-items: stretch;
+        background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      }
+
+      .row-body {
+        flex: 1; padding: 18px; display: flex; flex-direction: column;
+        justify-content: center; gap: 10px;
+      }
+
+      .latin-sentence { font-size: 15px; font-style: normal; color: var(--text); line-height: 1.5; font-family: "Lora", serif; }
+
+      .translation-input-wrap { position: relative; }
+      .translation-input {
+        width: 100%; font-size: 14px; font-family: "Noto Sans", sans-serif; font-weight: 400;
+        background: var(--white); border: 1.5px solid #d0cec9; border-radius: 8px;
+        padding: 10px 14px; color: var(--text); outline: none; transition: border-color 0.15s;
+        resize: none; min-height: 44px; overflow: hidden;
+      }
+      .translation-input::placeholder { color: #b0ada8; }
+      .translation-input:focus   { border-color: var(--accent); }
+      .translation-input.correct { border-color: var(--green) !important; border-width: 2px; }
+      .translation-input.wrong   { border-color: var(--yellow) !important; border-width: 2px; }
+
+      .input-badge {
+        display: none; position: absolute; top: -8px; right: -8px;
+        width: 20px; height: 20px; border-radius: 50%;
+        align-items: center; justify-content: center; z-index: 10;
+      }
+      .input-badge.show { display: flex; }
+      .input-badge.ok   { background: var(--green); }
+      .input-badge.fail { background: var(--yellow); }
+      .input-badge svg  { width: 11px; height: 11px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+      .input-popover {
+        display: none; position: fixed; background: #111; color: #fff;
+        font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 8px;
+        white-space: nowrap; text-align: left; z-index: 9999; pointer-events: none;
+        transform: translateX(-50%);
+      }
+      .input-popover::before {
+        content: ""; position: absolute; bottom: 100%; left: 50%; margin-left: -5px;
+        border: 5px solid transparent; border-bottom-color: #111;
+      }
+      .input-popover.show { display: block; animation: fadeDown 0.15s ease; }
+      @keyframes fadeDown {
+        from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+        to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+      }
+
+      .feedback {
+        display: none; margin: 0 22px 16px; padding: 12px 14px; border-radius: 10px;
+        font-size: 14px; font-weight: 500; align-items: center; gap: 8px;
+      }
+      .feedback.show { display: flex; }
+      .feedback.ok   { background: #edf7ed; color: #2e7d32; border: 1px solid #c8e6c9; }
+      .feedback.warn { background: #fff8ee; color: #92610a; border: 1px solid #f5dfa0; }
+      .feedback svg  { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+      .task-footer { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+      .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+      .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #d0cec9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+      .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+
+      .check-btn {
+        background: #111111; color: #ffffff; border: none; border-radius: 10px;
+        padding: 9px 20px; font-size: 14px; font-weight: 600;
+        font-family: "Noto Sans", sans-serif; cursor: pointer; transition: background 0.15s, transform 0.15s;
+      }
+      .check-btn:hover   { background: #333; transform: translateY(-1px); }
+      .check-btn:active  { transform: scale(0.97); }
+      .check-btn.success { background: var(--green); pointer-events: none; }
+      .check-btn.partial { background: var(--yellow); }
+
+      @media (max-width: 600px) {
+        body { padding: 4.5rem 1rem 2rem; }
+        .task-content { padding: 12px; }
+        .task-footer { padding: 12px 16px; }
+        .feedback { margin: 0 12px 12px; }
+        .row-body { padding: 12px; }
+        .latin-sentence { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">&#8250;</span>
+        <a href="lektion02.html" class="sub">Lektion 2</a>
+        <span class="sep2">&#8250;</span>
+        <span class="sub2">Sind Sklaven Menschen? (B)</span>
+      </div>
+      <div class="topbar">
+        <a href="vokabeltraining.html" class="icon-btn vocab-btn" title="Vokabeltraining" style="text-decoration:none">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:none;stroke:#898783;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </a>
+        <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Sind Sklaven Menschen? (B)</div>
+          <div class="task-instruction">
+            Übersetze die lateinischen Sätze ins Deutsche. Schreibe deine
+            Übersetzung in das Textfeld.
+          </div>
+        </div>
+
+        <!-- Single hero image -->
+        <div class="task-hero">
+          <img src="images/menschen-sklaven-2.png" alt="Sind Sklaven Menschen?" />
+        </div>
+
+        <div class="task-content">
+
+          <!-- Satz 1 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s1">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="subito">Subit&#333;</span>
+                  <span class="lat-word" data-lat="delia">D&#275;lia</span>
+                  <span class="lat-word" data-lat="clamat">cl&#257;mat</span>:
+                  <span class="lat-word" data-lat="ecce">Ecce</span>,
+                  <span class="lat-word" data-lat="ibi">ibi</span>
+                  <span class="lat-word" data-lat="catella">catella</span>
+                  <span class="lat-word" data-lat="currit">currit</span>!
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea class="translation-input" id="input-s1" placeholder="Übersetzung …" autocomplete="off" spellcheck="true" lang="de" rows="1"></textarea>
+                  <div class="input-badge" id="badge-s1"></div>
+                  <div class="input-popover" id="popover-s1"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s1"></div>
+          </div>
+
+          <!-- Satz 2 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s2">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="cornelia">Corn&#275;lia</span>
+                  <span class="lat-word" data-lat="currere">currere</span>
+                  <span class="lat-word" data-lat="incipit">incipit</span>
+                  <span class="lat-word" data-lat="et">et</span>
+                  <span class="lat-word" data-lat="issam">Issam</span>
+                  <span class="lat-word" data-lat="capit">capit</span>.
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea class="translation-input" id="input-s2" placeholder="Übersetzung …" autocomplete="off" spellcheck="true" lang="de" rows="1"></textarea>
+                  <div class="input-badge" id="badge-s2"></div>
+                  <div class="input-popover" id="popover-s2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s2"></div>
+          </div>
+
+          <!-- Satz 3 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s3">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="servae">Serv&#230;</span>
+                  <span class="lat-word" data-lat="rident">r&#299;dent</span>
+                  <span class="lat-word" data-lat="et">et</span>
+                  <span class="lat-word" data-lat="etiam">etiam</span>
+                  <span class="lat-word" data-lat="ludere">l&#363;dere</span>
+                  <span class="lat-word" data-lat="cupiunt">cupiunt</span>,
+                  <span class="lat-word" data-lat="sed">sed</span>
+                  <span class="lat-word" data-lat="domina">domina</span>
+                  <span class="lat-word" data-lat="venit">venit</span>
+                  <span class="lat-word" data-lat="et">et</span>
+                  <span class="lat-word" data-lat="dicit">d&#299;cit</span>:
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea class="translation-input" id="input-s3" placeholder="Übersetzung …" autocomplete="off" spellcheck="true" lang="de" rows="1"></textarea>
+                  <div class="input-badge" id="badge-s3"></div>
+                  <div class="input-popover" id="popover-s3"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s3"></div>
+          </div>
+
+          <!-- Satz 4 -->
+          <div class="translation-row-wrap">
+            <div class="translation-row" data-row="s4">
+              <div class="row-body">
+                <div class="latin-sentence">
+                  <span class="lat-word" data-lat="servae">Serv&#230;</span>
+                  <span class="lat-word" data-lat="officia">officia</span>
+                  <span class="lat-word" data-lat="explere">expl&#275;re</span>
+                  <span class="lat-word" data-lat="debent">d&#275;bent</span>!
+                  <span class="lat-word" data-lat="cornelia">Corn&#275;lia</span>,
+                  <span class="lat-word" data-lat="issa">Issa</span>,
+                  <span class="lat-word" data-lat="ibi">ibi</span>
+                  <span class="lat-word" data-lat="hortus">hortus</span><span class="lat-note">&#185;<span class="note-tip">hortus, hortum m. = Garten</span></span>
+                  <span class="lat-word" data-lat="est">est</span>!
+                </div>
+                <div class="translation-input-wrap">
+                  <textarea class="translation-input" id="input-s4" placeholder="Übersetzung …" autocomplete="off" spellcheck="true" lang="de" rows="1"></textarea>
+                  <div class="input-badge" id="badge-s4"></div>
+                  <div class="input-popover" id="popover-s4"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row-gloss" id="gloss-s4"></div>
+          </div>
+
+        </div><!-- /task-content -->
+
+        <div class="feedback" id="feedback">
+          <svg viewBox="0 0 24 24" id="feedbackIcon"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">
+            Überprüfen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const fields = [
+        {
+          id: "s1",
+          answers: [
+            "Pl\u00f6tzlich ruft Delia: Sieh da, dort l\u00e4uft das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Sieh da, dort rennt das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Siehe, dort l\u00e4uft das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Siehe, dort rennt das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Siehe da, dort l\u00e4uft das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Sieh, dort l\u00e4uft das H\u00fcndchen!",
+            "Pl\u00f6tzlich ruft Delia: Sieh da, da l\u00e4uft das H\u00fcndchen!",
+            "Delia ruft pl\u00f6tzlich: Sieh da, dort l\u00e4uft das H\u00fcndchen!",
+            "Delia ruft pl\u00f6tzlich: Siehe, dort l\u00e4uft das H\u00fcndchen!",
+          ],
+        },
+        {
+          id: "s2",
+          answers: [
+            "Cornelia beginnt zu laufen und f\u00e4ngt Issa.",
+            "Cornelia beginnt zu rennen und f\u00e4ngt Issa.",
+            "Cornelia f\u00e4ngt an zu laufen und f\u00e4ngt Issa.",
+            "Cornelia f\u00e4ngt an zu rennen und f\u00e4ngt Issa.",
+          ],
+        },
+        {
+          id: "s3",
+          answers: [
+            "Die Sklavinnen lachen und wollen auch spielen, aber die Herrin kommt und sagt:",
+            "Die Sklavinnen lachen und m\u00f6chten auch spielen, aber die Herrin kommt und sagt:",
+            "Die Sklavinnen lachen und m\u00f6gen auch spielen, aber die Herrin kommt und sagt:",
+            "Die Sklavinnen lachen und wollen auch spielen; die Herrin aber kommt und sagt:",
+            "Die Sklavinnen lachen und m\u00f6chten auch spielen; die Herrin aber kommt und sagt:",
+          ],
+        },
+        {
+          id: "s4",
+          answers: [
+            "Die Sklavinnen m\u00fcssen die Pflichten erf\u00fcllen! Cornelia, Issa, dort ist der Garten!",
+            "Die Sklavinnen m\u00fcssen ihre Pflichten erf\u00fcllen! Cornelia, Issa, dort ist der Garten!",
+            "Sklavinnen m\u00fcssen die Pflichten erf\u00fcllen! Cornelia, Issa, dort ist der Garten!",
+            "Die Sklavinnen m\u00fcssen die Pflichten erf\u00fcllen! Cornelia, Issa, da ist der Garten!",
+          ],
+        },
+      ];
+
+      const KEY = "l02_sklaven_b";
+      let attempts = 0;
+      let locked = false;
+      const checkBtn = document.getElementById("checkBtn");
+      const feedback = document.getElementById("feedback");
+
+      function normalize(str) {
+        return str
+          .trim()
+          .replace(/\s+/g, " ")
+          .replace(/[\u201e\u201c\u201d\u201f\u00ab\u00bb\u2039\u203a"]/g, "");
+      }
+
+      function isCorrect(field, value) {
+        const n = normalize(value);
+        return field.answers.some((a) => normalize(a) === n);
+      }
+
+      function autoGrow(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+      document.querySelectorAll(".translation-input").forEach((ta) => {
+        ta.addEventListener("input", () => autoGrow(ta));
+      });
+
+      function applyBorders(markEmpty) {
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          if (input.value.trim() === "" && !markEmpty) return;
+          input.classList.remove("correct", "wrong");
+          input.classList.add(isCorrect(f, input.value) ? "correct" : "wrong");
+        });
+      }
+
+      function showBadges(revealWrong) {
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          const badge = document.getElementById("badge-" + f.id);
+          if (isCorrect(f, input.value)) {
+            badge.className = "input-badge show ok";
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          } else {
+            badge.className = "input-badge show fail";
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          }
+        });
+        if (revealWrong) setupPopovers();
+      }
+
+      const popoverPairs = [];
+      function repositionOpenPopovers() {
+        popoverPairs.forEach(({ wrap, popover }) => {
+          if (popover.classList.contains("show")) {
+            const rect = wrap.getBoundingClientRect();
+            popover.style.left = rect.left + rect.width / 2 + "px";
+            popover.style.top  = rect.bottom + 8 + "px";
+          }
+        });
+      }
+      window.addEventListener("scroll", repositionOpenPopovers, { passive: true });
+
+      function setupPopovers() {
+        fields.forEach((f) => {
+          const input   = document.getElementById("input-" + f.id);
+          const popover = document.getElementById("popover-" + f.id);
+          const wrap    = input.closest(".translation-input-wrap");
+          if (isCorrect(f, input.value)) return;
+          popover.textContent = f.answers[0];
+          document.body.appendChild(popover);
+          popoverPairs.push({ wrap, popover });
+          function pos() {
+            const rect = wrap.getBoundingClientRect();
+            popover.style.left = rect.left + rect.width / 2 + "px";
+            popover.style.top  = rect.bottom + 8 + "px";
+          }
+          wrap.style.cursor = "pointer";
+          wrap.addEventListener("click", () => { if (!popover.classList.contains("show")) pos(); popover.classList.toggle("show"); });
+        });
+      }
+
+      function lockInputs() {
+        fields.forEach((f) => {
+          const inp = document.getElementById("input-" + f.id);
+          inp.readOnly = true; inp.style.pointerEvents = "none";
+        });
+      }
+
+      function checkAnswers() {
+        if (locked || attempts >= 3) return;
+        const anyFilled = fields.some((f) => document.getElementById("input-" + f.id).value.trim() !== "");
+        if (!anyFilled) { showFeedback("warn", "F\u00fclle mindestens eine L\u00fccke aus."); return; }
+
+        attempts++;
+        const dot = document.getElementById("dot" + attempts);
+        if (dot) dot.classList.add("used");
+
+        let correctCount = 0;
+        fields.forEach((f) => { if (isCorrect(f, document.getElementById("input-" + f.id).value)) correctCount++; });
+        const points = correctCount * 5;
+
+        if (correctCount === fields.length) {
+          applyBorders(); showBadges(false);
+          showFeedback("ok", "Ausgezeichnet! Alle \u00dcbersetzungen sind richtig!");
+          winState(points); return;
+        }
+        if (attempts < 3) {
+          applyBorders();
+          showFeedback("warn", correctCount + " von " + fields.length + " richtig. Versuche es nochmal!");
+          return;
+        }
+        applyBorders(true); showBadges(true); locked = true; lockInputs();
+        showFeedback("warn", "Klicke auf die gelb markierten Felder um die richtige \u00dcbersetzung zu sehen.");
+        saveState(points, false);
+        checkBtn.classList.add("partial");
+        checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = "sind-sklaven-menschen-c.html");
+      }
+
+      function winState(points) {
+        locked = true; lockInputs(); showBadges(false); saveState(points, true);
+        checkBtn.classList.add("success");
+        checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () => (window.location.href = "sind-sklaven-menschen-c.html");
+      }
+
+      function saveState(points, done) {
+        const values = {};
+        fields.forEach((f) => { values[f.id] = document.getElementById("input-" + f.id).value; });
+        localStorage.setItem(KEY, done ? "done" : "attempted");
+        localStorage.setItem(KEY + "_points", points);
+        localStorage.setItem(KEY + "_date", new Date().toLocaleDateString("de-DE"));
+        localStorage.setItem(KEY + "_attempts", attempts);
+        localStorage.setItem(KEY + "_values", JSON.stringify(values));
+        if (!done) localStorage.setItem(KEY + "_fail", "true");
+      }
+
+      function showFeedback(type, text) {
+        feedback.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML = type === "ok"
+          ? '<polyline points="20 6 9 17 4 12"/>'
+          : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      (function restoreState() {
+        const saved = localStorage.getItem(KEY);
+        if (!saved) return;
+        const savedValues   = JSON.parse(localStorage.getItem(KEY + "_values") || "{}");
+        const savedAttempts = parseInt(localStorage.getItem(KEY + "_attempts") || "0");
+        const savedDone = saved === "done";
+        const savedFail = localStorage.getItem(KEY + "_fail") === "true";
+
+        fields.forEach((f) => {
+          const input = document.getElementById("input-" + f.id);
+          if (savedValues[f.id] !== undefined) { input.value = savedValues[f.id]; autoGrow(input); }
+          input.readOnly = true; input.style.pointerEvents = "none";
+        });
+        for (let i = 1; i <= savedAttempts; i++) { const d = document.getElementById("dot" + i); if (d) d.classList.add("used"); }
+        attempts = savedAttempts; locked = true;
+        applyBorders(savedFail);
+        if (savedDone || savedFail) showBadges(savedFail);
+
+        const nextHref = "sind-sklaven-menschen-c.html";
+        const weiterBtn = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        if (savedDone) {
+          showFeedback("ok", "Ausgezeichnet! Alle \u00dcbersetzungen sind richtig!");
+          checkBtn.classList.add("success"); checkBtn.innerHTML = weiterBtn;
+          checkBtn.style.pointerEvents = "auto"; checkBtn.onclick = () => (window.location.href = nextHref);
+        } else if (savedFail) {
+          showFeedback("warn", "Klicke auf die gelb markierten Felder um die richtige \u00dcbersetzung zu sehen.");
+          checkBtn.classList.add("partial"); checkBtn.innerHTML = weiterBtn;
+          checkBtn.style.pointerEvents = "auto"; checkBtn.onclick = () => (window.location.href = nextHref);
+        }
+      })();
+
+      function handleBell() { alert("Keine neuen Benachrichtigungen."); }
+      function toggleDropdown() { document.getElementById("dropdown").classList.toggle("open"); }
+      function closeDropdown()  { document.getElementById("dropdown").classList.remove("open"); }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target)) closeDropdown();
+        if (!e.target.closest(".translation-input-wrap")) {
+          document.querySelectorAll(".input-popover.show").forEach((p) => p.classList.remove("show"));
+        }
+      });
+
+      // ── Vokabeln ──────────────────────────────────────────────────────────────
+      const DISPLAY_MODE = "simple";
+
+      const vocab = {
+        subito:   { form: "subit\u014d",    wordType: "other", de: "pl\u00f6tzlich" },
+        delia:    { form: "D\u0113lia",     wordType: "other", de: "Delia (Eigenname)" },
+        clamat:   { form: "cl\u0101m\u0101re", wordType: "verb", inf: "cl\u0101m\u0101re", sg1: "clamo", sg3: "cl\u0101mat", de: "er/sie/es ruft" },
+        ecce:     { form: "ecce",           wordType: "other", de: "sieh da!, sieh!" },
+        ibi:      { form: "ibi",            wordType: "other", de: "dort, da" },
+        catella:  { form: "catella",        wordType: "subst", genSg: "catellae", genus: "f", de: "H\u00fcndchen" },
+        currit:   { form: "currere",        wordType: "verb",  inf: "currere",    sg1: "curro",   sg3: "currit",   de: "er/sie/es l\u00e4uft" },
+        cornelia: { form: "Corn\u0113lia",  wordType: "other", de: "Cornelia (Eigenname)" },
+        currere:  { form: "currere",        wordType: "verb",  inf: "currere",    sg1: "curro",   sg3: "currit",   de: "laufen (Inf.)" },
+        incipit:  { form: "incipere",       wordType: "verb",  inf: "incipere",   sg1: "incipio", sg3: "incipit",  de: "er/sie/es beginnt" },
+        et:       { form: "et",             wordType: "other", de: "und" },
+        issam:    { form: "Issa",           wordType: "other", de: "Issa (Akk.)" },
+        capit:    { form: "capere",         wordType: "verb",  inf: "capere",     sg1: "capio",   sg3: "capit",    de: "er/sie/es f\u00e4ngt" },
+        servae:   { form: "serva",          wordType: "subst", genSg: "servae",   genus: "f", de: "Sklavinnen (Nom. Pl.)" },
+        rident:   { form: "r\u012bd\u0113re", wordType: "verb", inf: "r\u012bd\u0113re", sg1: "rideo", sg3: "r\u012bdet", de: "sie lachen" },
+        etiam:    { form: "etiam",          wordType: "other", de: "auch, sogar" },
+        ludere:   { form: "l\u016bdere",    wordType: "verb",  inf: "l\u016bdere",    sg1: "ludo",    sg3: "l\u016bdit",   de: "spielen (Inf.)" },
+        cupiunt:  { form: "cupere",         wordType: "verb",  inf: "cupere",     sg1: "cupio",   sg3: "cupit",    de: "sie wollen, begehren" },
+        sed:      { form: "sed",            wordType: "other", de: "aber, jedoch" },
+        domina:   { form: "domina",         wordType: "subst", genSg: "dominae",  genus: "f", de: "Herrin" },
+        venit:    { form: "ven\u012bre",     wordType: "verb",  inf: "ven\u012bre",    sg1: "venio",   sg3: "venit",    de: "er/sie/es kommt" },
+        dicit:    { form: "d\u012bcere",     wordType: "verb",  inf: "d\u012bcere",    sg1: "dico",    sg3: "d\u012bcit",   de: "er/sie/es sagt" },
+        officia:  { form: "officium",       wordType: "subst", genSg: "offici\u012b", genus: "n", de: "Pflichten (Akk. Pl.)" },
+        explere:  { form: "expl\u0113re",   wordType: "verb",  inf: "expl\u0113re",   sg1: "expleo",  sg3: "expl\u0113t",  de: "erf\u00fcllen (Inf.)" },
+        debent:   { form: "d\u0113b\u0113re", wordType: "verb", inf: "d\u0113b\u0113re", sg1: "debeo", sg3: "d\u0113bet", de: "sie m\u00fcssen" },
+        issa:     { form: "Issa",           wordType: "other", de: "Issa (Eigenname)" },
+        hortus:   { form: "hortus",         wordType: "subst", genSg: "hort\u012b",   genus: "m", de: "Garten" },
+        est:      { form: "esse",           wordType: "verb",  inf: "esse",       sg1: "sum",     sg3: "est",      de: "er/sie/es ist" },
+      };
+
+      const STORAGE_KEY = "sklaven-menschen-b-pinned";
+      function loadPinned() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return { s1: new Set(saved.s1||[]), s2: new Set(saved.s2||[]), s3: new Set(saved.s3||[]), s4: new Set(saved.s4||[]) };
+        } catch { return { s1: new Set(), s2: new Set(), s3: new Set(), s4: new Set() }; }
+      }
+      function savePinned() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          s1:[...rowPinned.s1], s2:[...rowPinned.s2], s3:[...rowPinned.s3], s4:[...rowPinned.s4],
+        }));
+      }
+      const rowPinned = loadPinned();
+
+      function renderGloss(rowId) {
+        const gloss = document.getElementById("gloss-" + rowId);
+        if (!gloss) return;
+        const keys = [...rowPinned[rowId]];
+        if (keys.length === 0) { gloss.classList.remove("has-entries"); gloss.innerHTML = ""; return; }
+        gloss.classList.add("has-entries");
+        gloss.innerHTML = keys.map((k) => {
+          const v = vocab[k]; if (!v) return "";
+          let formStr;
+          if (DISPLAY_MODE === "simple") {
+            if (v.wordType === "subst")     formStr = v.form + " " + v.genus + ".";
+            else if (v.wordType === "verb") formStr = v.sg3;
+            else                            formStr = v.form;
+          } else {
+            if (v.wordType === "verb")       formStr = v.inf + ", " + v.sg1;
+            else if (v.wordType === "subst") formStr = v.form + ", " + v.genSg + " " + v.genus + ".";
+            else                             formStr = v.form;
+          }
+          return '<div class="rg-item"><span class="rg-word">' + formStr + '</span><span class="rg-sep">\u2013</span><span class="rg-de">' + v.de + '</span></div>';
+        }).join("");
+      }
+
+      function togglePin(key, rowId) {
+        if (!vocab[key] || !rowPinned[rowId] || rowPinned[rowId].has(key)) return;
+        rowPinned[rowId].add(key);
+        document.querySelectorAll('[data-row="' + rowId + '"] .lat-word[data-lat="' + key + '"]')
+          .forEach((s) => s.classList.add("pinned"));
+        savePinned(); renderGloss(rowId);
+      }
+
+      Object.keys(rowPinned).forEach((rowId) => {
+        rowPinned[rowId].forEach((key) => {
+          document.querySelectorAll('[data-row="' + rowId + '"] .lat-word[data-lat="' + key + '"]')
+            .forEach((s) => s.classList.add("pinned"));
+        });
+        renderGloss(rowId);
+      });
+
+      document.querySelectorAll(".lat-word").forEach((span) => {
+        const rowId = span.closest("[data-row]") && span.closest("[data-row]").dataset.row;
+        if (!rowId) return;
+        span.addEventListener("click", (e) => { e.stopPropagation(); togglePin(span.dataset.lat, rowId); });
+        span.addEventListener("contextmenu", (e) => { e.preventDefault(); togglePin(span.dataset.lat, rowId); });
+        let pressTimer = null;
+        span.addEventListener("touchstart", () => { pressTimer = setTimeout(() => togglePin(span.dataset.lat, rowId), 500); }, { passive: true });
+        span.addEventListener("touchend",  () => clearTimeout(pressTimer));
+        span.addEventListener("touchmove", () => clearTimeout(pressTimer));
+      });
+    </script>
+  </body>
+</html>

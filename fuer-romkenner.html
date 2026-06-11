@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Für Romkenner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg: #f8f8f6; --white: #ffffff; --border: #e6e4df;
+    --text: #111111; --muted: #898783;
+    --green: #4caf50; --yellow: #f5a623; --blue: #2563eb;
+    --radius: 14px;
+    --cell: 32px;
+  }
+
+  body { font-family: 'Noto Sans', sans-serif; background: var(--bg); min-height: 100vh; padding: 5rem 1.5rem 3rem; color: var(--text); }
+
+  /* ── Header ── */
+  header { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; z-index: 200; }
+  .sitename { font-size: 19px; font-weight: 700; color: #111; font-family: 'Lora', serif; letter-spacing: -0.4px; display: flex; align-items: center; gap: 6px; }
+  .sitename a { color: inherit; text-decoration: none; }
+  .sitename .sep, .sitename .sep2 { color: #ccc; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sub, .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; }
+  .topbar { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0; }
+  .icon-btn:hover { transform: scale(1.08); } .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #cc3300; border-radius: 50%; border: 1.5px solid var(--white); }
+  @keyframes ring { 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 75%{transform:rotate(3deg)} }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+  .dropdown { display: none; position: absolute; top: 44px; right: 0; background: var(--white); border: 1px solid #e0e0e0; border-radius: 10px; min-width: 190px; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #e8e8e8; background: #f9f9f9; }
+  .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left; }
+  .dropdown-item:hover { background: #f4f4f4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #e8e8e8; }
+  .dropdown-item.danger { color: #cc3300; } .dropdown-item.danger svg { stroke: #cc3300; }
+
+  .page-wrap { max-width: 780px; margin: 0 auto; }
+  .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: visible; }
+  .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+  .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Lora', serif; }
+  .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .task-content { padding: 22px 22px; display: flex; flex-direction: column; gap: 0; }
+
+  /* ── Puzzle rows ── */
+  .puzzle-row { padding: 13px 0; border-bottom: 1px solid var(--border); }
+  .puzzle-row:last-child { border-bottom: none; }
+
+  .puzzle-inner { display: grid; grid-template-columns: 24px 1fr; gap: 0 6px; align-items: start; }
+
+  .puzzle-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; border-radius: 6px; flex-shrink: 0; margin-top: 2px; }
+
+  .puzzle-content { display: flex; flex-direction: column; gap: 6px; }
+
+  .puzzle-clue { font-size: 13.5px; color: var(--muted); line-height: 1.45; }
+
+  /* Letter row */
+  .letter-row { display: flex; flex-wrap: wrap; align-items: center; gap: 3px; position: relative; }
+
+  /* Fixed letter cell */
+  .lc {
+    width: var(--cell); height: var(--cell);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif; font-size: 15px; font-weight: 700;
+    color: var(--text);
+    background: #EFEEEB;
+    border-radius: 5px;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* Input cell */
+  .ic-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  .ic {
+    width: var(--cell); height: var(--cell);
+    border: 1.5px solid #C0BEB9;
+    border-radius: 5px;
+    background: var(--white);
+    font-family: 'Lora', serif; font-size: 15px; font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    outline: none;
+    padding: 0;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    text-transform: lowercase;
+    caret-color: var(--blue);
+  }
+  .ic:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+  .ic:disabled { opacity: 1; -webkit-text-fill-color: var(--text); }
+
+
+
+  /* States */
+  .ic-wrap.correct .ic { background: #edf7ed; border-color: var(--green) !important; box-shadow: none; }
+  .ic-wrap.wrong   .ic { background: #fff8ed; border-color: var(--yellow) !important; box-shadow: none; }
+
+  /* Badge */
+  .ic-badge { position: absolute; top: -7px; right: -7px; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; z-index: 10; }
+  .ic-badge.show { display: flex; }
+  .ic-badge.ok   { background: var(--green); }
+  .ic-badge.fail { background: var(--yellow); }
+  .ic-badge svg  { width: 8px; height: 8px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Solution label shown to the right of the letter row after final attempt */
+  .solution-label { display: none; margin-left: 10px; font-size: 13px; font-weight: 700; color: var(--yellow); font-family: 'Lora', serif; align-self: center; white-space: nowrap; }
+  .solution-label.show { display: inline; }
+
+  /* Row-level badge (shown after check, one per row) */
+  .row-badge { display: none; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; margin-top: 4px; }
+  .row-badge.show { display: flex; }
+  .row-badge.ok   { color: var(--green); }
+  .row-badge.fail { color: var(--yellow); }
+  .row-badge svg  { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Feedback ── */
+  .feedback { display: none; margin: 0 22px 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; align-items: center; gap: 8px; }
+  .feedback.show { display: flex; }
+  .feedback.warn { background: #fff8ed; color: #b45309; border: 1px solid #fde68a; }
+  .feedback.ok   { background: #edf7ed; color: #2e7d32; border: 1px solid #c8e6c9; }
+  .feedback svg  { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ── Footer ── */
+  .task-footer { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+  .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+  .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #d0cec9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+  .check-btn { background: #111; color: #fff; border: none; border-radius: 10px; padding: 9px 20px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.15s; display: flex; align-items: center; gap: 6px; }
+  .check-btn:hover:not(:disabled) { background: #333; transform: translateY(-1px); }
+  .check-btn:active:not(:disabled) { transform: scale(0.97); }
+  .check-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+  .check-btn.success { background: var(--green); }
+  .check-btn.partial { background: var(--yellow); }
+  .check-btn svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  @media (max-width: 540px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-content { padding: 14px 12px; }
+    .task-footer { padding: 12px 14px; }
+    .task-header { padding: 16px 14px 12px; }
+    :root { --cell: 28px; }
+    .ic { font-size: 13px; } .lc { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion05.html" class="sub">Lektion 5</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Für Romkenner</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+<div class="task-card">
+  <div class="task-header">
+    <div class="task-title">Für Romkenner</div>
+    <div class="task-instruction">Löse die Rätsel. Die grau hinterlegten Buchstaben sind bereits gegeben, die weißen Felder musst du ausfüllen.</div>
+  </div>
+  <div class="task-content" id="puzzleContainer"></div>
+  <div class="feedback" id="feedback">
+    <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+    <span id="feedbackText"></span>
+  </div>
+  <div class="task-footer">
+    <div class="attempts-wrap">
+      <div class="attempt-dot" id="dot1"></div>
+      <div class="attempt-dot" id="dot2"></div>
+      <div class="attempt-dot" id="dot3"></div>
+    </div>
+    <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+  </div>
+</div>
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────────────────────
+  // pattern: array of chars. '?' = blank input, letter = fixed shown cell, '*' = answer indicator cell
+  // answer: the full word (used to derive correct letters for blank positions)
+  // The '?' cells in pattern correspond left-to-right to the blank letters of the answer.
+
+  const puzzles = [
+    {
+      id: 'p1',
+      clue: 'Hier berieten sich die Senatoren.',
+      answer: 'curia',
+      pattern: ['_', 'u', '_', '_', '_'],
+    },
+    {
+      id: 'p2',
+      clue: 'Lateinisch für „Geschenk".',
+      answer: 'donum',
+      pattern: ['d', '_', 'n', '_', '_'],
+    },
+    {
+      id: 'p3',
+      clue: 'Tribüne für öffentliche Reden.',
+      answer: 'rostra',
+      pattern: ['_', 'o', '_', '_', 'r', '_'],
+    },
+    {
+      id: 'p4',
+      clue: 'Eine sehr große Mehrzweckhalle.',
+      answer: 'basilica',
+      pattern: ['_', '_', 's', '_', '_', '_', 'c', '_'],
+    },
+    {
+      id: 'p5',
+      clue: 'Lateinisch für „Denkmal".',
+      answer: 'monumentum',
+      pattern: ['_', 'o', '_', '_', '_', 'e', '_', '_', '_', '_'],
+    },
+    {
+      id: 'p6',
+      clue: 'Roms ältestes Gefängnis.',
+      answer: 'carcer',
+      pattern: ['_', 'a', '_', '_', 'e', '_'],
+    },
+    {
+      id: 'p7',
+      clue: 'Vater von Aulus und Cornelia.',
+      answer: 'Quintus',
+      pattern: ['_', '_', 'i', '_', '_', 'u', '_'],
+    },
+    {
+      id: 'p8',
+      clue: '… Romanum: Das Zentrum Roms.',
+      answer: 'Forum',
+      pattern: ['_', 'o', '_', '_', '_'],
+    },
+    {
+      id: 'p9',
+      clue: 'Kleidungsstück.',
+      answer: 'toga',
+      pattern: ['t', '_', 'g', '_'],
+    },
+  ];
+
+  const KEY  = 'task_l05_fuer_romkenner';
+  const NEXT = 'eine-brenzlige-situation-a.html';
+
+  let tries  = 0;
+  let locked = false;
+
+  // allInputs[puzzleId] = [ {el, correct_char, wrapEl, badgeEl, popoverEl}, ... ]
+  const allInputs = {};
+
+  // ── Build puzzle rows ──────────────────────────────────────────────────────
+  const container = document.getElementById('puzzleContainer');
+
+  puzzles.forEach((p, pi) => {
+    // Simple sequential mapping: go through answer chars in order.
+    // Pattern cells: '_' = input (next answer char), '?' = display-only indicator (next answer char shown as blue cell), letter = fixed shown cell (skip that answer char).
+    const answerChars = p.answer.toLowerCase().split('');
+    let aIdx = 0;
+    const inputDefs = [];
+
+    p.pattern.forEach((cell, pIdx) => {
+      if (cell === '_') {
+        inputDefs.push({ patternIndex: pIdx, correctChar: answerChars[aIdx] || '?' });
+        aIdx++;
+      } else {
+        // Fixed letter: skip corresponding answer char
+        aIdx++;
+      }
+    });
+
+    allInputs[p.id] = [];
+
+    // Build DOM
+    const row = document.createElement('div');
+    row.className = 'puzzle-row';
+    row.id = 'row-' + p.id;
+
+    const inner = document.createElement('div');
+    inner.className = 'puzzle-inner';
+
+    const numBadge = document.createElement('span');
+    numBadge.className = 'puzzle-num';
+    numBadge.textContent = pi + 1;
+
+    const content = document.createElement('div');
+    content.className = 'puzzle-content';
+
+    const clue = document.createElement('div');
+    clue.className = 'puzzle-clue';
+    clue.textContent = p.clue;
+
+    const letterRow = document.createElement('div');
+    letterRow.className = 'letter-row';
+
+    let inputIdx = 0;
+    p.pattern.forEach((cell, pIdx) => {
+      if (cell === '_') {
+        const iDef = inputDefs[inputIdx++];
+        const wrap = document.createElement('span');
+        wrap.className = 'ic-wrap';
+
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.className = 'ic';
+        inp.maxLength = 1;
+        inp.autocomplete = 'off';
+        inp.autocorrect = 'off';
+        inp.autocapitalize = 'none';
+        inp.spellcheck = false;
+        inp.id = `ic-${p.id}-${pIdx}`;
+        inp.addEventListener('input', (e) => {
+          const val = e.target.value;
+          if (val.length > 1) inp.value = val.slice(-1);
+          const allIcs = letterRow.querySelectorAll('.ic:not(:disabled)');
+          const arr = Array.from(allIcs);
+          const idx = arr.indexOf(inp);
+          if (inp.value && idx !== -1 && idx < arr.length - 1) arr[idx + 1].focus();
+          updateBtn();
+        });
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !inp.value) {
+            const allIcs = letterRow.querySelectorAll('.ic:not(:disabled)');
+            const arr = Array.from(allIcs);
+            const idx = arr.indexOf(inp);
+            if (idx > 0) arr[idx - 1].focus();
+          }
+        });
+
+        const badge = document.createElement('span');
+        badge.className = 'ic-badge';
+
+        wrap.appendChild(inp);
+        wrap.appendChild(badge);
+        letterRow.appendChild(wrap);
+
+        allInputs[p.id].push({ el: inp, correctChar: iDef.correctChar, wrapEl: wrap, badgeEl: badge });
+      } else {
+        // Fixed letter
+        const fc = document.createElement('div');
+        fc.className = 'lc';
+        fc.textContent = cell;
+        letterRow.appendChild(fc);
+      }
+    });
+
+    const solLabel = document.createElement('span');
+    solLabel.className = 'solution-label';
+    solLabel.id = 'sol-' + p.id;
+    solLabel.textContent = '→ ' + p.answer;
+    letterRow.appendChild(solLabel);
+
+    content.appendChild(clue);
+    content.appendChild(letterRow);
+    inner.appendChild(numBadge);
+    inner.appendChild(content);
+    row.appendChild(inner);
+    container.appendChild(row);
+  });
+
+  // ── Enable button ──────────────────────────────────────────────────────────
+  const checkBtn = document.getElementById('checkBtn');
+  function updateBtn() {} // button always enabled
+  checkBtn.disabled = false;
+
+  // ── Normalise ──────────────────────────────────────────────────────────────
+  function norm(s) { return s.toLowerCase().trim(); }
+
+  // ── Check ──────────────────────────────────────────────────────────────────
+  function checkAnswers() {
+    if (locked || tries >= 3) return;
+    tries++;
+    document.getElementById('dot' + tries).classList.add('used');
+
+    let correct = 0;
+    let total   = 0;
+
+    Object.keys(allInputs).forEach(pid => {
+      const arr        = allInputs[pid];
+      const rowCorrect = arr.every(d => norm(d.el.value) === norm(d.correctChar));
+      total++;
+      if (rowCorrect) correct++;
+
+      arr.forEach(d => {
+        const ok = norm(d.el.value) === norm(d.correctChar);
+        d.wrapEl.classList.remove('correct', 'wrong');
+        d.wrapEl.classList.add(ok ? 'correct' : 'wrong');
+        d.el.disabled = ok || tries >= 3;
+      });
+    });
+
+    const allOk  = correct === total;
+    const doLock = tries >= 3 || allOk;
+
+    if (doLock) {
+      locked = true;
+      Object.keys(allInputs).forEach(pid => {
+        const arr = allInputs[pid];
+        arr.forEach(d => {
+          d.el.disabled = true;
+          const ok = d.wrapEl.classList.contains('correct');
+          d.badgeEl.classList.add('show', ok ? 'ok' : 'fail');
+          d.badgeEl.innerHTML = ok
+            ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+            : '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+        });
+        // Show solution label if any cell in this row is wrong
+        const rowWrong = arr.some(d => !d.wrapEl.classList.contains('correct'));
+        if (rowWrong) {
+          const lbl = document.getElementById('sol-' + pid);
+          if (lbl) lbl.classList.add('show');
+        }
+      });
+      saveState(allOk, correct);
+    }
+
+    if (allOk) {
+      showFeedback('ok', 'Ausgezeichnet! Alle Rätsel gelöst!');
+      checkBtn.classList.add('success');
+      checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+      checkBtn.disabled = false;
+      checkBtn.onclick = () => window.location.href = NEXT;
+    } else if (tries < 3) {
+      showFeedback('warn', `${correct} von ${total} Rätseln vollständig richtig. Versuche es nochmal!`);
+      checkBtn.disabled = false;
+    } else {
+      showFeedback('warn', 'Klicke auf die gelb markierten Felder, um den richtigen Buchstaben zu sehen.');
+      checkBtn.classList.add('partial');
+      checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+      checkBtn.disabled = false;
+      checkBtn.onclick = () => window.location.href = NEXT;
+    }
+  }
+
+  // ── Persist ────────────────────────────────────────────────────────────────
+  function lsGet(k) { try { return localStorage.getItem(k); } catch(e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch(e) {} }
+
+  function saveState(done, correct) {
+    const vals = {};
+    Object.keys(allInputs).forEach(pid => {
+      vals[pid] = allInputs[pid].map(d => d.el.value);
+    });
+    lsSet(KEY, done ? 'done' : 'attempted');
+    lsSet(KEY + '_vals',     JSON.stringify(vals));
+    lsSet(KEY + '_attempts', tries);
+    lsSet(KEY + '_points',   +(correct * 0.5).toFixed(1));
+    lsSet(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    if (!done) lsSet(KEY + '_fail', 'true');
+  }
+
+  function showFeedback(type, text) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show ' + type;
+    document.getElementById('feedbackIcon').innerHTML = type === 'ok'
+      ? '<polyline points="20 6 9 17 4 12"/>'
+      : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    document.getElementById('feedbackText').textContent = text;
+  }
+
+  // ── Restore ────────────────────────────────────────────────────────────────
+  (function restore() {
+    const savedDone  = lsGet(KEY) === 'done';
+    const savedFail  = lsGet(KEY + '_fail') === 'true';
+    const savedVals  = lsGet(KEY + '_vals');
+    const savedTries = parseInt(lsGet(KEY + '_attempts') || '0');
+    if (!savedVals || (!savedDone && !savedFail)) return;
+
+    const vals = JSON.parse(savedVals);
+    tries  = savedTries;
+    locked = true;
+
+    for (let i = 1; i <= savedTries; i++) {
+      const d = document.getElementById('dot' + i);
+      if (d) d.classList.add('used');
+    }
+
+    Object.keys(allInputs).forEach(pid => {
+      const savedArr = vals[pid] || [];
+      allInputs[pid].forEach((d, i) => {
+        const v  = savedArr[i] || '';
+        const ok = norm(v) === norm(d.correctChar);
+        d.el.value    = v;
+        d.el.disabled = true;
+        d.wrapEl.classList.add(ok ? 'correct' : 'wrong');
+        d.badgeEl.classList.add('show', ok ? 'ok' : 'fail');
+        d.badgeEl.innerHTML = ok
+          ? '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+          : '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+      });
+      // Show solution label if any cell is wrong
+      const rowWrong = allInputs[pid].some(d => d.wrapEl.classList.contains('wrong'));
+      if (rowWrong) {
+        const lbl = document.getElementById('sol-' + pid);
+        if (lbl) lbl.classList.add('show');
+      }
+    });
+
+    if (savedDone) {
+      showFeedback('ok', 'Ausgezeichnet! Alle Rätsel gelöst!');
+      checkBtn.classList.add('success');
+    } else {
+      showFeedback('warn', 'Klicke auf die gelb markierten Felder, um den richtigen Buchstaben zu sehen.');
+      checkBtn.classList.add('partial');
+    }
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.disabled = false;
+    checkBtn.onclick = () => window.location.href = NEXT;
+  })();
+
+  // ── Bell & dropdown ────────────────────────────────────────────────────────
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => { if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown(); });
+</script>
+</body>
+</html>

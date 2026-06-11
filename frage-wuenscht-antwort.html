@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frage wünscht Antwort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+        --accent: #c6613f;
+        --red: #c0392b;
+        /* signal colours */
+        --ne-color: #2563eb;
+        --ne-bg: #eff6ff;
+        --ne-border: #bfdbfe;
+        --num-color: #b45309;
+        --num-bg: #fef3c7;
+        --num-border: #fde68a;
+        --nonne-color: #7c3aed;
+        --nonne-bg: #f5f3ff;
+        --nonne-border: #ddd6fe;
+      }
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      /* ── Header ── */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 200;
+      }
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      /* ── Page ── */
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .task-content {
+        padding: 22px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* ── Legend bar ── */
+      .signal-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #f5f4f0;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 12px;
+        color: var(--muted);
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .signal-pill {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: "Lora", serif;
+        font-style: italic;
+      }
+      .pill-ne {
+        background: var(--ne-bg);
+        color: var(--ne-color);
+        border: 1px solid var(--ne-border);
+      }
+      .pill-num {
+        background: var(--num-bg);
+        color: var(--num-color);
+        border: 1px solid var(--num-border);
+      }
+      .pill-nonne {
+        background: var(--nonne-bg);
+        color: var(--nonne-color);
+        border: 1px solid var(--nonne-border);
+      }
+      .legend-sep {
+        color: #d0cec9;
+      }
+
+      /* ── Question card ── */
+      .q-card {
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+        margin-bottom: 16px;
+      }
+      .q-card.answered-ok {
+        border-color: var(--green);
+      }
+      .q-card.answered-wrong {
+        border-color: var(--yellow);
+      }
+
+      .q-head {
+        padding: 14px 16px 12px;
+        background: #fafaf8;
+        border-bottom: 1px solid var(--border);
+      }
+      .q-num {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+      .q-speaker {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        font-style: italic;
+        margin-bottom: 4px;
+      }
+      .q-latin {
+        font-family: "Lora", serif;
+        font-size: 16px;
+        color: var(--text);
+        line-height: 1.5;
+        margin-bottom: 5px;
+      }
+      .q-de {
+        font-size: 13px;
+        font-style: italic;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* Signal highlight inline */
+      .sig-ne {
+        color: var(--ne-color);
+        font-weight: 700;
+      }
+      .sig-num {
+        color: var(--num-color);
+        font-weight: 700;
+      }
+      .sig-nonne {
+        color: var(--nonne-color);
+        font-weight: 700;
+      }
+
+      /* ── Answer area ── */
+      .q-answer {
+        padding: 12px 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+      .q-answer-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        margin-right: 4px;
+        white-space: nowrap;
+      }
+      .ans-btn {
+        padding: 7px 18px;
+        border-radius: 20px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        font-size: 13px;
+        font-weight: 700;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        color: var(--text);
+        transition:
+          background 0.15s,
+          border-color 0.15s,
+          transform 0.12s;
+        user-select: none;
+      }
+      .ans-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .ans-btn:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+      .ans-btn:disabled {
+        cursor: default;
+      }
+      .ans-btn.selected {
+        border-color: #111;
+        background: #f0f0f0;
+      }
+      .ans-btn.final-ok {
+        background: #edf7ed;
+        border-color: var(--green);
+        color: #1b5e20;
+      }
+      .ans-btn.final-wrong {
+        background: #fff8ed;
+        border-color: var(--yellow);
+        color: #92400e;
+      }
+
+      /* Explanation shown after lock */
+      .q-explain {
+        display: none;
+        padding: 0 16px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #78350f;
+      }
+      .q-explain.show {
+        display: block;
+      }
+      .q-explain strong {
+        font-weight: 700;
+      }
+
+      /* ── Feedback ── */
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.warn {
+        background: #fff8ed;
+        color: #b45309;
+        border: 1px solid #fde68a;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      /* ── Task footer ── */
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+      .check-btn {
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .check-btn:hover:not(:disabled) {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+      .check-btn:disabled {
+        opacity: 0.4;
+        cursor: default;
+        transform: none;
+      }
+      .check-btn.success {
+        background: var(--green);
+      }
+      .check-btn.partial {
+        background: var(--yellow);
+      }
+      .check-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @media (max-width: 520px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .task-content {
+          padding: 14px 12px;
+        }
+        .task-footer {
+          padding: 12px 14px;
+        }
+        .task-header {
+          padding: 16px 14px 12px;
+        }
+        .q-latin {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion04.html" class="sub">Lektion 4</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Frage wünscht Antwort</span>
+      </div>
+      <div class="topbar">
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" /></svg
+              >Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                /></svg
+              >Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" /></svg
+              >Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Frage wünscht Antwort</div>
+          <div class="task-instruction">
+            Lies die Frage und ihre Übersetzung. Wähle dann, welche Antwort das
+            Fragesignal erwarten lässt.
+          </div>
+        </div>
+
+        <div class="task-content">
+          <!-- Legend -->
+          <div class="signal-legend">
+            <span>Fragesignale:</span>
+            <span class="signal-pill pill-ne">-ne</span>
+            <span style="font-size: 12px; color: var(--muted)"
+              >→ Ja oder Nein möglich</span
+            >
+            <span class="legend-sep">·</span>
+            <span class="signal-pill pill-num">num</span>
+            <span style="font-size: 12px; color: var(--muted)"
+              >→ Nein erwartet</span
+            >
+            <span class="legend-sep">·</span>
+            <span class="signal-pill pill-nonne">nōnne</span>
+            <span style="font-size: 12px; color: var(--muted)"
+              >→ Doch erwartet</span
+            >
+          </div>
+
+          <!-- Question cards injected by JS -->
+          <div id="qList"></div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">
+            Überprüfen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── Daten ─────────────────────────────────────────────────────────────────
+      // ans: correct button label
+      // explain: shown after final lock if wrong (or always on success)
+      const questions = [
+        {
+          id: "q1",
+          speaker: "Magister fragt Aulus:",
+          // HTML with signal highlighted
+          latinHtml:
+            '„<span class="sig-nonne">Nōnne</span> discere tē dēlectat, Aule?"',
+          de: '„Erfreut dich das Lernen etwa nicht, Aulus?"',
+          ans: "Doch",
+          explain:
+            "<strong>Nōnne</strong> erwartet eine Bestätigung — der Fragesteller geht davon aus, dass Lernen erfreut. Die erwartete Antwort ist <strong>Doch</strong> (lat. <em>Dēlectat.</em>).",
+        },
+        {
+          id: "q2",
+          speaker: "Aulus fragt den Magister:",
+          latinHtml: '„<span class="sig-num">Num</span> semper discere dēbeō?"',
+          de: '„Muss ich denn/etwa immer lernen?"',
+          ans: "Nein",
+          explain:
+            "<strong>Num</strong> erwartet eine verneinende Antwort — Aulus hofft, dass er nicht immer lernen muss. Die erwartete Antwort ist <strong>Nein</strong> (lat. <em>Nōn dēbēs.</em>).",
+        },
+        {
+          id: "q3",
+          speaker: "Cornēlia fragt den Magister:",
+          latinHtml:
+            '„Etiam<span class="sig-ne">ne</span> puellae officia explēre dēbent?"',
+          de: '„Müssen auch Mädchen die Pflichten erfüllen?"',
+          ans: "Ja/Nein",
+          explain:
+            "<strong>-ne</strong> ist neutral — die Antwort kann in beide Richtungen gehen (<strong>Ja</strong> oder <strong>Nein</strong>). Cornelia weiß es nicht und fragt offen.",
+        },
+        {
+          id: "q4",
+          speaker: "Magister fragt Cornēlia:",
+          latinHtml:
+            '„<span class="sig-nonne">Nōnne</span> puellae legere et scrībere amant?"',
+          de: '„Mögen Mädchen denn/etwa nicht zu lesen und zu schreiben?"',
+          ans: "Doch",
+          explain:
+            "<strong>Nōnne</strong> erwartet eine Bestätigung. Der Magister geht davon aus, dass Mädchen Lesen und Schreiben mögen. Die erwartete Antwort ist <strong>Doch</strong> (lat. <em>Amant.</em>).",
+        },
+      ];
+
+      const KEY = "task_l04_frage_wuenscht_antwort";
+      const NEXT = "posse.html";
+      const ANSWER_OPTIONS = ["Ja/Nein", "Nein", "Doch"];
+
+      let tries = 0;
+      let locked = false;
+      const sel = {}; // id → chosen option or null
+      questions.forEach((q) => {
+        sel[q.id] = null;
+      });
+
+      // ── Build cards ────────────────────────────────────────────────────────────
+      const list = document.getElementById("qList");
+
+      questions.forEach((q, qi) => {
+        const card = document.createElement("div");
+        card.className = "q-card";
+        card.id = "card-" + q.id;
+
+        // Head
+        const head = document.createElement("div");
+        head.className = "q-head";
+        head.innerHTML = `
+      <div class="q-num">${qi + 1}.</div>
+      <div class="q-speaker">${q.speaker}</div>
+      <div class="q-latin">${q.latinHtml}</div>
+      <div class="q-de">${q.de}</div>
+    `;
+        card.appendChild(head);
+
+        // Answer row
+        const ansRow = document.createElement("div");
+        ansRow.className = "q-answer";
+        ansRow.innerHTML =
+          '<span class="q-answer-label">Erwartete Antwort:</span>';
+
+        ANSWER_OPTIONS.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "ans-btn";
+          btn.id = `btn-${q.id}-${opt}`;
+          btn.textContent = opt;
+          btn.addEventListener("click", () => pick(q.id, opt));
+          ansRow.appendChild(btn);
+        });
+        card.appendChild(ansRow);
+
+        // Explanation (hidden until lock)
+        const exp = document.createElement("div");
+        exp.className = "q-explain";
+        exp.id = "exp-" + q.id;
+        exp.innerHTML = q.explain;
+        card.appendChild(exp);
+
+        list.appendChild(card);
+      });
+
+      // ── Pick ──────────────────────────────────────────────────────────────────
+      function pick(id, opt) {
+        if (locked) return;
+        sel[id] = opt;
+        ANSWER_OPTIONS.forEach((o) => {
+          const b = document.getElementById(`btn-${id}-${o}`);
+          b.className = "ans-btn" + (o === opt ? " selected" : "");
+        });
+        updateBtn();
+      }
+
+      const checkBtn = document.getElementById("checkBtn");
+      function updateBtn() {
+        checkBtn.disabled = !questions.every((q) => sel[q.id] !== null);
+      }
+      checkBtn.disabled = true;
+
+      // ── Check ─────────────────────────────────────────────────────────────────
+      function checkAnswers() {
+        if (locked || tries >= 3) return;
+        tries++;
+        document.getElementById("dot" + tries).classList.add("used");
+
+        const correct = questions.filter((q) => sel[q.id] === q.ans).length;
+        const allOk = correct === questions.length;
+        const doLock = tries >= 3 || allOk;
+
+        if (doLock) {
+          locked = true;
+          questions.forEach((q) => {
+            const ok = sel[q.id] === q.ans;
+            const card = document.getElementById("card-" + q.id);
+            card.classList.add(ok ? "answered-ok" : "answered-wrong");
+            // style buttons
+            ANSWER_OPTIONS.forEach((o) => {
+              const b = document.getElementById(`btn-${q.id}-${o}`);
+              b.disabled = true;
+              if (o === q.ans) b.className = "ans-btn final-ok";
+              else if (o === sel[q.id] && !ok)
+                b.className = "ans-btn final-wrong";
+              else b.className = "ans-btn";
+            });
+            // always show explanation after lock
+            document.getElementById("exp-" + q.id).classList.add("show");
+          });
+          save(allOk, correct);
+        }
+
+        if (allOk) {
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle Fragesignale richtig erkannt!",
+          );
+          checkBtn.classList.add("success");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.disabled = false;
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        } else if (tries < 3) {
+          showFeedback(
+            "warn",
+            `${correct} von ${questions.length} richtig. Versuche es nochmal!`,
+          );
+          checkBtn.disabled = false; // re-enable for next try (selections may change)
+          updateBtn();
+        } else {
+          showFeedback(
+            "warn",
+            "Die richtigen Antworten und Erklärungen werden angezeigt.",
+          );
+          checkBtn.classList.add("partial");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.disabled = false;
+          checkBtn.onclick = () => (window.location.href = NEXT);
+        }
+      }
+
+      function lsGet(k) {
+        try {
+          return localStorage.getItem(k);
+        } catch (e) {
+          return null;
+        }
+      }
+      function lsSet(k, v) {
+        try {
+          localStorage.setItem(k, v);
+        } catch (e) {}
+      }
+
+      function save(done, correct) {
+        lsSet(KEY, done ? "done" : "attempted");
+        lsSet(KEY + "_sel", JSON.stringify(sel));
+        lsSet(KEY + "_attempts", tries);
+        lsSet(KEY + "_points", +(correct * 0.5).toFixed(2));
+        lsSet(KEY + "_date", new Date().toLocaleDateString("de-DE"));
+        if (!done) lsSet(KEY + "_fail", "true");
+      }
+
+      function showFeedback(type, text) {
+        const fb = document.getElementById("feedback");
+        fb.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML =
+          type === "ok"
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      // ── Restore ───────────────────────────────────────────────────────────────
+      (function restoreState() {
+        const savedDone = lsGet(KEY) === "done";
+        const savedFail = lsGet(KEY + "_fail") === "true";
+        const savedSel = lsGet(KEY + "_sel");
+        const savedTries = parseInt(lsGet(KEY + "_attempts") || "0");
+        if (!savedSel || (!savedDone && !savedFail)) return;
+
+        const parsed = JSON.parse(savedSel);
+        Object.assign(sel, parsed);
+        tries = savedTries;
+        locked = true;
+
+        for (let i = 1; i <= savedTries; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+
+        questions.forEach((q) => {
+          const ok = sel[q.id] === q.ans;
+          const card = document.getElementById("card-" + q.id);
+          card.classList.add(ok ? "answered-ok" : "answered-wrong");
+          ANSWER_OPTIONS.forEach((o) => {
+            const b = document.getElementById(`btn-${q.id}-${o}`);
+            b.disabled = true;
+            if (o === q.ans) b.className = "ans-btn final-ok";
+            else if (o === sel[q.id] && !ok)
+              b.className = "ans-btn final-wrong";
+            else b.className = "ans-btn";
+          });
+          document.getElementById("exp-" + q.id).classList.add("show");
+        });
+
+        const correct = questions.filter((q) => sel[q.id] === q.ans).length;
+        if (savedDone) {
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle Fragesignale richtig erkannt!",
+          );
+          checkBtn.classList.add("success");
+        } else {
+          showFeedback(
+            "warn",
+            "Die richtigen Antworten und Erklärungen werden angezeigt.",
+          );
+          checkBtn.classList.add("partial");
+        }
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.disabled = false;
+        checkBtn.onclick = () => (window.location.href = NEXT);
+      })();
+
+      // ── Bell & Dropdown ───────────────────────────────────────────────────────
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genitive gesucht 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+
+        /* Circle A = a-Deklination → rosé */
+        --cA: #be185d;
+        --cA-bg: #fce7f3;
+        --cA-text: #831843;
+        --cA-ring: rgba(190, 24, 93, 0.25);
+
+        /* Circle B = o-Deklination → salbeigrün */
+        --cB: #4d7c0f;
+        --cB-bg: #ecfccb;
+        --cB-text: #1a2e05;
+        --cB-ring: rgba(77, 124, 15, 0.25);
+
+        /* Circle C = konsonantische Deklination → stahlblau */
+        --cC: #0369a1;
+        --cC-bg: #e0f2fe;
+        --cC-text: #0c2a3e;
+        --cC-ring: rgba(3, 105, 161, 0.25);
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      /* ── Header ── */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 200;
+      }
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555;
+        font-family: "Noto Sans", sans-serif;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      /* ── Page ── */
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: visible;
+      }
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .task-content {
+        padding: 24px 22px;
+      }
+
+      /* ── Circles row ── */
+      .circles-row {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 28px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .circle-btn {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 2.5px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s,
+          opacity 0.2s;
+        flex-shrink: 0;
+        user-select: none;
+      }
+      .circle-btn:hover {
+        transform: scale(1.06);
+      }
+      .circle-label {
+        font-size: 15px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 1.3;
+        padding: 0 10px;
+      }
+
+      .cA {
+        background: var(--cA-bg);
+        border-color: var(--cA);
+      }
+      .cA .circle-label {
+        color: var(--cA-text);
+      }
+      .cA.active {
+        box-shadow: 0 0 0 5px var(--cA);
+      }
+      .cA.circle-spotlight {
+        transform: scale(1.1) !important;
+        box-shadow: 0 0 0 6px var(--cA-ring) !important;
+        z-index: 10;
+        position: relative;
+      }
+
+      .cB {
+        background: var(--cB-bg);
+        border-color: var(--cB);
+      }
+      .cB .circle-label {
+        color: var(--cB-text);
+      }
+      .cB.active {
+        box-shadow: 0 0 0 5px var(--cB);
+      }
+      .cB.circle-spotlight {
+        transform: scale(1.1) !important;
+        box-shadow: 0 0 0 6px var(--cB-ring) !important;
+        z-index: 10;
+        position: relative;
+      }
+
+      .cC {
+        background: var(--cC-bg);
+        border-color: var(--cC);
+      }
+      .cC .circle-label {
+        color: var(--cC-text);
+      }
+      .cC.active {
+        box-shadow: 0 0 0 5px var(--cC);
+      }
+      .cC.circle-spotlight {
+        transform: scale(1.1) !important;
+        box-shadow: 0 0 0 6px var(--cC-ring) !important;
+        z-index: 10;
+        position: relative;
+      }
+
+      .circle-btn.circle-dim {
+        opacity: 0.22 !important;
+      }
+
+      /* ── Items grid ── */
+      .items-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 8px;
+        justify-content: center;
+      }
+
+      /* ── Word chip ── */
+      .word-chip {
+        padding: 8px 18px;
+        border-radius: 8px;
+        border: 1.5px solid var(--border);
+        background: var(--white);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        cursor: pointer;
+        user-select: none;
+        font-family: "Lora", serif;
+        transition:
+          background 0.12s,
+          border-color 0.12s,
+          box-shadow 0.12s,
+          transform 0.12s,
+          opacity 0.2s;
+      }
+      .word-chip:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transform: translateY(-1px);
+      }
+      .word-chip.selected-item {
+        border-color: #111;
+        transform: translateY(-4px) scale(1.07);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        z-index: 5;
+        position: relative;
+      }
+
+      .word-chip.color-A {
+        background: var(--cA-bg);
+        border-color: var(--cA);
+        color: var(--cA-text);
+      }
+      .word-chip.color-B {
+        background: var(--cB-bg);
+        border-color: var(--cB);
+        color: var(--cB-text);
+      }
+      .word-chip.color-C {
+        background: var(--cC-bg);
+        border-color: var(--cC);
+        color: var(--cC-text);
+      }
+
+      .word-chip.locked-ok-A {
+        background: var(--cA-bg);
+        border: 2px solid var(--green) !important;
+        color: var(--cA-text);
+        cursor: default;
+      }
+      .word-chip.locked-ok-B {
+        background: var(--cB-bg);
+        border: 2px solid var(--green) !important;
+        color: var(--cB-text);
+        cursor: default;
+      }
+      .word-chip.locked-ok-C {
+        background: var(--cC-bg);
+        border: 2px solid var(--green) !important;
+        color: var(--cC-text);
+        cursor: default;
+      }
+
+      .word-chip.locked-wrong-A {
+        background: var(--cA-bg);
+        border: 2px solid var(--yellow) !important;
+        color: var(--cA-text);
+        cursor: pointer;
+      }
+      .word-chip.locked-wrong-B {
+        background: var(--cB-bg);
+        border: 2px solid var(--yellow) !important;
+        color: var(--cB-text);
+        cursor: pointer;
+      }
+      .word-chip.locked-wrong-C {
+        background: var(--cC-bg);
+        border: 2px solid var(--yellow) !important;
+        color: var(--cC-text);
+        cursor: pointer;
+      }
+      .word-chip.locked-wrong-none {
+        background: #f5f4f0;
+        border: 2px solid var(--yellow) !important;
+        color: #1a1a1a;
+        cursor: pointer;
+      }
+
+      .word-chip.preview-A {
+        background: var(--cA-bg) !important;
+        border: 2px solid var(--cA) !important;
+        color: var(--cA-text) !important;
+        box-shadow: 0 2px 8px var(--cA-ring);
+      }
+      .word-chip.preview-B {
+        background: var(--cB-bg) !important;
+        border: 2px solid var(--cB) !important;
+        color: var(--cB-text) !important;
+        box-shadow: 0 2px 8px var(--cB-ring);
+      }
+      .word-chip.preview-C {
+        background: var(--cC-bg) !important;
+        border: 2px solid var(--cC) !important;
+        color: var(--cC-text) !important;
+        box-shadow: 0 2px 8px var(--cC-ring);
+      }
+      .word-chip.preview-dim {
+        opacity: 0.28;
+      }
+      .word-chip.item-spotlight {
+        transform: scale(1.06);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        z-index: 5;
+        position: relative;
+      }
+      .word-chip.item-dim {
+        opacity: 0.22;
+      }
+
+      /* ── Feedback ── */
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.warn {
+        background: #fff8ed;
+        color: #b45309;
+        border: 1px solid #fde68a;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      /* ── Task footer ── */
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+      .check-btn {
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .check-btn:hover {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn:active {
+        transform: scale(0.97);
+      }
+      .check-btn:disabled {
+        opacity: 0.4;
+        cursor: default;
+        transform: none;
+      }
+      .check-btn.success {
+        background: #4caf50;
+      }
+      .check-btn.partial {
+        background: #f5a623;
+      }
+      .check-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .task-content {
+          padding: 16px 14px;
+        }
+        .task-footer {
+          padding: 12px 14px;
+        }
+        .task-header {
+          padding: 16px 14px 12px;
+        }
+        .circle-btn {
+          width: 110px;
+          height: 110px;
+        }
+        .circle-label {
+          font-size: 13px;
+        }
+        .word-chip {
+          font-size: 13px;
+          padding: 7px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion06.html" class="sub">Lektion 6</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Genitive gesucht 2</span>
+      </div>
+      <div class="topbar">
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" /></svg
+              >Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                /></svg
+              >Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" /></svg
+              >Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Genitive gesucht 2</div>
+          <div class="task-instruction">
+            Ordne die Wörter der richtigen Deklinationsklasse zu.
+          </div>
+        </div>
+
+        <div class="task-content">
+          <div class="circles-row">
+            <div class="circle-btn cA" id="c-A" onclick="selectCircle('A')">
+              <div class="circle-label">a-Deklination</div>
+            </div>
+            <div class="circle-btn cB" id="c-B" onclick="selectCircle('B')">
+              <div class="circle-label">o-Deklination</div>
+            </div>
+            <div class="circle-btn cC" id="c-C" onclick="selectCircle('C')">
+              <div class="circle-label">konsonantische Deklination</div>
+            </div>
+          </div>
+
+          <div class="items-grid" id="itemsGrid"></div>
+        </div>
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">
+            Überprüfen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // A = a-Deklination, B = o-Deklination, C = konsonantische Deklination
+      const items = [
+        { id: "chip-villarum", label: "vill\u0101rum", ans: "A" },
+        { id: "chip-uxoris", label: "uxoris", ans: "C" },
+        { id: "chip-furis", label: "f\u016Bris", ans: "C" },
+        { id: "chip-sororum", label: "sor\u014Drum", ans: "C" },
+        { id: "chip-puerorun", label: "puer\u014Drum", ans: "B" },
+        { id: "chip-amici", label: "am\u012Bc\u012B", ans: "B" },
+        { id: "chip-auli", label: "Aul\u012B", ans: "B" },
+        { id: "chip-liberorun", label: "l\u012Bber\u014Drum", ans: "B" },
+        { id: "chip-doni", label: "don\u012B", ans: "B" },
+        { id: "chip-hominum", label: "hominum", ans: "C" },
+        { id: "chip-statuae", label: "statuae", ans: "A" },
+      ];
+
+      const KEY = "task_l06_genitive_gesucht_2";
+      const NEXT = "genitive-gesucht-3.html";
+      const ZONES = ["A", "B", "C"];
+
+      let selItem = null;
+      let selCircle = null;
+      let assign = {};
+      let wrongTg = {};
+      let tries = 0;
+      let locked = false;
+      let spotlight = null;
+      let previewZone = null;
+
+      const grid = document.getElementById("itemsGrid");
+      items.forEach((d) => {
+        const el = document.createElement("div");
+        el.className = "word-chip";
+        el.id = d.id;
+        el.textContent = d.label;
+        el.onclick = () => clickItem(d.id);
+        grid.appendChild(el);
+        assign[d.id] = null;
+      });
+
+      function clearCircles() {
+        ZONES.forEach((z) => {
+          const btn = document.getElementById("c-" + z);
+          if (btn)
+            btn.classList.remove("active", "circle-spotlight", "circle-dim");
+        });
+      }
+
+      function restoreLockedState() {
+        const allCorrect = items.every((d) => assign[d.id] === d.ans);
+        items.forEach((d) => {
+          const el = document.getElementById(d.id);
+          const a = assign[d.id];
+          if (a === d.ans) {
+            el.className = "word-chip locked-ok-" + d.ans;
+            el.style.pointerEvents = allCorrect ? "none" : "";
+          } else {
+            el.className = "word-chip locked-wrong-" + (a || "none");
+            el.style.pointerEvents = "";
+          }
+        });
+        clearCircles();
+      }
+
+      function itemSpotlight(id) {
+        const d = items.find((x) => x.id === id);
+        if (!d) return;
+        spotlight = id;
+        clearCircles();
+        previewZone = null;
+        items.forEach((x) => {
+          document.getElementById(x.id).className =
+            x.id === id
+              ? "word-chip item-spotlight preview-" + d.ans
+              : "word-chip item-dim";
+        });
+        ZONES.forEach((z) => {
+          const btn = document.getElementById("c-" + z);
+          if (!btn) return;
+          btn.classList.add(z === d.ans ? "circle-spotlight" : "circle-dim");
+        });
+      }
+
+      function endSpotlight() {
+        if (!spotlight) return;
+        spotlight = null;
+        clearCircles();
+        restoreLockedState();
+      }
+
+      function previewCircle(zone) {
+        if (previewZone === zone) {
+          previewZone = null;
+          clearCircles();
+          restoreLockedState();
+          return;
+        }
+        previewZone = zone;
+        spotlight = null;
+        clearCircles();
+        document.getElementById("c-" + zone).classList.add("active");
+        items.forEach((d) => {
+          document.getElementById(d.id).className =
+            d.ans === zone
+              ? "word-chip preview-" + zone
+              : "word-chip preview-dim";
+        });
+      }
+
+      function selectCircle(zone) {
+        if (locked) {
+          previewCircle(zone);
+          return;
+        }
+        if (selItem) {
+          doAssign(selItem, zone);
+          document.getElementById(selItem).classList.remove("selected-item");
+          selItem = null;
+          clearCircles();
+          selCircle = null;
+          return;
+        }
+        if (selCircle === zone) {
+          selCircle = null;
+          clearCircles();
+        } else {
+          selCircle = zone;
+          clearCircles();
+          document.getElementById("c-" + zone).classList.add("active");
+        }
+      }
+
+      function clickItem(id) {
+        if (locked) {
+          if (wrongTg[id]) {
+            if (spotlight === id) endSpotlight();
+            else itemSpotlight(id);
+          }
+          return;
+        }
+        const el = document.getElementById(id);
+        if (assign[id] && !selItem && !selCircle) {
+          assign[id] = null;
+          el.className = "word-chip";
+          return;
+        }
+        if (selCircle) {
+          doAssign(id, selCircle);
+          clearCircles();
+          selCircle = null;
+          if (selItem) {
+            document.getElementById(selItem).classList.remove("selected-item");
+            selItem = null;
+          }
+          return;
+        }
+        if (selItem === id) {
+          selItem = null;
+          el.classList.remove("selected-item");
+          return;
+        }
+        if (selItem)
+          document.getElementById(selItem).classList.remove("selected-item");
+        selItem = id;
+        el.classList.add("selected-item");
+      }
+
+      function doAssign(itemId, zone) {
+        assign[itemId] = zone;
+        document.getElementById(itemId).className = "word-chip color-" + zone;
+      }
+
+      function checkAnswers() {
+        if (locked || tries >= 3) return;
+        const allFilled = items.every((d) => assign[d.id] !== null);
+        if (!allFilled) {
+          showFeedback("warn", "Ordne zuerst alle Wörter zu.");
+          return;
+        }
+
+        tries++;
+        document.getElementById("dot" + tries).classList.add("used");
+        wrongTg = {};
+        selItem = null;
+        selCircle = null;
+        previewZone = null;
+        clearCircles();
+
+        const score = items.filter((d) => assign[d.id] === d.ans).length;
+        const allOk = score === items.length;
+        const doLock = tries >= 3;
+        const checkBtn = document.getElementById("checkBtn");
+
+        if (allOk) {
+          items.forEach((d) => {
+            const el = document.getElementById(d.id);
+            el.className = "word-chip locked-ok-" + d.ans;
+            el.style.pointerEvents = "none";
+          });
+          locked = true;
+          checkBtn.disabled = true;
+          showFeedback("ok", "Ausgezeichnet! Alle Wörter richtig zugeordnet!");
+          winState();
+          return;
+        }
+        if (!doLock) {
+          showFeedback(
+            "warn",
+            "Das ist noch nicht richtig. Versuche es nochmal!",
+          );
+          return;
+        }
+
+        items.forEach((d) => {
+          const el = document.getElementById(d.id);
+          const assigned = assign[d.id];
+          if (assigned === d.ans) {
+            el.className = "word-chip locked-ok-" + d.ans;
+            el.onclick = null;
+          } else {
+            el.className = "word-chip locked-wrong-" + (assigned || "none");
+            wrongTg[d.id] = { correct: d.ans };
+          }
+        });
+        locked = true;
+        checkBtn.classList.add("partial");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.disabled = false;
+        checkBtn.onclick = () => (window.location.href = NEXT);
+        showFeedback(
+          "warn",
+          "Klicke auf die gelb markierten Wörter um die richtige Lösung zu sehen.",
+        );
+        saveState(false);
+      }
+
+      function winState() {
+        locked = true;
+        saveState(true);
+        const checkBtn = document.getElementById("checkBtn");
+        checkBtn.classList.add("success");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.disabled = false;
+        checkBtn.onclick = () => (window.location.href = NEXT);
+      }
+
+      function lsGet(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (e) {
+          return null;
+        }
+      }
+      function lsSet(key, val) {
+        try {
+          localStorage.setItem(key, val);
+        } catch (e) {}
+      }
+
+      function saveState(done) {
+        const correct = items.filter((d) => assign[d.id] === d.ans).length;
+        const points = +(correct * 0.5).toFixed(1);
+        lsSet(KEY, done ? "done" : "attempted");
+        lsSet(KEY + "_assign", JSON.stringify(assign));
+        lsSet(KEY + "_attempts", tries);
+        lsSet(KEY + "_points", points);
+        lsSet(KEY + "_date", new Date().toLocaleDateString("de-DE"));
+        if (!done) lsSet(KEY + "_fail", "true");
+      }
+
+      function showFeedback(type, text) {
+        const fb = document.getElementById("feedback");
+        fb.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML =
+          type === "ok"
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      (function restoreState() {
+        const savedDone = lsGet(KEY) === "done";
+        const savedFail = lsGet(KEY + "_fail") === "true";
+        const savedAssign = lsGet(KEY + "_assign");
+        const savedAttempts = parseInt(lsGet(KEY + "_attempts") || "0");
+        if (!savedAssign || (!savedDone && !savedFail)) return;
+
+        assign = JSON.parse(savedAssign);
+        tries = savedAttempts;
+        locked = true;
+        for (let i = 1; i <= savedAttempts; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+        items.forEach((d) => {
+          const el = document.getElementById(d.id);
+          const assigned = assign[d.id];
+          const correct = assigned === d.ans;
+          if (correct) {
+            el.className = "word-chip locked-ok-" + d.ans;
+            el.style.pointerEvents = savedDone ? "none" : "";
+          } else {
+            el.className = "word-chip locked-wrong-" + (assigned || "none");
+            wrongTg[d.id] = { correct: d.ans };
+          }
+        });
+        const checkBtn = document.getElementById("checkBtn");
+        if (savedDone) {
+          checkBtn.classList.add("success");
+          showFeedback("ok", "Ausgezeichnet! Alle Wörter richtig zugeordnet!");
+        } else {
+          checkBtn.classList.add("partial");
+          showFeedback(
+            "warn",
+            "Klicke auf die gelb markierten Wörter um die richtige Lösung zu sehen.",
+          );
+        }
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.disabled = false;
+        checkBtn.onclick = () => (window.location.href = NEXT);
+      })();
+
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+      });
+    </script>
+  </body>
+</html>

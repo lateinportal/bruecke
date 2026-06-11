@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[GR] Genitivattribut, Formen des Genitivs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg:     #f8f8f6;
+    --white:  #ffffff;
+    --border: #E6E4DF;
+    --text:   #111111;
+    --muted:  #898783;
+    --accent: #c6613f;
+    --green:  #4caf50;
+    --red:    #c0392b;
+    --radius: 14px;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 1.5rem 3rem;
+    color: var(--text);
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 56px; background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; z-index: 100;
+  }
+  .sitename { font-size: 19px; font-weight: 700; color: #111; font-family: 'Lora', serif; letter-spacing: -0.4px; display: flex; align-items: center; gap: 6px; }
+  .sitename a { color: inherit; text-decoration: none; }
+  .sitename .sep, .sitename .sep2 { color: #CCCCCC; font-family: 'Noto Sans', sans-serif; font-weight: 400; font-size: 17px; }
+  .sitename .sub, .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555; font-family: 'Noto Sans', sans-serif; letter-spacing: 0; }
+  .topbar { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0; }
+  .icon-btn:hover { transform: scale(1.08); } .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #CC3300; border-radius: 50%; border: 1.5px solid var(--white); }
+  @keyframes ring { 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 75%{transform:rotate(3deg)} }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+  .dropdown { display: none; position: absolute; top: 44px; right: 0; background: var(--white); border: 1px solid #E0E0E0; border-radius: 10px; min-width: 190px; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #E8E8E8; background: #F9F9F9; }
+  .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left; }
+  .dropdown-item:hover { background: #F4F4F4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #E8E8E8; }
+  .dropdown-item.danger { color: #CC3300; } .dropdown-item.danger svg { stroke: #CC3300; }
+
+  /* ── Page layout ── */
+  .page-wrap { max-width: 780px; margin: 0 auto; }
+
+  /* ── Task card ── */
+  .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+  .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: 'Lora', serif; }
+  .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Task content ── */
+  .task-content { padding: 22px 22px; }
+
+  .gr-block { margin-bottom: 28px; }
+  .gr-block:last-child { margin-bottom: 0; }
+
+  /* "Was fällt dir auf?" label */
+  .gr-notice-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: 1.5px solid rgb(220,38,38);
+    border-radius: 6px; color: rgb(220,38,38);
+    font-size: 13px; font-weight: 600; font-family: 'Noto Sans', sans-serif;
+    padding: 5px 14px; cursor: default; margin-bottom: 12px;
+  }
+
+  /* Observation text */
+  .gr-observation { font-size: 14px; line-height: 1.75; color: var(--text); margin-bottom: 14px; }
+  .gr-observation em { font-style: italic; }
+
+  /* Rule box */
+  .gr-rule {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: #f0faf0; border: 1px solid #c8e6c9;
+    border-radius: 10px; padding: 14px 16px;
+    font-size: 14px; line-height: 1.7; color: #1b5e20;
+  }
+  .gr-rule-badge {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 6px;
+    background: var(--green); color: #fff;
+    font-size: 12px; font-weight: 700; font-family: 'Noto Sans', sans-serif;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  .gr-rule strong { font-weight: 700; }
+  .gr-rule u { text-decoration: underline; text-underline-offset: 2px; }
+
+  /* Sticky-note example box */
+  .example-note {
+    background: #FFFDE7; border: 1px solid #F5E49C;
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 18px;
+    font-size: 14px; line-height: 1.9; font-family: 'Lora', serif;
+  }
+  .example-note .note-label { font-size: 13px; font-weight: 700; font-style: italic; color: var(--muted); margin-bottom: 8px; font-family: 'Noto Sans', sans-serif; }
+  .example-note .lat { color: var(--text); font-weight: 700; }
+  .example-note .lat-red { color: var(--red); font-weight: 700; }
+  .example-note .de { font-style: italic; color: var(--muted); font-family: 'Noto Sans', sans-serif; font-size: 13.5px; }
+  .example-note .de .de-bold { font-weight: 700; color: var(--red); font-style: normal; }
+  .example-note .example-row { margin-bottom: 10px; }
+  .example-note .example-row:last-child { margin-bottom: 0; }
+
+  /* Section heading inside content */
+  .section-heading {
+    font-family: 'Lora', serif; font-size: 15px; font-weight: 700;
+    color: var(--text); margin-bottom: 14px; margin-top: 28px;
+  }
+
+  /* ── Deklinationstabelle ── */
+  .dekl-table {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; font-size: 13px; margin: 14px 0;
+  }
+  .dekl-table caption {
+    font-size: 14px; font-weight: 700; color: var(--text);
+    font-family: 'Lora', serif; text-align: left;
+    padding: 12px 16px 8px; caption-side: top;
+  }
+  .dekl-table th {
+    background: #F2F1EF; font-size: 11px; font-weight: 700;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: center;
+  }
+  .dekl-table th:first-child, .dekl-table th:nth-child(2) { text-align: left; }
+  .dekl-table td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; text-align: center; line-height: 1.45;
+  }
+  .dekl-table tr:last-child td { border-bottom: none; }
+  .dekl-table td:first-child {
+    font-weight: 600; color: var(--muted); font-size: 12px;
+    text-align: left; white-space: nowrap; background: #fafaf9;
+  }
+  .dekl-table td:nth-child(2) {
+    font-weight: 600; color: var(--muted); font-size: 12px;
+    text-align: left; white-space: nowrap; background: #fafaf9;
+  }
+  .dekl-table .stem { color: var(--text); }
+  .dekl-table .ending { color: var(--red); font-weight: 700; }
+  .dekl-table .lat { font-family: 'Lora', serif; }
+  /* Highlighted row (Genitiv) */
+    .dekl-table tr.hl-row td { background: #fde8e4; font-weight: 700; color: #C0392B; }
+  /* sub-text (translation) */
+  .dekl-table .trans { display: block; font-size: 11.5px; color: var(--muted); font-family: 'Noto Sans', sans-serif; font-weight: 400; margin-top: 2px; font-style: italic; }
+
+  /* Table intro text */
+  .table-intro { font-size: 14px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+
+  /* ── Task footer ── */
+  .task-footer { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+  .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+  .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #D0CEC9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+  .check-btn { background: #111; color: #fff; border: none; border-radius: 10px; padding: 9px 20px; font-size: 14px; font-weight: 600; font-family: 'Noto Sans', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+  .check-btn:hover { background: #333; transform: translateY(-1px); }
+  .check-btn:active { transform: scale(0.97); }
+  .check-btn.success { background: var(--green); pointer-events: none; }
+
+  /* ── Feedback ── */
+  .feedback { display: none; margin: 0 22px 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; align-items: center; gap: 8px; }
+  .feedback.show { display: flex; }
+  .feedback.ok { background: #EDF7ED; color: #2E7D32; border: 1px solid #C8E6C9; }
+  .feedback svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  @media (max-width: 500px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-content { padding: 14px; }
+    .task-footer  { padding: 12px 16px; }
+    .dekl-table th, .dekl-table td { padding: 6px 7px; font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html">Latein*</a>
+    <span class="sep">›</span>
+    <a href="lektion06.html" class="sub">Lektion 6</a>
+    <span class="sep2">›</span>
+    <span class="sub2">Genitivattribut, Formen des Genitivs</span>
+  </div>
+  <div class="topbar">
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="task-card">
+
+    <div class="task-header">
+      <div class="task-title">Genitivattribut, Formen des Genitivs</div>
+      <div class="task-instruction">Lies dir die Grammatikregel durch.</div>
+    </div>
+
+    <div class="task-content">
+
+      <!-- ── Block 1: Beispiele + Was fällt dir auf? + Regel ── -->
+      <div class="gr-block">
+
+        <!-- Sticky-note Beispiele -->
+        <div class="example-note">
+          <div class="note-label">Beispiele:</div>
+          <div class="example-row">
+            <span class="lat">Pater <span class="lat-red">Cornēliae et Aulī</span> Circum Maximum intrat.</span><br>
+            <span class="de">Der Vater <span class="de-bold">von Cornelia und Aulus</span> betritt den Circus Maximus.</span>
+          </div>
+          <div class="example-row">
+            <span class="lat">Pater clāmōrem <span class="lat-red">spectātōrum</span> audit.</span><br>
+            <span class="de">Der Vater hört das Geschrei <span class="de-bold">der Zuschauer</span>.</span>
+          </div>
+        </div>
+
+        <!-- Was fällt dir auf? -->
+        <div class="gr-notice-btn">Was fällt dir auf?</div>
+
+        <div class="gr-observation">
+          → In Satz 1 geben die rot markierten Wörter Antwort auf die Frage „<strong>Wessen</strong> Vater betritt den Circus Maximus?"<br>
+          → In Satz 2 geben sie Antwort auf die Frage „<strong>Wessen</strong> Geschrei hört der Vater?"
+        </div>
+
+        <!-- Regel -->
+        <div class="gr-rule">
+          <div class="gr-rule-badge">R</div>
+          <div>
+            Die Formen <em>Cornēliae</em>, <em>Aulī</em> und <em>spectātōrum</em> sind <strong>Genitive.</strong><br>
+            Sie werden mit „<strong>Wessen?</strong>" erfragt.<br>
+            Ein Substantiv im Genitiv (Wessen-Fall) kann ein anderes Substantiv näher bestimmen. Im Satz spielt es dann die Rolle eines <strong><u>Genitivattributs</u></strong>. Es drückt aus, wozu jemand/etwas gehört.
+          </div>
+        </div>
+
+      </div><!-- /.gr-block -->
+
+      <!-- ── Block 2: Formen der Substantive im Genitiv ── -->
+      <div class="gr-block">
+
+        <div style="margin-bottom:18px;border-radius:10px;overflow:hidden;border:1px solid var(--border);"><img src="images/genitivattribut.png" alt="Genitivattribut" style="width:100%;display:block;"></div>
+
+        <p class="table-intro">Hier findest du die Formen der Substantive im Genitiv:</p>
+
+        <table class="dekl-table">
+          <thead>
+            <tr>
+              <th>Numerus</th>
+              <th>Kasus</th>
+              <th>o-Deklination</th>
+              <th>a-Deklination</th>
+              <th>konsonantische Deklination</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Singular -->
+            <tr>
+              <td rowspan="3">Singular</td>
+              <td>Nominativ</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">us</span>
+                <span class="trans">der Sklave</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">a</span>
+                <span class="trans">die Tochter</span>
+              </td>
+              <td class="lat">
+                pater
+                <span class="trans">der Vater</span>
+              </td>
+            </tr>
+            <tr class="hl-row">
+              <td>Genitiv</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">ī</span>
+                <span class="trans">des Sklaven</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">ae</span>
+                <span class="trans">der Tochter</span>
+              </td>
+              <td class="lat">
+                <span class="stem">patr-</span><span class="ending">is</span>
+                <span class="trans">des Vaters</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">um</span>
+                <span class="trans">den Sklaven</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">am</span>
+                <span class="trans">die Tochter</span>
+              </td>
+              <td class="lat">
+                <span class="stem">patr-</span><span class="ending">em</span>
+                <span class="trans">den Vater</span>
+              </td>
+            </tr>
+            <!-- Plural -->
+            <tr>
+              <td rowspan="3">Plural</td>
+              <td>Nominativ</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">ī</span>
+                <span class="trans">die Sklaven</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">ae</span>
+                <span class="trans">die Töchter</span>
+              </td>
+              <td class="lat">
+                <span class="stem">patr-</span><span class="ending">ēs</span>
+                <span class="trans">die Väter</span>
+              </td>
+            </tr>
+            <tr class="hl-row">
+              <td>Genitiv</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">ōrum</span>
+                <span class="trans">der Sklaven</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">ārum</span>
+                <span class="trans">der Töchter</span>
+              </td>
+              <td class="lat">
+                <span class="stem">patr-</span><span class="ending">um</span>
+                <span class="trans">der Väter</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat">
+                <span class="stem">serv-</span><span class="ending">ōs</span>
+                <span class="trans">die Sklaven</span>
+              </td>
+              <td class="lat">
+                <span class="stem">fili-</span><span class="ending">ās</span>
+                <span class="trans">die Töchter</span>
+              </td>
+              <td class="lat">
+                <span class="stem">patr-</span><span class="ending">ēs</span>
+                <span class="trans">die Väter</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /.gr-block -->
+
+      <!-- ── Block 3: Formen der Adjektive im Genitiv ── -->
+      <div class="gr-block">
+
+        <p class="table-intro">Die Adjektive der o-/a-Deklination bilden den Genitiv wie die Substantive:</p>
+
+        <table class="dekl-table">
+          <thead>
+            <tr>
+              <th>Numerus</th>
+              <th>Kasus</th>
+              <th>o-Deklination <em style="font-weight:400;font-style:italic;text-transform:none;font-size:11px;">m.</em></th>
+              <th>a-Deklination <em style="font-weight:400;font-style:italic;text-transform:none;font-size:11px;">f.</em></th>
+              <th>o-Deklination <em style="font-weight:400;font-style:italic;text-transform:none;font-size:11px;">n.</em></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Singular -->
+            <tr>
+              <td rowspan="3">Singular</td>
+              <td>Nominativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">us</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+            </tr>
+            <tr class="hl-row">
+              <td>Genitiv</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ī</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ae</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ī</span></td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">am</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">um</span></td>
+            </tr>
+            <!-- Plural -->
+            <tr>
+              <td rowspan="3">Plural</td>
+              <td>Nominativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ī</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ae</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+            </tr>
+            <tr class="hl-row">
+              <td>Genitiv</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ōrum</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ārum</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ōrum</span></td>
+            </tr>
+            <tr>
+              <td>Akkusativ</td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ōs</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">ās</span></td>
+              <td class="lat"><span class="stem">magn-</span><span class="ending">a</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- /.gr-block -->
+
+    </div><!-- /.task-content -->
+
+    <div class="feedback" id="feedback">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      Sehr gut! Du hast den Text gelesen und erhältst 1 Punkt.
+    </div>
+
+    <div class="task-footer">
+      <div class="attempts-wrap">
+        <div class="attempt-dot" id="dot1"></div>
+        <div class="attempt-dot" id="dot2"></div>
+        <div class="attempt-dot" id="dot3"></div>
+      </div>
+      <button class="check-btn" id="checkBtn" onclick="submit()">Gelesen</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const KEY  = 'task_l06_gr_genitivattribut_formen';
+  const NEXT = 'steigende-vorfreude-1.html';
+
+  const checkBtn = document.getElementById('checkBtn');
+  const feedback = document.getElementById('feedback');
+  let attempts = 0;
+
+  function submit() {
+    attempts++;
+    const dot = document.getElementById('dot' + attempts);
+    if (dot) dot.classList.add('used');
+    feedback.classList.add('show', 'ok');
+    checkBtn.classList.add('success');
+    localStorage.setItem(KEY, 'done');
+    localStorage.setItem(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+    localStorage.setItem(KEY + '_attempts', attempts);
+    localStorage.setItem(KEY + '_points',   1);
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.style.pointerEvents = 'auto';
+    checkBtn.onclick = () => window.location.href = NEXT;
+  }
+
+  if (localStorage.getItem(KEY) === 'done') {
+    feedback.classList.add('show', 'ok');
+    checkBtn.classList.add('success');
+    checkBtn.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+    checkBtn.style.background = '#4CAF50';
+    checkBtn.style.pointerEvents = 'auto';
+    checkBtn.onclick = () => window.location.href = NEXT;
+    const savedAttempts = parseInt(localStorage.getItem(KEY + '_attempts') || '1');
+    for (let i = 1; i <= savedAttempts; i++) {
+      const d = document.getElementById('dot' + i);
+      if (d) d.classList.add('used');
+    }
+  }
+
+  function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+  function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+  function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+  document.addEventListener('click', e => {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+  });
+</script>
+</body>
+</html>

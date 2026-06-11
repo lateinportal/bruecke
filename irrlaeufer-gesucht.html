@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Irrläufer gesucht</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scrollbar-gutter: stable; }
+
+      :root {
+        --bg: #f8f8f6; --white: #ffffff; --border: #e6e4df;
+        --text: #111111; --muted: #898783;
+        --green: #4caf50; --yellow: #f5a623; --radius: 14px;
+      }
+
+      body { font-family: "Noto Sans", sans-serif; background: var(--bg); min-height: 100vh; padding: 5rem 1.5rem 3rem; color: var(--text); }
+
+      header { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; z-index: 100; }
+      .sitename { font-size: 19px; font-weight: 700; color: #111111; font-family: "Lora", serif; letter-spacing: -0.4px; display: flex; align-items: center; gap: 6px; }
+      .sitename a { color: inherit; text-decoration: none; }
+      .sitename .sep { color: #cccccc; font-family: "Noto Sans", sans-serif; font-weight: 400; font-size: 17px; }
+      .sitename .sep2 { color: #cccccc; font-family: "Noto Sans", sans-serif; font-weight: 400; font-size: 17px; }
+      .sitename .sub { font-size: 12px; font-weight: 600; color: #555555; font-family: "Noto Sans", sans-serif; letter-spacing: 0; }
+      .sitename .sub2 { font-size: 12px; font-weight: 600; color: #555555; font-family: "Noto Sans", sans-serif; letter-spacing: 0; }
+      .topbar { display: flex; align-items: center; gap: 8px; }
+      .icon-btn { width: 34px; height: 34px; border-radius: 12px; border: 1px solid transparent; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; position: relative; outline: none; flex-shrink: 0; }
+      .icon-btn:hover { transform: scale(1.08); } .icon-btn:active { transform: scale(0.94); }
+      .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .bell-btn svg { stroke: #898783; }
+      .bell-btn .dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: #cc3300; border-radius: 50%; border: 1.5px solid var(--white); }
+      @keyframes ring { 0%,100%{transform:rotate(0)} 15%{transform:rotate(14deg)} 30%{transform:rotate(-12deg)} 45%{transform:rotate(8deg)} 60%{transform:rotate(-5deg)} 75%{transform:rotate(3deg)} }
+      .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+      .user-btn svg { stroke: #898783; }
+      .user-wrap { position: relative; }
+      .dropdown { display: none; position: absolute; top: 44px; right: 0; background: var(--white); border: 1px solid #e0e0e0; border-radius: 10px; min-width: 190px; overflow: hidden; box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+      .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+      @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+      .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #e8e8e8; background: #f9f9f9; }
+      .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+      .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+      .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; font-family: "Noto Sans", sans-serif; transition: background 0.12s; text-align: left; }
+      .dropdown-item:hover { background: #f4f4f4; }
+      .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+      .dropdown-sep-line { height: 1px; background: #e8e8e8; }
+      .dropdown-item.danger { color: #cc3300; } .dropdown-item.danger svg { stroke: #cc3300; }
+
+      .page-wrap { max-width: 780px; margin: 0 auto; }
+      .task-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+      .task-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+      .task-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; font-family: "Lora", serif; }
+      .task-instruction { font-size: 14px; color: var(--muted); line-height: 1.6; }
+      .task-content { padding: 22px 22px; }
+
+      /* Legend */
+      .legend { display: flex; align-items: center; gap: 10px; background: #f2f1ef; border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; font-size: 13px; font-weight: 600; color: var(--text); text-transform: uppercase; letter-spacing: 0.04em; }
+      .legend-dot { width: 26px; height: 26px; border-radius: 50%; background: #2563eb; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(37,99,235,0.18); }
+
+      /* Rows */
+      .sentence-list { display: flex; flex-direction: column; gap: 2px; }
+      .sentence-row { display: grid; grid-template-columns: 24px 1fr; column-gap: 4px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--white); align-items: center; }
+      .sentence-number { font-size: 13px; color: var(--muted); padding-top: 2px; }
+      .sentence-latin { font-size: 15px; font-style: italic; color: var(--text); line-height: 2; font-family: "Lora", serif; }
+
+      /* Separator dots */
+      .sep-dot { font-style: normal; color: var(--muted); margin: 0 4px; user-select: none; }
+
+      /* Word token */
+      .word-token { display: inline; position: relative; cursor: pointer; border-radius: 4px; padding: 1px 2px; transition: background 0.1s; user-select: none; -webkit-user-select: none; }
+      .word-token:hover { background: rgba(37,99,235,0.08); }
+      .word-token.selected { border: 2px solid #2563eb; border-radius: 4px; padding: 1px 2px; color: #2563eb; font-weight: 700; background: rgba(37,99,235,0.06); }
+      .word-token.correct { border: 2px solid var(--green) !important; }
+      .word-token.wrong   { border: 2px solid var(--yellow) !important; }
+
+      /* Badge */
+      .word-badge { display: none; position: absolute; top: -8px; right: -8px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; z-index: 10; }
+      .word-badge.show { display: flex; }
+      .word-badge.ok   { background: var(--green); }
+      .word-badge.fail { background: var(--yellow); }
+      .word-badge svg  { width: 9px; height: 9px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+      /* Popover */
+      .word-popover { display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #111; color: #fff; font-size: 12px; font-weight: 600; font-style: normal; font-family: "Noto Sans", sans-serif; padding: 6px 10px; border-radius: 8px; white-space: nowrap; z-index: 50; pointer-events: none; animation: fadeDown 0.15s ease; }
+      .word-popover::after { content: ""; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-bottom-color: #111; }
+      .word-popover.show { display: block; }
+      @keyframes fadeDown { from{opacity:0;transform:translateX(-50%) translateY(-4px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+      /* Feedback */
+      .feedback { display: none; margin: 0 22px 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; align-items: center; gap: 8px; }
+      .feedback.show { display: flex; }
+      .feedback.ok   { background: #edf7ed; color: #2e7d32; border: 1px solid #c8e6c9; }
+      .feedback.warn { background: #fff8ee; color: #92610a; border: 1px solid #f5dfa0; }
+      .feedback svg  { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+      /* Footer */
+      .task-footer { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+      .attempts-wrap { display: flex; gap: 5px; align-items: center; }
+      .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #d0cec9; background: transparent; transition: background 0.2s, border-color 0.2s; }
+      .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+      .check-btn { background: #111111; color: #ffffff; border: none; border-radius: 10px; padding: 9px 20px; font-size: 14px; font-weight: 600; font-family: "Noto Sans", sans-serif; cursor: pointer; transition: background 0.15s, transform 0.15s; }
+      .check-btn:hover { background: #333; transform: translateY(-1px); }
+      .check-btn:active { transform: scale(0.97); }
+      .check-btn.success { background: var(--green); pointer-events: none; }
+      .check-btn.partial { background: var(--yellow); }
+
+      @media (max-width: 500px) {
+        body { padding: 4.5rem 1rem 2rem; }
+        .task-content { padding: 12px; }
+        .task-footer { padding: 12px 16px; }
+        .feedback { margin: 0 12px 12px; }
+        .sentence-row { padding: 10px 12px; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion06.html" class="sub">Lektion 6</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Irrläufer gesucht</span>
+      </div>
+      <div class="topbar">
+        <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+
+        <div class="task-header">
+          <div class="task-title">Irrläufer gesucht</div>
+          <div class="task-instruction">Finde den Irrläufer.</div>
+        </div>
+
+        <div class="task-content">
+          <div class="legend">
+            <div class="legend-dot"></div>
+            Irrläufer
+          </div>
+
+          <div class="sentence-list">
+
+            <!-- Row 1: serve · scrībe · tacē · age -->
+            <div class="sentence-row">
+              <div class="sentence-number">1.</div>
+              <div class="sentence-latin">
+                <span class="word-token" data-id="r1-serve" data-correct="true">serve<div class="word-badge" id="badge-r1-serve"></div><div class="word-popover" id="popover-r1-serve">Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r1-scribe" data-correct="false">scr&#x012B;be<div class="word-badge" id="badge-r1-scribe"></div><div class="word-popover" id="popover-r1-scribe">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r1-tace" data-correct="false">tac&#x0113;<div class="word-badge" id="badge-r1-tace"></div><div class="word-popover" id="popover-r1-tace">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r1-age" data-correct="false">age<div class="word-badge" id="badge-r1-age"></div><div class="word-popover" id="popover-r1-age">Kein Irrläufer</div></span>
+              </div>
+            </div>
+
+            <!-- Row 2: bonī · līberī · parvī · magnī -->
+            <div class="sentence-row">
+              <div class="sentence-number">2.</div>
+              <div class="sentence-latin">
+                <span class="word-token" data-id="r2-boni" data-correct="false">bon&#x012B;<div class="word-badge" id="badge-r2-boni"></div><div class="word-popover" id="popover-r2-boni">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r2-liberi" data-correct="true">liber&#x012B;<div class="word-badge" id="badge-r2-liberi"></div><div class="word-popover" id="popover-r2-liberi">Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r2-parvi" data-correct="false">parv&#x012B;<div class="word-badge" id="badge-r2-parvi"></div><div class="word-popover" id="popover-r2-parvi">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r2-magni" data-correct="false">magn&#x012B;<div class="word-badge" id="badge-r2-magni"></div><div class="word-popover" id="popover-r2-magni">Kein Irrläufer</div></span>
+              </div>
+            </div>
+
+            <!-- Row 3: hominis · fūris · laboris · incipis -->
+            <div class="sentence-row">
+              <div class="sentence-number">3.</div>
+              <div class="sentence-latin">
+                <span class="word-token" data-id="r3-hominis" data-correct="false">hominis<div class="word-badge" id="badge-r3-hominis"></div><div class="word-popover" id="popover-r3-hominis">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r3-furis" data-correct="false">f&#x016Bris<div class="word-badge" id="badge-r3-furis"></div><div class="word-popover" id="popover-r3-furis">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r3-laboris" data-correct="false">laboris<div class="word-badge" id="badge-r3-laboris"></div><div class="word-popover" id="popover-r3-laboris">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r3-incipis" data-correct="true">incipis<div class="word-badge" id="badge-r3-incipis"></div><div class="word-popover" id="popover-r3-incipis">Irrläufer</div></span>
+              </div>
+            </div>
+
+            <!-- Row 4: aureus · īrātus · hortus · rectus -->
+            <div class="sentence-row">
+              <div class="sentence-number">4.</div>
+              <div class="sentence-latin">
+                <span class="word-token" data-id="r4-aureus" data-correct="false">aureus<div class="word-badge" id="badge-r4-aureus"></div><div class="word-popover" id="popover-r4-aureus">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r4-iratus" data-correct="false">&#x012B;r&#x0101;tus<div class="word-badge" id="badge-r4-iratus"></div><div class="word-popover" id="popover-r4-iratus">Kein Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r4-hortus" data-correct="true">hortus<div class="word-badge" id="badge-r4-hortus"></div><div class="word-popover" id="popover-r4-hortus">Irrläufer</div></span>
+                <span class="sep-dot">·</span>
+                <span class="word-token" data-id="r4-rectus" data-correct="false">rectus<div class="word-badge" id="badge-r4-rectus"></div><div class="word-popover" id="popover-r4-rectus">Kein Irrläufer</div></span>
+              </div>
+            </div>
+
+          </div><!-- /sentence-list -->
+        </div><!-- /task-content -->
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">Überprüfen</button>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      const tokens = [
+        { id: 'r1-serve',   correct: true  },
+        { id: 'r1-scribe',  correct: false },
+        { id: 'r1-tace',    correct: false },
+        { id: 'r1-age',     correct: false },
+        { id: 'r2-boni',    correct: false },
+        { id: 'r2-liberi',  correct: true  },
+        { id: 'r2-parvi',   correct: false },
+        { id: 'r2-magni',   correct: false },
+        { id: 'r3-hominis', correct: false },
+        { id: 'r3-furis',   correct: false },
+        { id: 'r3-laboris', correct: false },
+        { id: 'r3-incipis', correct: true  },
+        { id: 'r4-aureus',  correct: false },
+        { id: 'r4-iratus',  correct: false },
+        { id: 'r4-hortus',  correct: true  },
+        { id: 'r4-rectus',  correct: false },
+      ];
+
+      // One correct per row — radio-like: selecting one in a row deselects others in same row
+      const rows = {
+        r1: ['r1-serve','r1-scribe','r1-tace','r1-age'],
+        r2: ['r2-boni','r2-liberi','r2-parvi','r2-magni'],
+        r3: ['r3-hominis','r3-furis','r3-laboris','r3-incipis'],
+        r4: ['r4-aureus','r4-iratus','r4-hortus','r4-rectus'],
+      };
+
+      const KEY  = 'task_l06_irrlaeufer_gesucht';
+      const NEXT = 'genitive-gesucht-4.html';
+
+      let attempts = 0;
+      let locked   = false;
+      const selected = {};
+      tokens.forEach(t => selected[t.id] = false);
+
+      // Attach click handlers
+      tokens.forEach(t => {
+        const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+        el.addEventListener('click', () => {
+          if (locked) return;
+          // Radio: deselect all others in same row
+          const rowKey = t.id.split('-').slice(0,2).join('-').replace(/-[^-]+$/,''); // e.g. 'r1'
+          const myRow  = Object.entries(rows).find(([k, ids]) => ids.includes(t.id))?.[0];
+          if (myRow) {
+            rows[myRow].forEach(id => {
+              if (id !== t.id) {
+                selected[id] = false;
+                const other = document.querySelector(`.word-token[data-id="${id}"]`);
+                other.classList.remove('selected', 'correct', 'wrong');
+              }
+            });
+          }
+          // Toggle this one
+          selected[t.id] = !selected[t.id];
+          el.classList.toggle('selected', selected[t.id]);
+          el.classList.remove('correct', 'wrong');
+        });
+      });
+
+      function applyBorders() {
+        tokens.forEach(t => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.classList.remove('correct', 'wrong');
+          if (selected[t.id]) {
+            el.classList.add(t.correct ? 'correct' : 'wrong');
+          } else if (attempts >= 3 && t.correct) {
+            el.classList.add('wrong'); // missed correct
+          }
+        });
+      }
+
+      function showBadges(revealMissed) {
+        tokens.forEach(t => {
+          const badge = document.getElementById('badge-' + t.id);
+          if (selected[t.id] && t.correct) {
+            badge.className = 'word-badge show ok';
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          } else if (selected[t.id] && !t.correct) {
+            badge.className = 'word-badge show fail';
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          } else if (!selected[t.id] && t.correct && revealMissed) {
+            badge.className = 'word-badge show fail';
+            badge.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          } else {
+            badge.className = 'word-badge';
+            badge.innerHTML = '';
+          }
+        });
+        if (revealMissed) setupPopovers();
+      }
+
+      function setupPopovers() {
+        tokens.forEach(t => {
+          const el      = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const popover = document.getElementById('popover-' + t.id);
+          const isWrong = (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+          if (!isWrong) return;
+          el.style.cursor = 'pointer';
+          el.addEventListener('click', () => {
+            document.querySelectorAll('.word-popover.show').forEach(p => { if (p !== popover) p.classList.remove('show'); });
+            popover.classList.toggle('show');
+          });
+        });
+      }
+
+      function showFeedback(type, text) {
+        const fb = document.getElementById('feedback');
+        fb.className = 'feedback show ' + type;
+        document.getElementById('feedbackIcon').innerHTML = type === 'ok'
+          ? '<polyline points="20 6 9 17 4 12"/>'
+          : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById('feedbackText').textContent = text;
+      }
+
+      // Sentences for scoring: a row is correct when the right word is selected
+      const rowIds = Object.values(rows); // [[r1 tokens],[r2 tokens],...]
+
+      function calcPoints() {
+        return rowIds.filter(rowTokenIds =>
+          rowTokenIds.every(id => {
+            const t = tokens.find(x => x.id === id);
+            return t.correct ? selected[id] : !selected[id];
+          })
+        ).length;
+      }
+
+      function checkAnswers() {
+        if (locked || attempts >= 3) return;
+        const anySelected = tokens.some(t => selected[t.id]);
+        if (!anySelected) { showFeedback('warn', 'Markiere mindestens ein Wort.'); return; }
+
+        attempts++;
+        document.getElementById('dot' + attempts).classList.add('used');
+
+        const correctlySelected = tokens.filter(t => selected[t.id] && t.correct).length;
+        const wronglySelected   = tokens.filter(t => selected[t.id] && !t.correct).length;
+        const totalCorrect      = tokens.filter(t => t.correct).length;
+        const allCorrect        = correctlySelected === totalCorrect && wronglySelected === 0;
+
+        if (allCorrect) {
+          applyBorders();
+          showFeedback('ok', 'Ausgezeichnet! Alle Irrläufer gefunden!');
+          winState();
+          return;
+        }
+        if (attempts < 3) { showFeedback('warn', 'Das ist noch nicht richtig!'); return; }
+
+        // 3rd failed
+        applyBorders();
+        showBadges(true);
+        locked = true;
+        tokens.forEach(t => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const isWrong = (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+          el.style.pointerEvents = isWrong ? 'auto' : 'none';
+        });
+        showFeedback('warn', 'Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.');
+        saveState(false);
+        const cb = document.getElementById('checkBtn');
+        cb.classList.add('partial');
+        cb.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        cb.onclick = () => window.location.href = NEXT;
+      }
+
+      function winState() {
+        locked = true;
+        tokens.forEach(t => {
+          document.querySelector(`.word-token[data-id="${t.id}"]`).style.pointerEvents = 'none';
+        });
+        saveState(true);
+        const cb = document.getElementById('checkBtn');
+        cb.classList.add('success');
+        cb.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        cb.style.pointerEvents = 'auto';
+        cb.onclick = () => window.location.href = NEXT;
+      }
+
+      function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+      function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+
+      function saveState(done) {
+        lsSet(KEY, done ? 'done' : 'attempted');
+        lsSet(KEY + '_attempts', attempts);
+        lsSet(KEY + '_selected', JSON.stringify(selected));
+        lsSet(KEY + '_points',   calcPoints());
+        lsSet(KEY + '_date',     new Date().toLocaleDateString('de-DE'));
+        if (!done) lsSet(KEY + '_fail', 'true');
+      }
+
+      // Restore
+      (function restoreState() {
+        const saved     = lsGet(KEY);
+        if (!saved) return;
+        const savedSel  = JSON.parse(lsGet(KEY + '_selected') || '{}');
+        const savedTries = parseInt(lsGet(KEY + '_attempts') || '0');
+        const savedDone = saved === 'done';
+        const savedFail = lsGet(KEY + '_fail') === 'true';
+
+        Object.assign(selected, savedSel);
+        tokens.forEach(t => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.classList.toggle('selected', !!selected[t.id]);
+          if (savedDone) { el.style.pointerEvents = 'none'; }
+          else if (savedFail) {
+            const isWrong = (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+            el.style.pointerEvents = isWrong ? 'auto' : 'none';
+          }
+        });
+        for (let i = 1; i <= savedTries; i++) {
+          const d = document.getElementById('dot' + i); if (d) d.classList.add('used');
+        }
+        attempts = savedTries;
+        locked   = savedDone || savedFail;
+        if (savedFail) { applyBorders(); showBadges(true); }
+        const cb = document.getElementById('checkBtn');
+        if (savedDone) {
+          showFeedback('ok', 'Ausgezeichnet! Alle Irrläufer gefunden!');
+          cb.classList.add('success');
+          cb.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          cb.style.pointerEvents = 'auto'; cb.onclick = () => window.location.href = NEXT;
+        } else if (savedFail) {
+          showFeedback('warn', 'Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.');
+          cb.classList.add('partial');
+          cb.innerHTML = 'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          cb.style.pointerEvents = 'auto'; cb.onclick = () => window.location.href = NEXT;
+        }
+      })();
+
+      function handleBell()    { alert('Keine neuen Benachrichtigungen.'); }
+      function toggleDropdown(){ document.getElementById('dropdown').classList.toggle('open'); }
+      function closeDropdown() { document.getElementById('dropdown').classList.remove('open'); }
+      document.addEventListener('click', e => {
+        if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+        if (!e.target.closest('.word-token')) {
+          document.querySelectorAll('.word-popover.show').forEach(p => p.classList.remove('show'));
+        }
+      });
+    </script>
+  </body>
+</html>

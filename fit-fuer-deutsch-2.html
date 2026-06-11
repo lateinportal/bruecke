@@ -1,0 +1,1363 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fit für Deutsch II</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      :root {
+        --bg: #f8f8f6;
+        --white: #ffffff;
+        --border: #e6e4df;
+        --text: #111111;
+        --muted: #898783;
+        --accent: #c6613f;
+        --green: #4caf50;
+        --yellow: #f5a623;
+        --radius: 14px;
+      }
+
+      body {
+        font-family: "Noto Sans", sans-serif;
+        background: var(--bg);
+        min-height: 100vh;
+        padding: 5rem 1.5rem 3rem;
+        color: var(--text);
+      }
+
+      /* ── Header ── */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 100;
+      }
+
+      .sitename {
+        font-size: 19px;
+        font-weight: 700;
+        color: #111111;
+        font-family: "Lora", serif;
+        letter-spacing: -0.4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .sitename a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sitename .sep {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sep2 {
+        color: #cccccc;
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 17px;
+      }
+      .sitename .sub {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+      .sitename .sub2 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #555555;
+        font-family: "Noto Sans", sans-serif;
+        letter-spacing: 0;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.15s;
+        position: relative;
+        outline: none;
+        flex-shrink: 0;
+      }
+      .icon-btn:hover {
+        transform: scale(1.08);
+      }
+      .icon-btn:active {
+        transform: scale(0.94);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .bell-btn svg {
+        stroke: #898783;
+      }
+      .bell-btn .dot {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 7px;
+        height: 7px;
+        background: #cc3300;
+        border-radius: 50%;
+        border: 1.5px solid var(--white);
+      }
+      @keyframes ring {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        30% {
+          transform: rotate(-12deg);
+        }
+        45% {
+          transform: rotate(8deg);
+        }
+        60% {
+          transform: rotate(-5deg);
+        }
+        75% {
+          transform: rotate(3deg);
+        }
+      }
+      .bell-btn:hover svg {
+        animation: ring 0.55s ease;
+        transform-origin: 50% 3px;
+      }
+      .user-btn svg {
+        stroke: #898783;
+      }
+      .user-wrap {
+        position: relative;
+      }
+
+      .dropdown {
+        display: none;
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        min-width: 190px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+      }
+      .dropdown.open {
+        display: block;
+        animation: dropIn 0.15s ease;
+      }
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .dropdown-header {
+        padding: 13px 16px 9px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #f9f9f9;
+      }
+      .dropdown-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+      .dropdown-email {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #111;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        font-family: "Noto Sans", sans-serif;
+        transition: background 0.12s;
+        text-align: left;
+      }
+      .dropdown-item:hover {
+        background: #f4f4f4;
+      }
+      .dropdown-item svg {
+        width: 15px;
+        height: 15px;
+        stroke: #555;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .dropdown-sep-line {
+        height: 1px;
+        background: #e8e8e8;
+      }
+      .dropdown-item.danger {
+        color: #cc3300;
+      }
+      .dropdown-item.danger svg {
+        stroke: #cc3300;
+      }
+
+      /* ── Page layout ── */
+      .page-wrap {
+        max-width: 780px;
+        margin: 0 auto;
+      }
+
+      /* ── Task card ── */
+      .task-card {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .task-header {
+        padding: 20px 22px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .task-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 6px;
+        font-family: "Lora", serif;
+      }
+      .task-instruction {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ── Task content ── */
+      .task-content {
+        padding: 22px 22px;
+      }
+
+      /* ── Legend chip ── */
+      .legend {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f2f1ef;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 18px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .legend-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #2563eb;
+        flex-shrink: 0;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      }
+
+      /* ── Sentence rows ── */
+      .sentence-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .sentence-row {
+        display: grid;
+        grid-template-columns: 24px 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 4px;
+        row-gap: 3px;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--white);
+      }
+
+      .sentence-number {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        font-size: 13px;
+        color: var(--muted);
+        padding-top: 2px;
+        font-style: normal;
+      }
+
+      .sentence-latin {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 15px;
+        font-style: italic;
+        color: var(--text);
+        line-height: 1.9;
+      }
+      .sentence-german {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 15px;
+        font-style: normal;
+        color: var(--text);
+        line-height: 1.9;
+      }
+
+      .sentence-translation {
+        grid-column: 2;
+        grid-row: 2;
+        font-size: 13px;
+        font-style: italic;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      /* ── Word token (clickable) ── */
+      .word-token {
+        display: inline;
+        position: relative;
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 1px 2px;
+        transition: background 0.1s;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .word-token:hover {
+        background: rgba(37, 99, 235, 0.08);
+      }
+      .word-token.selected {
+        border: 2px solid #2563eb;
+        border-radius: 4px;
+        padding: 1px 2px;
+        color: #2563eb;
+        font-weight: 600;
+        background: rgba(37, 99, 235, 0.06);
+      }
+      .word-token.correct {
+        border: 2px solid var(--green) !important;
+      }
+      .word-token.wrong {
+        border: 2px solid var(--yellow) !important;
+      }
+
+      /* Badge */
+      .word-badge {
+        display: none;
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        flex-shrink: 0;
+      }
+      .word-badge.show {
+        display: flex;
+      }
+      .word-badge.ok {
+        background: var(--green);
+      }
+      .word-badge.fail {
+        background: var(--yellow);
+      }
+      .word-badge svg {
+        width: 9px;
+        height: 9px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* Popover */
+      .word-popover {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #111;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        font-style: normal;
+        padding: 6px 10px;
+        border-radius: 8px;
+        white-space: nowrap;
+        z-index: 50;
+        pointer-events: none;
+        animation: fadeDown 0.15s ease;
+      }
+      .word-popover::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-bottom-color: #111;
+      }
+      .word-popover.show {
+        display: block;
+      }
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+
+      /* ── Feedback ── */
+      .feedback {
+        display: none;
+        margin: 0 22px 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+      }
+      .feedback.show {
+        display: flex;
+      }
+      .feedback.ok {
+        background: #edf7ed;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+      }
+      .feedback.warn {
+        background: #fff8ee;
+        color: #92610a;
+        border: 1px solid #f5dfa0;
+      }
+      .feedback svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+
+      /* ── Task footer ── */
+      .task-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+      }
+
+      .attempts-wrap {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .attempt-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        border: 1.5px solid #d0cec9;
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .attempt-dot.used {
+        background: var(--muted);
+        border-color: var(--muted);
+      }
+
+      .check-btn {
+        background: #111111;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 9px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Noto Sans", sans-serif;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.15s;
+      }
+      .check-btn:hover {
+        background: #333;
+        transform: translateY(-1px);
+      }
+      .check-btn:active {
+        transform: scale(0.97);
+      }
+      .check-btn.success {
+        background: var(--green);
+        pointer-events: none;
+      }
+      .check-btn.partial {
+        background: var(--yellow);
+      }
+
+      @media (max-width: 500px) {
+        body {
+          padding: 4.5rem 1rem 2rem;
+        }
+        .task-content {
+          padding: 12px;
+        }
+        .task-footer {
+          padding: 12px 16px;
+        }
+        .feedback {
+          margin: 0 12px 12px;
+        }
+        .sentence-row {
+          padding: 10px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="sitename">
+        <a href="lektionsuebersicht.html">Latein*</a>
+        <span class="sep">›</span>
+        <a href="lektion03.html" class="sub">Lektion 3</a>
+        <span class="sep2">›</span>
+        <span class="sub2">Fit für Deutsch II</span>
+      </div>
+      <div class="topbar">
+        <button
+          class="icon-btn bell-btn"
+          title="Benachrichtigungen"
+          onclick="handleBell()"
+        >
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span class="dot" id="bellDot"></span>
+        </button>
+        <div class="user-wrap">
+          <button
+            class="icon-btn user-btn"
+            title="Benutzerprofil"
+            onclick="toggleDropdown()"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+          <div class="dropdown" id="dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-name">Max Mustermann</div>
+              <div class="dropdown-email">max@beispiel.de</div>
+            </div>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Profil
+            </button>
+            <button class="dropdown-item" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+              Einstellungen
+            </button>
+            <div class="dropdown-sep-line"></div>
+            <button class="dropdown-item danger" onclick="closeDropdown()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-wrap">
+      <div class="task-card">
+        <div class="task-header">
+          <div class="task-title">Fit für Deutsch II</div>
+          <div class="task-instruction">
+            Markiere alle Wörter farbig, die im Deutschen dazugesetzt wurden.
+          </div>
+        </div>
+
+        <div class="task-content">
+          <!-- Legend -->
+          <div class="legend">
+            <div class="legend-dot"></div>
+            HINZUGEFÜGT
+          </div>
+
+          <!-- Sentences -->
+          <div class="sentence-list" id="sentenceList">
+            <!-- Satz 1 -->
+            <div class="sentence-row">
+              <div class="sentence-number">1.</div>
+              <div class="sentence-german">
+                <span class="word-token" data-id="s1-der" data-correct="true"
+                  >Der
+                  <div class="word-badge" id="badge-s1-der"></div>
+                  <div class="word-popover" id="popover-s1-der">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s1-grossvater"
+                  data-correct="false"
+                  >Großvater
+                  <div class="word-badge" id="badge-s1-grossvater"></div>
+                  <div class="word-popover" id="popover-s1-grossvater">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s1-liebt" data-correct="false"
+                  >liebt
+                  <div class="word-badge" id="badge-s1-liebt"></div>
+                  <div class="word-popover" id="popover-s1-liebt">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s1-hunde" data-correct="false"
+                  >Hunde
+                  <div class="word-badge" id="badge-s1-hunde"></div>
+                  <div class="word-popover" id="popover-s1-hunde">
+                    Löschen
+                  </div></span
+                >,
+                <span
+                  class="word-token"
+                  data-id="s1-pferde"
+                  data-correct="false"
+                  >Pferde
+                  <div class="word-badge" id="badge-s1-pferde"></div>
+                  <div class="word-popover" id="popover-s1-pferde">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s1-und" data-correct="true"
+                  >und
+                  <div class="word-badge" id="badge-s1-und"></div>
+                  <div class="word-popover" id="popover-s1-und">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s1-haeschen"
+                  data-correct="false"
+                  >Häschen
+                  <div class="word-badge" id="badge-s1-haeschen"></div>
+                  <div class="word-popover" id="popover-s1-haeschen">
+                    Löschen
+                  </div></span
+                >.
+              </div>
+              <div
+                class="sentence-translation"
+                style="
+                  font-style: italic;
+                  color: var(--muted);
+                  font-size: 13px;
+                  margin-top: 6px;
+                "
+              >
+                Avus canēs, equōs, lepusculōs<sup>1</sup> amat.
+              </div>
+            </div>
+
+            <!-- Satz 2 -->
+            <div class="sentence-row">
+              <div class="sentence-number">2.</div>
+              <div class="sentence-german">
+                <span
+                  class="word-token"
+                  data-id="s2-cornelia"
+                  data-correct="false"
+                  >Cornelia
+                  <div class="word-badge" id="badge-s2-cornelia"></div>
+                  <div class="word-popover" id="popover-s2-cornelia">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s2-liebt" data-correct="false"
+                  >liebt
+                  <div class="word-badge" id="badge-s2-liebt"></div>
+                  <div class="word-popover" id="popover-s2-liebt">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s2-es" data-correct="true"
+                  >es
+                  <div class="word-badge" id="badge-s2-es"></div>
+                  <div class="word-popover" id="popover-s2-es">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span class="word-token" data-id="s2-zu" data-correct="true"
+                  >zu
+                  <div class="word-badge" id="badge-s2-zu"></div>
+                  <div class="word-popover" id="popover-s2-zu">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s2-singen"
+                  data-correct="false"
+                  >singen
+                  <div class="word-badge" id="badge-s2-singen"></div>
+                  <div class="word-popover" id="popover-s2-singen">
+                    Löschen
+                  </div></span
+                >.
+              </div>
+              <div
+                class="sentence-translation"
+                style="
+                  font-style: italic;
+                  color: var(--muted);
+                  font-size: 13px;
+                  margin-top: 6px;
+                "
+              >
+                Cornēlia cantāre amat.
+              </div>
+            </div>
+
+            <!-- Satz 3 -->
+            <div class="sentence-row">
+              <div class="sentence-number">3.</div>
+              <div class="sentence-german">
+                <span
+                  class="word-token"
+                  data-id="s3-cornelia"
+                  data-correct="false"
+                  >Cornelia
+                  <div class="word-badge" id="badge-s3-cornelia"></div>
+                  <div class="word-popover" id="popover-s3-cornelia">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-und" data-correct="false"
+                  >und
+                  <div class="word-badge" id="badge-s3-und"></div>
+                  <div class="word-popover" id="popover-s3-und">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-aulus" data-correct="false"
+                  >Aulus
+                  <div class="word-badge" id="badge-s3-aulus"></div>
+                  <div class="word-popover" id="popover-s3-aulus">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-sagen" data-correct="true"
+                  >sagen
+                  <div class="word-badge" id="badge-s3-sagen"></div>
+                  <div class="word-popover" id="popover-s3-sagen">
+                    Hinzugefügt
+                  </div></span
+                >: „<span
+                  class="word-token"
+                  data-id="s3-wir"
+                  data-correct="false"
+                  >Wir
+                  <div class="word-badge" id="badge-s3-wir"></div>
+                  <div class="word-popover" id="popover-s3-wir">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-sind" data-correct="false"
+                  >sind
+                  <div class="word-badge" id="badge-s3-sind"></div>
+                  <div class="word-popover" id="popover-s3-sind">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-die1" data-correct="true"
+                  >die
+                  <div class="word-badge" id="badge-s3-die1"></div>
+                  <div class="word-popover" id="popover-s3-die1">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s3-kinder"
+                  data-correct="false"
+                  >Kinder
+                  <div class="word-badge" id="badge-s3-kinder"></div>
+                  <div class="word-popover" id="popover-s3-kinder">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-und2" data-correct="false"
+                  >und
+                  <div class="word-badge" id="badge-s3-und2"></div>
+                  <div class="word-popover" id="popover-s3-und2">
+                    Löschen
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s3-spielen"
+                  data-correct="false"
+                  >spielen
+                  <div class="word-badge" id="badge-s3-spielen"></div>
+                  <div class="word-popover" id="popover-s3-spielen">
+                    Löschen
+                  </div></span
+                >,
+                <span class="word-token" data-id="s3-ihr" data-correct="false"
+                  >ihr
+                  <div class="word-badge" id="badge-s3-ihr"></div>
+                  <div class="word-popover" id="popover-s3-ihr">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-seid" data-correct="false"
+                  >seid
+                  <div class="word-badge" id="badge-s3-seid"></div>
+                  <div class="word-popover" id="popover-s3-seid">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-die2" data-correct="true"
+                  >die
+                  <div class="word-badge" id="badge-s3-die2"></div>
+                  <div class="word-popover" id="popover-s3-die2">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s3-sklavinnen"
+                  data-correct="false"
+                  >Sklavinnen
+                  <div class="word-badge" id="badge-s3-sklavinnen"></div>
+                  <div class="word-popover" id="popover-s3-sklavinnen">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-und3" data-correct="false"
+                  >und
+                  <div class="word-badge" id="badge-s3-und3"></div>
+                  <div class="word-popover" id="popover-s3-und3">
+                    Löschen
+                  </div></span
+                >
+                <span class="word-token" data-id="s3-ihr2" data-correct="true"
+                  >ihr
+                  <div class="word-badge" id="badge-s3-ihr2"></div>
+                  <div class="word-popover" id="popover-s3-ihr2">
+                    Hinzugefügt
+                  </div></span
+                >
+                <span
+                  class="word-token"
+                  data-id="s3-arbeitet"
+                  data-correct="false"
+                  >arbeitet
+                  <div class="word-badge" id="badge-s3-arbeitet"></div>
+                  <div class="word-popover" id="popover-s3-arbeitet">
+                    Löschen
+                  </div></span
+                >."
+              </div>
+              <div
+                class="sentence-translation"
+                style="
+                  font-style: italic;
+                  color: var(--muted);
+                  font-size: 13px;
+                  margin-top: 6px;
+                "
+              >
+                Cornēlia et Aulus: „Nōs līberī sumus et lūdimus, vōs servae
+                estis et labōrātis."
+              </div>
+            </div>
+          </div>
+          <!-- /sentence-list -->
+          <div
+            style="
+              font-size: 12px;
+              color: var(--muted);
+              padding: 0 0 4px;
+              margin-top: 8px;
+            "
+          >
+            <sup>1</sup> lepusculus, lepusculum m.: das Häschen
+          </div>
+        </div>
+        <!-- /task-content -->
+
+        <div class="feedback" id="feedback">
+          <svg id="feedbackIcon" viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span id="feedbackText"></span>
+        </div>
+
+        <div class="task-footer">
+          <div class="attempts-wrap">
+            <div class="attempt-dot" id="dot1"></div>
+            <div class="attempt-dot" id="dot2"></div>
+            <div class="attempt-dot" id="dot3"></div>
+          </div>
+          <button class="check-btn" id="checkBtn" onclick="checkAnswers()">
+            Überprüfen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── Data ─────────────────────────────────────────────────────────────────
+      // All clickable tokens: id, and whether it is the correct Prädikatsnomen
+      const tokens = [
+        // Satz 1: Der* Großvater liebt Hunde, Pferde und* Häschen.
+        { id: "s1-der", correct: true },
+        { id: "s1-grossvater", correct: false },
+        { id: "s1-liebt", correct: false },
+        { id: "s1-hunde", correct: false },
+        { id: "s1-pferde", correct: false },
+        { id: "s1-und", correct: true },
+        { id: "s1-haeschen", correct: false },
+        // Satz 2: Cornelia liebt es* zu* singen.
+        { id: "s2-cornelia", correct: false },
+        { id: "s2-liebt", correct: false },
+        { id: "s2-es", correct: true },
+        { id: "s2-zu", correct: true },
+        { id: "s2-singen", correct: false },
+        // Satz 3: Cornelia und Aulus sagen*: „Wir sind die* Kinder und spielen, ihr seid die* Sklavinnen und ihr* arbeitet."
+        { id: "s3-cornelia", correct: false },
+        { id: "s3-und", correct: false },
+        { id: "s3-aulus", correct: false },
+        { id: "s3-sagen", correct: true },
+        { id: "s3-wir", correct: false },
+        { id: "s3-sind", correct: false },
+        { id: "s3-die1", correct: true },
+        { id: "s3-kinder", correct: false },
+        { id: "s3-und2", correct: false },
+        { id: "s3-spielen", correct: false },
+        { id: "s3-ihr", correct: false },
+        { id: "s3-seid", correct: false },
+        { id: "s3-die2", correct: true },
+        { id: "s3-sklavinnen", correct: false },
+        { id: "s3-und3", correct: false },
+        { id: "s3-ihr2", correct: true },
+        { id: "s3-arbeitet", correct: false },
+      ];
+
+      const KEY = "task_l03_fit_deutsch";
+      let attempts = 0;
+      let locked = false;
+
+      // Track selected state per token
+      const selected = {};
+      tokens.forEach((t) => (selected[t.id] = false));
+
+      // ── Attach click handlers ─────────────────────────────────────────────
+      tokens.forEach((t) => {
+        const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+        el.addEventListener("click", () => {
+          if (locked) return;
+          selected[t.id] = !selected[t.id];
+          el.classList.toggle("selected", selected[t.id]);
+          // remove any previous feedback classes when toggling
+          el.classList.remove("correct", "wrong");
+          // hide popover when deselecting
+          if (!selected[t.id]) {
+            document.getElementById("popover-" + t.id).classList.remove("show");
+          }
+        });
+      });
+
+      // ── Helpers ───────────────────────────────────────────────────────────
+      function applyBorders() {
+        tokens.forEach((t) => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.classList.remove("correct", "wrong");
+          if (selected[t.id]) {
+            // keep selected, just add the border class on top
+            el.classList.add(t.correct ? "correct" : "wrong");
+          } else {
+            // user did NOT mark this; on attempt 3 reveal missing correct ones
+            if (attempts >= 3 && t.correct) {
+              el.classList.add("wrong");
+            }
+          }
+        });
+      }
+
+      function showBadges(revealWrong) {
+        tokens.forEach((t) => {
+          const badge = document.getElementById("badge-" + t.id);
+          const wasSelected = selected[t.id];
+
+          if (wasSelected && t.correct) {
+            badge.className = "word-badge show ok";
+            badge.innerHTML =
+              '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+          } else if (wasSelected && !t.correct) {
+            badge.className = "word-badge show fail";
+            badge.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          } else if (!wasSelected && t.correct && revealWrong) {
+            badge.className = "word-badge show fail";
+            badge.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>';
+          } else {
+            badge.className = "word-badge";
+            badge.innerHTML = "";
+          }
+        });
+        if (revealWrong) setupPopovers();
+      }
+
+      function setupPopovers() {
+        tokens.forEach((t) => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const popover = document.getElementById("popover-" + t.id);
+          const isWrong =
+            (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+          if (!isWrong) return;
+
+          popover.textContent =
+            selected[t.id] && !t.correct ? "Löschen" : "Hinzugefügt";
+          el.style.cursor = "pointer";
+          el.addEventListener("click", () => {
+            document.querySelectorAll(".word-popover.show").forEach((p) => {
+              if (p !== popover) p.classList.remove("show");
+            });
+            popover.classList.toggle("show");
+          });
+        });
+      }
+
+      function showFeedback(type, text) {
+        const feedback = document.getElementById("feedback");
+        feedback.className = "feedback show " + type;
+        document.getElementById("feedbackIcon").innerHTML =
+          type === "ok"
+            ? '<polyline points="20 6 9 17 4 12"/>'
+            : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+        document.getElementById("feedbackText").textContent = text;
+      }
+
+      // ── Check ─────────────────────────────────────────────────────────────
+      function checkAnswers() {
+        if (locked || attempts >= 3) return;
+
+        const anySelected = tokens.some((t) => selected[t.id]);
+        if (!anySelected) {
+          showFeedback("warn", "Markiere mindestens ein Wort.");
+          return;
+        }
+
+        attempts++;
+        document.getElementById("dot" + attempts).classList.add("used");
+
+        // Count: correct = selected correct ones; wrong = selected wrong ones; missed = unselected correct ones
+        const correctlySelected = tokens.filter(
+          (t) => selected[t.id] && t.correct,
+        ).length;
+        const wronglySelected = tokens.filter(
+          (t) => selected[t.id] && !t.correct,
+        ).length;
+        const totalCorrect = tokens.filter((t) => t.correct).length;
+        const allCorrect =
+          correctlySelected === totalCorrect && wronglySelected === 0;
+
+        if (allCorrect) {
+          applyBorders();
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle hinzugefügten Wörter korrekt markiert!",
+          );
+          winState();
+          return;
+        }
+
+        if (attempts < 3) {
+          showFeedback("warn", "Das ist noch nicht richtig!");
+          return;
+        }
+
+        // 3rd failed attempt — now reveal borders + badges + popovers
+        applyBorders();
+        showBadges(true);
+        locked = true;
+        tokens.forEach((t) => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          const isWrong =
+            (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+          el.style.pointerEvents = isWrong ? "auto" : "none";
+        });
+        showFeedback(
+          "warn",
+          "Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.",
+        );
+        saveState(false);
+        const checkBtn = document.getElementById("checkBtn");
+        checkBtn.classList.add("partial");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.onclick = () =>
+          (window.location.href = "ein-tag-auf-dem-gutshof-a.html");
+      }
+
+      // Sentences: each sentence gets 1 point if ALL its tokens are correctly handled
+      const sentences = [
+        {
+          id: "s1",
+          tokens: [
+            "s1-der",
+            "s1-grossvater",
+            "s1-liebt",
+            "s1-hunde",
+            "s1-pferde",
+            "s1-und",
+            "s1-haeschen",
+          ],
+        },
+        {
+          id: "s2",
+          tokens: ["s2-cornelia", "s2-liebt", "s2-es", "s2-zu", "s2-singen"],
+        },
+        {
+          id: "s3",
+          tokens: [
+            "s3-cornelia",
+            "s3-und",
+            "s3-aulus",
+            "s3-sagen",
+            "s3-wir",
+            "s3-sind",
+            "s3-die1",
+            "s3-kinder",
+            "s3-und2",
+            "s3-spielen",
+            "s3-ihr",
+            "s3-seid",
+            "s3-die2",
+            "s3-sklavinnen",
+            "s3-und3",
+            "s3-ihr2",
+            "s3-arbeitet",
+          ],
+        },
+      ];
+
+      function calcPoints() {
+        return sentences.filter((s) =>
+          s.tokens.every((id) => {
+            const t = tokens.find((t) => t.id === id);
+            return t.correct ? selected[id] : !selected[id];
+          }),
+        ).length;
+      }
+
+      function winState() {
+        locked = true;
+        tokens.forEach((t) => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.style.pointerEvents = "none";
+        });
+        saveState(true);
+        const checkBtn = document.getElementById("checkBtn");
+        checkBtn.classList.add("success");
+        checkBtn.innerHTML =
+          'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+        checkBtn.style.pointerEvents = "auto";
+        checkBtn.onclick = () =>
+          (window.location.href = "ein-tag-auf-dem-gutshof-a.html");
+      }
+
+      function saveState(done) {
+        const points = calcPoints();
+        localStorage.setItem(KEY, done ? "done" : "attempted");
+        localStorage.setItem(KEY + "_attempts", attempts);
+        localStorage.setItem(KEY + "_selected", JSON.stringify(selected));
+        localStorage.setItem(KEY + "_points", points);
+        localStorage.setItem(
+          KEY + "_date",
+          new Date().toLocaleDateString("de-DE"),
+        );
+        if (!done) localStorage.setItem(KEY + "_fail", "true");
+      }
+
+      // ── Restore saved state ───────────────────────────────────────────────
+      (function restoreState() {
+        const saved = localStorage.getItem(KEY);
+        if (!saved) return;
+
+        const savedSelected = JSON.parse(
+          localStorage.getItem(KEY + "_selected") || "{}",
+        );
+        const savedAttempts = parseInt(
+          localStorage.getItem(KEY + "_attempts") || "0",
+        );
+        const savedDone = saved === "done";
+        const savedFail = localStorage.getItem(KEY + "_fail") === "true";
+
+        Object.assign(selected, savedSelected);
+        tokens.forEach((t) => {
+          const el = document.querySelector(`.word-token[data-id="${t.id}"]`);
+          el.classList.toggle("selected", !!selected[t.id]);
+          if (savedDone) {
+            el.style.pointerEvents = "none";
+          } else if (savedFail) {
+            const isWrong =
+              (selected[t.id] && !t.correct) || (!selected[t.id] && t.correct);
+            el.style.pointerEvents = isWrong ? "auto" : "none";
+          }
+          // still in progress: leave pointerEvents untouched (tokens stay clickable)
+        });
+
+        for (let i = 1; i <= savedAttempts; i++) {
+          const d = document.getElementById("dot" + i);
+          if (d) d.classList.add("used");
+        }
+        attempts = savedAttempts;
+        locked = savedDone || savedFail;
+
+        if (savedFail) {
+          applyBorders();
+          showBadges(true);
+        }
+
+        const checkBtn = document.getElementById("checkBtn");
+        if (savedDone) {
+          showFeedback(
+            "ok",
+            "Ausgezeichnet! Alle hinzugefügten Wörter korrekt markiert!",
+          );
+          checkBtn.classList.add("success");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.style.pointerEvents = "auto";
+          checkBtn.onclick = () =>
+            (window.location.href = "ein-tag-auf-dem-gutshof-a.html");
+        } else if (savedFail) {
+          showFeedback(
+            "warn",
+            "Klicke auf die gelb markierten Wörter um einen Hinweis zu sehen.",
+          );
+          checkBtn.classList.add("partial");
+          checkBtn.innerHTML =
+            'Weiter <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vertical-align:middle;margin-left:4px;"><polyline points="9 18 15 12 9 6"/></svg>';
+          checkBtn.style.pointerEvents = "auto";
+          checkBtn.onclick = () =>
+            (window.location.href = "ein-tag-auf-dem-gutshof-a.html");
+        }
+      })();
+
+      // ── Bell & dropdown ───────────────────────────────────────────────────
+      function handleBell() {
+        alert("Keine neuen Benachrichtigungen.");
+      }
+      function toggleDropdown() {
+        document.getElementById("dropdown").classList.toggle("open");
+      }
+      function closeDropdown() {
+        document.getElementById("dropdown").classList.remove("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!document.querySelector(".user-wrap").contains(e.target))
+          closeDropdown();
+        if (!e.target.closest(".word-token")) {
+          document
+            .querySelectorAll(".word-popover.show")
+            .forEach((p) => p.classList.remove("show"));
+        }
+      });
+    </script>
+  </body>
+</html>

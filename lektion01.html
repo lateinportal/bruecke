@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lektion 1 – Lektionsübersicht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Lora:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scrollbar-gutter: stable; }
+
+  :root {
+    --bg:        #f8f8f6;
+    --white:     #ffffff;
+    --border:    #E6E4DF;
+    --text:      #111111;
+    --muted:     #898783;
+    --accent:    #c6613f;
+    --green:     #4CAF50;
+    --yellow:    #F5A623;
+    --radius:    14px;
+    --radius-sm: 10px;
+  }
+
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 5rem 1.5rem 3rem;
+    color: var(--text);
+  }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: #ffffff;
+    border-bottom: 1px solid #E0E0E0;
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 100;
+  }
+
+  .sitename {
+    font-size: 19px; font-weight: 700;
+    color: #111111; font-family: 'Lora', serif;
+    letter-spacing: -0.4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .sitename .sep {
+    color: #CCCCCC; font-family: 'Noto Sans', sans-serif;
+    font-weight: 400; font-size: 17px;
+  }
+
+  .sitename .sub {
+    font-size: 12px; font-weight: 600;
+    color: #555555; font-family: 'Noto Sans', sans-serif;
+    letter-spacing: 0;
+  }
+
+  .topbar { display: flex; align-items: center; gap: 8px; }
+
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 12px;
+    border: 1px solid transparent; background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+    position: relative; outline: none; flex-shrink: 0;
+  }
+  .icon-btn:hover { transform: scale(1.08); }
+  .icon-btn:active { transform: scale(0.94); }
+  .icon-btn svg { width: 16px; height: 16px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .bell-btn { background: transparent; border-color: transparent; }
+  .bell-btn.has-notification { background: #c6613f; border-color: transparent; }
+  .bell-btn.has-notification svg { stroke: #ffffff; }
+  .bell-btn svg { stroke: #898783; }
+  .bell-btn .dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 7px; height: 7px; background: #CC3300;
+    border-radius: 50%; border: 1.5px solid #f8f8f6;
+  }
+
+  @keyframes ring {
+    0%,100% { transform: rotate(0); }
+    15% { transform: rotate(14deg); }
+    30% { transform: rotate(-12deg); }
+    45% { transform: rotate(8deg); }
+    60% { transform: rotate(-5deg); }
+    75% { transform: rotate(3deg); }
+  }
+  .bell-btn:hover svg { animation: ring 0.55s ease; transform-origin: 50% 3px; }
+
+  .role-toggle {
+    display: flex; align-items: center;
+    background: #F0EFEC;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px;
+    gap: 2px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .role-toggle span {
+    font-size: 12px; font-weight: 600;
+    padding: 3px 10px; border-radius: 16px;
+    color: var(--muted); transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .role-toggle span.active {
+    background: var(--white);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  }
+
+  .user-btn { background: transparent; border-color: transparent; }
+  .user-btn svg { stroke: #898783; }
+  .user-wrap { position: relative; }
+
+  .dropdown {
+    display: none; position: absolute; top: 44px; right: 0;
+    background: #ffffff; border: 1px solid #E0E0E0;
+    border-radius: 10px; min-width: 190px; overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+  }
+  .dropdown.open { display: block; animation: dropIn 0.15s ease; }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .dropdown-header { padding: 13px 16px 9px; border-bottom: 1px solid #E8E8E8; background: #F9F9F9; }
+  .dropdown-name { font-size: 14px; font-weight: 600; color: #111; }
+  .dropdown-email { font-size: 12px; color: #888; margin-top: 2px; }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px; font-size: 14px; color: #111;
+    cursor: pointer; border: none; background: none; width: 100%;
+    font-family: 'Noto Sans', sans-serif; transition: background 0.12s; text-align: left;
+  }
+  .dropdown-item:hover { background: #F4F4F4; }
+  .dropdown-item svg { width: 15px; height: 15px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .dropdown-sep-line { height: 1px; background: #E8E8E8; }
+  .dropdown-item.danger { color: #CC3300; }
+  .dropdown-item.danger svg { stroke: #CC3300; }
+
+  .page-header { max-width: 680px; margin: 0 auto 2rem; }
+  .page-header h1 { font-family: 'Lora', serif; font-size: clamp(20px, 4vw, 26px); font-weight: 700; color: var(--text); letter-spacing: -0.4px; margin-bottom: 4px; }
+  .page-header p { font-size: 14px; color: var(--muted); }
+
+  .section { max-width: 680px; margin: 0 auto 16px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; cursor: pointer; user-select: none; transition: background 0.15s; }
+  .section-header:hover { background: #fafaf9; }
+  .section-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .section-meta { display: flex; align-items: center; gap: 10px; }
+  .count-badge { font-size: 12px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; font-weight: 500; }
+  .chevron { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s ease; flex-shrink: 0; }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body { display: none; padding: 0 12px 12px; }
+  .section.open .section-body { display: block; }
+
+  .task { display: flex; align-items: center; gap: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px 14px; margin-bottom: 8px; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; }
+  .task:last-child { margin-bottom: 0; }
+  .task:hover { background: #E6E4DF; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+  .badge { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .badge.pending::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #D0CEC9; }
+  .badge.ok { background: var(--green); border-color: var(--green); }
+  .badge.ok svg { width: 13px; height: 13px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .badge.fail { background: var(--yellow); border-color: var(--yellow); }
+  .badge.fail svg { width: 13px; height: 13px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .gr-tag { font-size: 10px; font-weight: 700; background: #EEF2FF; color: #4F6EF7; border-radius: 5px; padding: 2px 5px; flex-shrink: 0; letter-spacing: 0.3px; }
+  .task-name { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+  .task-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .eye-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; }
+  .eye-btn svg { width: 15px; height: 15px; stroke: #D0CEC9; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.15s; }
+  .eye-btn.seen svg { stroke: var(--muted); }
+
+  .task-date { font-size: 11px; color: #C0BEB9; white-space: nowrap; min-width: 60px; text-align: right; }
+  .attempts { display: flex; gap: 3px; min-width: 33px; justify-content: center; }
+  .attempt-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #D0CEC9; background: transparent; }
+  .attempt-dot.used { background: var(--muted); border-color: var(--muted); }
+  .points { font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+  .eye-btn { min-width: 22px; display: flex; justify-content: center; }
+
+  .icon-action { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; opacity: 0.35; transition: opacity 0.15s; }
+  .icon-action:hover { opacity: 1; }
+  .icon-action svg { width: 14px; height: 14px; stroke: var(--text); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  .arrow-right { width: 15px; height: 15px; stroke: #D0CEC9; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  @media (max-width: 500px) {
+    body { padding: 4.5rem 1rem 2rem; }
+    .task-date { display: none; }
+    .points { display: none; }
+    .dropdown { min-width: 170px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sitename">
+    <a href="lektionsuebersicht.html" style="color:inherit;text-decoration:none;">Latein*</a>
+    <span class="sep">›</span>
+    <span class="sub">Lektion 1</span>
+  </div>
+  <div class="topbar">
+    <div class="role-toggle" onclick="toggleClean()">
+      <span id="roleSchueler" class="active">Schüler</span>
+      <span id="roleLehrer">Lehrer</span>
+    </div>
+    <button class="icon-btn bell-btn" title="Benachrichtigungen" onclick="handleBell()">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="dot" id="bellDot"></span>
+    </button>
+    <div class="user-wrap">
+      <button class="icon-btn user-btn" title="Benutzerprofil" onclick="toggleDropdown()">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div class="dropdown" id="dropdown">
+        <div class="dropdown-header">
+          <div class="dropdown-name">Max Mustermann</div>
+          <div class="dropdown-email">max@beispiel.de</div>
+        </div>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profil
+        </button>
+        <button class="dropdown-item" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Einstellungen
+        </button>
+        <div class="dropdown-sep-line"></div>
+        <button class="dropdown-item danger" onclick="closeDropdown()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Abmelden
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-header">
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+    <div>
+      <h1>Lektion 1</h1>
+      <p>Bearbeite die Aufgaben der Reihe nach von oben bis unten.</p>
+    </div>
+    <button onclick="resetAll()" style="background:none;border:1px solid #E6E4DF;border-radius:8px;padding:6px 12px;font-size:12px;color:#898783;cursor:pointer;font-family:'Noto Sans',sans-serif;white-space:nowrap;flex-shrink:0;margin-top:4px;">↺ Demo</button>
+  </div>
+</div>
+
+<div id="accordion"></div>
+
+<script>
+  const data = [
+    { title: 'Vorwissen', tasks: [
+      { name: 'Das Haus der Cornelier', file: 'das-haus-der-cornelier.html', key: 'task_l1_haus_cornelier', pts: 1 },
+      { name: 'Tipps zur Vorbereitung', file: 'tipps-zur-vorbereitung.html', key: 'task_l1_tipps_vorbereitung', pts: 1 },
+      { name: 'Wo die Römer wohnten', file: 'wo-die-roemer-wohnten.html', key: 'task_l1_wo_roemer_wohnten', pts: 1 },
+      { name: 'Römisches Wohnen', file: 'roemisches-wohnen.html', key: 'task_l1_roemisches_wohnen', pts: 5.5 },
+    ]},
+    { title: 'Einstieg', tasks: [
+      { name: 'Genus', file: 'genus.html', key: 'task_l1_genus', gr: true, pts: 1 },
+      { name: 'Die Frage nach dem Genus', file: 'die-frage-nach-dem-genus.html', key: 'task_l1_frage_genus', pts: 4 },
+      { name: 'Maskulinum oder Femininum? (1)', file: 'mask-oder-fem-1.html', key: 'task_l1_mask_fem_1', pts: 3 },
+      { name: 'Unterschiedliche Genera', file: 'unterschiedliche-genera.html', key: 'task_l1_unterschiedliche_genera', pts: 1 },
+      { name: 'Akkusativ', file: 'akkusativ.html', key: 'task_l1_akkusativ', gr: true, pts: 1 },
+      { name: 'Wortart, Satzglied und Form', file: 'wortart-satzglied-form.html', key: 'task_l1_wortart_satzglied_form', pts: 4.5 },
+      { name: 'Deklinationen', file: 'deklinationen.html', key: 'task_l1_deklinationen', gr: true, pts: 1 },
+      { name: 'Nominativ oder Akkusativ?', file: 'nom-oder-akk.html', key: 'task_l1_nom_oder_akk', pts: 5.5 },
+      { name: 'Akkusative gesucht', file: 'akkusative-gesucht.html', key: 'task_l1_akkusative_gesucht', pts: 4 },
+      { name: 'Akkusativobjekte übersetzen', file: 'akkusativobjekte-uebersetzen.html', key: 'task_l1_akkusativobjekte_uebersetzen', pts: 1 },
+      { name: 'Wen sieht Cornelia?', file: 'wen-sieht-cornelia.html', key: 'task_l1_wen_sieht_cornelia', pts: 3 },
+      { name: 'Rollen im Satz', file: 'rollen-im-satz.html', key: 'task_l1_rollen_im_satz', pts: 3 },
+      { name: 'Welche ist die richtige Form?', file: 'welche-richtige-form.html', key: 'task_l1_welche_richtige_form', pts: 2 },
+      { name: 'Welche ist die richtige Form? (2)', file: 'welche-richtige-form-2.html', key: 'task_l1_welche_richtige_form_2', pts: 5 },
+      { name: 'Konjugation der Verben', file: 'konjugation-der-verben.html', key: 'task_l1_konjugation_verben', gr: true, pts: 1 },
+      { name: 'Klassen zuordnen', file: 'klassen-zuordnen.html', key: 'task_l1_klassen_zuordnen', pts: 3 },
+      { name: 'Fit für Deutsch I', file: 'fit-fuer-deutsch-1.html', key: 'task_l1_fit_deutsch_1', gr: true, pts: 1 },
+    ]},
+    { title: 'Übersetzung', tasks: [
+      { name: 'Aufregung im Haus der Cornelier (A)', file: 'aufregung-cornelier-a.html', key: 'task_l1_aufregung_a', pts: 20, pinnedKey: 'aufregung-cornelier-a-pinned', vocabKeys: ['l1_aulus','l1_ludit','l1_cornelia','l1_cantat','l1_et','l1_gaudet','l1_nam','l1_hodie','l1_avus','l1_avum','l1_venit','l1_familia','l1_exspectat','l1_subito','l1_clamor','l1_est','l1_servus','l1_servum','l1_clamat','l1_issa','l1_audit','l1_rogat','l1_quid'] },
+      { name: 'Aufregung im Haus der Cornelier (B)', file: 'aufregung-cornelier-b.html', key: 'task_l1_aufregung_b', pts: 20, pinnedKey: 'aufregung-cornelier-b-pinned' },
+      { name: 'Aufregung im Haus der Cornelier (C)', file: 'aufregung-cornelier-c.html', key: 'task_l1_aufregung_c', pts: 20, pinnedKey: 'aufregung-cornelier-c-pinned' },
+    ]},
+    { title: 'Vertiefung', tasks: [
+      { name: 'Wer ist wer? (1)', file: 'wer-ist-wer-1.html', key: 'task_l1_wer_ist_wer_1', pts: 2 },
+      { name: 'Wer ist wer? (2)', file: 'wer-ist-wer-2.html', key: 'task_l1_wer_ist_wer_2', pts: 2 },
+      { name: 'Wer ist wer? (3)', file: 'wer-ist-wer-3.html', key: 'task_l1_wer_ist_wer_3', pts: 2.5 },
+      { name: 'Maskulinum oder Femininum (2)', file: 'mask-oder-fem-2.html', key: 'task_l1_mask_fem_2', pts: 6 },
+      { name: 'Nominativ und Akkusativ', file: 'nom-und-akk.html', key: 'task_l1_nom_und_akk', pts: 6 },
+      { name: 'Da fehlt doch was!', file: 'da-fehlt-was-1.html', key: 'task_l1_da_fehlt_1', pts: 5 },
+      { name: 'Scherbenhaufen (1)', file: 'scherbenhaufen-1.html', key: 'task_l1_scherbenhaufen_1', pts: 3 },
+      { name: 'Scherbenhaufen (2)', file: 'scherbenhaufen-2.html', key: 'task_l1_scherbenhaufen_2', pts: 1.5 },
+      { name: 'Spiel mit Folgen', file: 'spiel-mit-folgen.html', key: 'task_l1_spiel_mit_folgen', pts: 20, pinnedKey: 'spiel-mit-folgen-pinned' },
+    ]},
+    { title: 'Wiederholung', tasks: [
+      { name: 'So viele neue Begriffe!', file: 'so-viele-neue-begriffe.html', key: 'task_l1_neue_begriffe', pts: 5 },
+      { name: 'Deklination gefragt (1)', file: 'deklination-gefragt-1.html', key: 'task_l1_deklination_gefragt_1', pts: 4.5 },
+      { name: 'Deklination gefragt (2)', file: 'deklination-gefragt-2.html', key: 'task_l1_deklination_gefragt_2', pts: 4.5 },
+      { name: 'Deklination gefragt (3)', file: 'deklination-gefragt-3.html', key: 'task_l1_deklination_gefragt_3', pts: 4.5 },
+      { name: 'Deklinationsgruppe?', file: 'deklinationsgruppe.html', key: 'task_l1_deklinationsgruppe', pts: 4.5 },
+      { name: 'Konjugationsklasse gesucht (1)', file: 'konjugationsklasse-gesucht-1.html', key: 'task_l1_konjklasse_1', pts: 3.5 },
+      { name: 'Konjugationsklasse gesucht (2)', file: 'konjugationsklasse-gesucht-2.html', key: 'task_l1_konjklasse_2', pts: 3.5 },
+      { name: 'Funktionen gesucht (1)', file: 'funktionen-gesucht-1.html', key: 'task_l1_funktionen_1', pts: 4 },
+      { name: 'Der Besuch des Großvaters (A)', file: 'besuch-grossvaters-a.html', key: 'task_l1_besuch_a', pts: 20, pinnedKey: 'besuch-grossvaters-a-pinned' },
+      { name: 'Der Besuch des Großvaters (B)', file: 'besuch-grossvaters-b.html', key: 'task_l1_besuch_b', pts: 15, pinnedKey: 'besuch-grossvaters-b-pinned' },
+      { name: 'Der Besuch des Großvaters (C)', file: 'besuch-grossvaters-c.html', key: 'task_l1_besuch_c', pts: 15, pinnedKey: 'besuch-grossvaters-c-pinned' },
+    ]}
+  ];
+
+  // Collect all keys for resetAll
+  const allKeys = data.flatMap(s => s.tasks.map(t => t.key).filter(Boolean));
+
+  let teacherMode = false;
+  const cleanTargets = '.eye-btn, .task-date, .attempts, .points, .icon-action';
+
+  function applyCleanMode() {
+    document.querySelectorAll(cleanTargets).forEach(el => {
+      el.style.display = teacherMode ? '' : 'none';
+    });
+  }
+
+  function renderAccordion() {
+    const accordion = document.getElementById('accordion');
+    accordion.innerHTML = '';
+    data.forEach((section, si) => {
+      const div = document.createElement('div');
+      const hasActivity = section.tasks.some(t =>
+        t.key && localStorage.getItem(t.key) !== null
+      );
+      div.className = 'section' + (si === 0 || hasActivity ? ' open' : '');
+
+      const tasksHTML = section.tasks.map(t => {
+        const done = t.key && localStorage.getItem(t.key) === 'done';
+        const date = t.key ? (localStorage.getItem(t.key + '_date') || '') : '';
+        const usedAttempts = t.key ? parseInt(localStorage.getItem(t.key + '_attempts') || '0') : 0;
+        const failed = t.key && localStorage.getItem(t.key + '_fail') === 'true';
+        const badgeHTML = done
+          ? `<div class="badge ok"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`
+          : failed
+            ? `<div class="badge fail"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`
+            : `<div class="badge pending"></div>`;
+        const nameHTML = t.file
+          ? `<span class="task-name"><a href="${t.file}" style="color:inherit;text-decoration:none;">${t.name}</a></span>`
+          : `<span class="task-name">${t.name}</span>`;
+        const eyeClass = done ? 'eye-btn seen' : 'eye-btn';
+        const dots = [1,2,3].map(i => `<div class="attempt-dot${i <= usedAttempts ? ' used' : ''}"></div>`).join('');
+        const resetFn = t.key ? `resetTask('${t.key}'${t.pinnedKey ? `,'${t.pinnedKey}'` : ',null'}${t.vocabKeys ? `,'${t.vocabKeys.join(',')}'.split(',')` : ''})` : '';
+        const pts = t.key ? localStorage.getItem(t.key + '_points') : null;
+        const max = t.pts !== undefined ? t.pts : '__';
+        const pointsDisplay = pts !== null ? pts + '/' + max : '__/' + max;
+        return `
+        <div class="task" onclick="${t.file ? `window.location.href='${t.file}'` : ''}">
+          ${badgeHTML}
+          ${t.gr ? '<span class="gr-tag">GR</span>' : ''}
+          ${nameHTML}
+          <div class="task-right">
+            <button class="${eyeClass}" title="Angesehen" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+            <span class="task-date">${date}</span>
+            <div class="attempts">${dots}</div>
+            <span class="points">${pointsDisplay}</span>
+            <button class="icon-action" title="Zurücksetzen" onclick="event.stopPropagation(); ${resetFn}">
+              <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+            <button class="icon-action" title="Bearbeiten" onclick="event.stopPropagation()">
+              <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <svg class="arrow-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>`;
+      }).join('');
+
+      div.innerHTML = `
+        <div class="section-header" onclick="this.closest('.section').classList.toggle('open')">
+          <span class="section-title">${section.title}</span>
+          <div class="section-meta">
+            <span class="count-badge">${section.tasks.length} Aufgaben</span>
+            <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="section-body">${tasksHTML}</div>
+      `;
+      accordion.appendChild(div);
+    });
+  }
+  renderAccordion();
+  applyCleanMode();
+
+  function updateBellState() {
+    const hasNote = localStorage.getItem('latinNotification') === 'true';
+    const bell = document.querySelector('.bell-btn');
+    const dot = document.getElementById('bellDot');
+    if (hasNote) {
+      bell.classList.add('has-notification');
+      dot.style.display = '';
+    } else {
+      bell.classList.remove('has-notification');
+      dot.style.display = 'none';
+    }
+  }
+  updateBellState();
+
+  function toggleClean() {
+    teacherMode = !teacherMode;
+    document.getElementById('roleSchueler').classList.toggle('active', !teacherMode);
+    document.getElementById('roleLehrer').classList.toggle('active', teacherMode);
+    applyCleanMode();
+  }
+
+  function resetVocabSR(vocabKeys) {
+    if (!vocabKeys || !vocabKeys.length) return;
+    try {
+      const sr = JSON.parse(localStorage.getItem('vokabeltraining-sr') || '{}');
+      vocabKeys.forEach(k => delete sr[k]);
+      localStorage.setItem('vokabeltraining-sr', JSON.stringify(sr));
+    } catch(e) {}
+  }
+
+  function resetTask(key, pinnedKey, vocabKeys) {
+    ['', '_date', '_attempts', '_points', '_fail', '_slots', '_values', '_vals'].forEach(suffix => {
+      localStorage.removeItem(key + suffix);
+    });
+    if (pinnedKey) localStorage.removeItem(pinnedKey);
+    resetVocabSR(vocabKeys);
+    renderAccordion();
+    applyCleanMode();
+  }
+
+  function resetAll() {
+    if (!confirm('Alle Aufgaben zurücksetzen?')) return;
+    data.flatMap(s => s.tasks).forEach(t => {
+      ['', '_date', '_attempts', '_points', '_fail', '_slots', '_values', '_vals'].forEach(suffix => {
+        if (t.key) localStorage.removeItem(t.key + suffix);
+      });
+      if (t.pinnedKey) localStorage.removeItem(t.pinnedKey);
+      resetVocabSR(t.vocabKeys);
+    });
+    renderAccordion();
+    applyCleanMode();
+  }
+
+  function handleBell() {
+    localStorage.setItem('latinNotification', 'false');
+    updateBellState();
+    alert('Keine neuen Benachrichtigungen.');
+  }
+
+  function toggleDropdown() {
+    document.getElementById('dropdown').classList.toggle('open');
+  }
+
+  function closeDropdown() {
+    document.getElementById('dropdown').classList.remove('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!document.querySelector('.user-wrap').contains(e.target)) closeDropdown();
+  });
+</script>
+</body>
+</html>
